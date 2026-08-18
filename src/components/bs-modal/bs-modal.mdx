@@ -1,0 +1,53 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ModalStories from './bs-modal.stories';
+
+<Meta of={ModalStories} />
+
+# Modal
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Interactive example](#interactive-example)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+An overlay dialog that interrupts the current flow for a focused task or confirmation. Closes
+itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+
+**When to use**
+- Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+- A short, focused task that doesn't warrant navigating to a new page.
+
+**When not to use**
+- For non-blocking status messages — use a toast/notification instead of interrupting the user.
+- For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+  modal that just gets taller and taller.
+
+## Interactive example
+
+Click "Open modal" to see it — `open` must be set as a JS property (`el.open = true`), not an
+attribute, to open it programmatically.
+
+<Canvas of={ModalStories.Default} />
+
+## Component API
+
+<Controls of={ModalStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (body), `footer`
+- Shadow parts: `::part(backdrop)`, `::part(dialog)`, `::part(header)`, `::part(close)`,
+  `::part(body)`, `::part(footer)`
+
+## Accessibility
+
+- The dialog has `role="dialog"`, `aria-modal="true"`, and `aria-label` (from `heading`).
+- **Focus management**: on open, the previously-focused element is remembered and focus moves
+  into the dialog; on close, focus returns to whatever triggered the modal.
+- **Focus containment**: while open, any focus that lands outside the dialog (e.g. via a
+  programmatic `.focus()` call elsewhere) is redirected back into it, so keyboard/AT users can't
+  silently tab into background page content.
+- <kbd>Escape</kbd> closes the dialog from anywhere on the page while it's open.

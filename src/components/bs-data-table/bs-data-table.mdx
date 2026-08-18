@@ -1,0 +1,77 @@
+import { Meta, Canvas } from '@storybook/addon-docs/blocks';
+import * as DataTableStories from './bs-data-table.stories';
+
+<Meta of={DataTableStories} />
+
+# Data Table
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Selectable rows](#selectable-rows)
+- [Custom cell renderer](#custom-cell-renderer)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A sortable, optionally row-selectable table for tabular data.
+
+**When to use**
+- Comparing structured records across the same set of fields (a list of people, bookings, etc.).
+
+**When not to use**
+- A handful of unrelated key/value pairs — a simple list or card is lighter-weight.
+- Deeply nested/hierarchical data — this component renders one flat row per record.
+
+<Canvas of={DataTableStories.Default} />
+
+## Selectable rows
+
+Adds a checkbox column; toggling one emits `bsRowSelect`.
+
+<Canvas of={DataTableStories.Selectable} />
+
+## Custom cell renderer
+
+`cellRenderer(row, column) => string` lets a column render arbitrary HTML (e.g. an actions
+button) — it's developer-supplied, trusted output (same trust model as React's
+`dangerouslySetInnerHTML`), while the default path always renders cell values as escaped text so
+untrusted row data can never be interpreted as HTML.
+
+<Canvas of={DataTableStories.WithCustomCellRenderer} />
+
+## Component API
+
+`columns`, `rows`, and `cellRenderer` are **JS-property-only** — HTML attributes can only carry
+strings, so arrays/objects/functions must be set via `element.rows = [...]`, not as attributes.
+There's no interactive Controls table for this component because of that (Storybook's controls
+panel only drives string/boolean/number attributes) — see each story's "Show code" for the actual
+usage.
+
+| Prop | Type | Default |
+|---|---|---|
+| `columns` | `{ key: string; label: string; sortable?: boolean }[]` | `[]` |
+| `rows` | `(Record<string, unknown> & { id: string \| number })[]` | `[]` |
+| `sortColumn` | `string` | `undefined` |
+| `sortDirection` | `'asc' \| 'desc'` | `'asc'` |
+| `selectable` | `boolean` | `false` |
+| `cellRenderer` | `(row, column) => string` | `undefined` |
+
+| Event | Detail | Fires when |
+|---|---|---|
+| `bsSort` | `{ column: string; direction: 'asc' \| 'desc' }` | a sortable header is activated |
+| `bsRowSelect` | `{ id: string \| number; selected: boolean }` | a row checkbox is toggled |
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Shadow parts: `::part(table)`, `::part(head)`, `::part(body)`, `::part(row)`,
+  `::part(header-cell)`, `::part(cell)`
+
+## Accessibility
+
+- Renders real semantic `<table>`/`<thead>`/`<tbody>`/`<th>`/`<td>` elements, not styled `<div>`s.
+- Sortable column headers are real `<button>` elements (keyboard-focusable, activate on
+  <kbd>Enter</kbd>/<kbd>Space</kbd>), each with `aria-sort` on its `<th>` reflecting the current
+  sort state — not just a mouse-only `onClick` on the header cell.
+- Row selection uses a native `<input type="checkbox">`, so it's independently
+  keyboard/AT-accessible with no extra wiring.

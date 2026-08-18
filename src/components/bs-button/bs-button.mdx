@@ -1,0 +1,69 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonStories from './bs-button.stories';
+
+<Meta of={ButtonStories} />
+
+# Button
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Neutral button](#neutral-button)
+- [Disabled state](#disabled-state)
+- [Sizes](#sizes)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A clickable action element for the single most important action in a given context.
+
+**When to use**
+- The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
+- Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+
+**When not to use**
+- For navigation between pages — use a link/nav component instead, a button implies an in-page
+  action, not a destination change.
+- For more than one primary-emphasis action in the same view — pick one, demote the rest to
+  `neutral`.
+
+<Canvas of={ButtonStories.Primary} />
+
+## Neutral button
+
+Lower-emphasis alternative to the primary variant, for secondary actions alongside it (e.g. a
+"Cancel" next to a "Confirm").
+
+<Canvas of={ButtonStories.Neutral} />
+
+## Disabled state
+
+Uses the native `disabled` attribute, not just a visual style — see Accessibility below.
+
+<Canvas of={ButtonStories.Disabled} />
+
+## Sizes
+
+Three sizes — `sm`, `md`, `lg` — map to `brandsync-tokens`' spacing scale
+(`--bs-spacing-500/600/700`).
+
+<Canvas of={ButtonStories.Sizes} />
+
+## Component API
+
+<Controls of={ButtonStories.Primary} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (label), `icon`
+- Shadow parts: `::part(icon)`, `::part(label)`
+- CSS Custom Properties: `--bs-button-radius`, `--bs-button-height-sm/md/lg`
+
+## Accessibility
+
+- Renders a native `<button>` internally, so it's keyboard-focusable and activates on
+  <kbd>Enter</kbd>/<kbd>Space</kbd> without any extra ARIA wiring.
+- `disabled` uses the native `disabled` attribute — this removes the button from the tab order
+  and is announced as disabled by screen readers, not just styled to look inactive.
+- Icon-only usage (an `icon` slot with no visible label) isn't supported by this component yet;
+  always pass visible label text via the default slot so the button has an accessible name.

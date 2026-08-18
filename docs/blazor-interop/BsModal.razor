@@ -1,0 +1,56 @@
+@* Wraps <bs-modal> for the parts plain attributes can't reach: opening it programmatically and
+   reacting to its bsClose custom event. Attributes like heading/size are just passed through as
+   plain HTML attributes -- no interop needed for those. *@
+
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+
+<bs-modal @ref="_modalRef" heading="@Heading" size="@Size">
+    @ChildContent
+    <div slot="footer">@FooterContent</div>
+</bs-modal>
+
+@code {
+    [Parameter] public string Heading { get; set; } = "";
+    [Parameter] public string Size { get; set; } = "md";
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+    [Parameter] public RenderFragment? FooterContent { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private ElementReference _modalRef;
+    private IJSObjectReference? _module;
+    private DotNetObjectReference<BsModal>? _dotNetRef;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _module = await JS.InvokeAsync<IJSObjectReference>("import", "./docs/blazor-interop/bsModalInterop.js");
+            _dotNetRef = DotNetObjectReference.Create(this);
+            await _module.InvokeVoidAsync("addCloseListener", _modalRef, _dotNetRef);
+        }
+    }
+
+    public async Task OpenAsync()
+    {
+        if (_module is not null)
+        {
+            await _module.InvokeVoidAsync("setOpen", _modalRef, true);
+        }
+    }
+
+    [JSInvokable]
+    public async Task OnBsClose()
+    {
+        await OnClose.InvokeAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        _dotNetRef?.Dispose();
+        if (_module is not null)
+        {
+            await _module.DisposeAsync();
+        }
+    }
+}

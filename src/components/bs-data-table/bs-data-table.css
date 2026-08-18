@@ -1,0 +1,56 @@
+:host {
+  display: block;
+}
+
+.bs-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: inherit;
+  font-size: var(--bs-font-size-sm);
+  color: var(--bs-text-default);
+}
+
+.bs-data-table__header-cell {
+  text-align: left;
+  padding: var(--bs-spacing-200) var(--bs-spacing-300);
+  border-bottom: 1px solid var(--bs-border-default);
+  font-weight: var(--bs-font-weight-semibold);
+  color: var(--bs-text-secondary);
+  white-space: nowrap;
+}
+
+.bs-data-table__sort-button {
+  display: inline-flex;
+  align-items: center;
+  border: none;
+  background: none;
+  padding: 0;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  user-select: none;
+}
+
+.bs-data-table__sort-button:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+
+.bs-data-table__sort-indicator {
+  color: var(--bs-text-action);
+}
+
+.bs-data-table__row:hover {
+  background: var(--bs-surface-hover);
+}
+
+.bs-data-table__cell {
+  padding: var(--bs-spacing-200) var(--bs-spacing-300);
+  border-bottom: 1px solid var(--bs-border-default);
+}
+
+.bs-data-table__select-col {
+  width: var(--bs-spacing-500);
+  padding: var(--bs-spacing-200) var(--bs-spacing-300);
+  border-bottom: 1px solid var(--bs-border-default);
+}

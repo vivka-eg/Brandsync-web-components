@@ -1,0 +1,12 @@
+/*
+ * Sets the document root to Brandsync's typeface (brandsync-tokens defines Roboto for both
+ * --bs-typography-font-family-heading and -body). Every component's shadow styles use
+ * `font-family: inherit`, so this is what they actually inherit from.
+ *
+ * Loading the Roboto font file itself is the consuming app's job, same convention already used
+ * across eg-brandsync -- a <link> to Google Fonts (or next/font/google) for the weights actually
+ * used by brandsync-tokens: 100, 400, 500, 600, 700, 900. See README.md.
+ */
+:root {
+  font-family: var(--bs-typography-font-family-body), sans-serif;
+}

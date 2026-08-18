@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+.bs-input {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-spacing-100);
+  font-family: inherit;
+}
+
+.bs-input__label {
+  font-size: var(--bs-font-size-sm);
+  font-weight: var(--bs-font-weight-medium);
+  color: var(--bs-input-label);
+}
+
+.bs-input__control {
+  height: var(--bs-spacing-600);
+  padding: 0 var(--bs-spacing-300);
+  border: 1px solid var(--bs-input-border-default);
+  border-radius: var(--bs-border-radius-100);
+  background: var(--bs-input-bg-default);
+  color: var(--bs-input-text);
+  font-size: var(--bs-font-size-md);
+  font-family: inherit;
+}
+
+.bs-input__control::placeholder {
+  color: var(--bs-input-placeholder);
+}
+
+.bs-input__control:hover:not(:disabled) {
+  border-color: var(--bs-input-border-hover);
+}
+
+.bs-input__control:focus-visible {
+  outline: none;
+  border-color: var(--bs-input-border-focus);
+}
+
+.bs-input__control:disabled {
+  background: var(--bs-input-bg-disabled);
+  color: var(--bs-input-text-disabled);
+  cursor: not-allowed;
+}
+
+.bs-input--error .bs-input__control {
+  border-color: var(--bs-input-border-error);
+}
+
+.bs-input--error .bs-input__label {
+  color: var(--bs-input-label);
+}
+
+.bs-input__description {
+  font-size: var(--bs-font-size-xs);
+  color: var(--bs-input-description);
+}
+
+.bs-input__error {
+  font-size: var(--bs-font-size-xs);
+  color: var(--bs-input-error);
+}

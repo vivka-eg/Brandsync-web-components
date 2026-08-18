@@ -1,0 +1,58 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as CardStories from './bs-card.stories';
+
+<Meta of={CardStories} />
+
+# Card
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Base surface](#base-surface)
+- [Container surface](#container-surface)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A bounded surface for grouping related content — a summary, a form section, a list item.
+
+**When to use**
+- Grouping a self-contained piece of content that needs visual separation from the page
+  background (e.g. a booking summary, a settings section).
+
+**When not to use**
+- As the only structural element on a page — cards group content, they don't replace layout.
+- For a dismissible/transient message — use a modal or a dedicated notification component.
+
+<Canvas of={CardStories.Raised} />
+
+## Base surface
+
+Flat background, no shadow — for content already inside a raised/bordered parent.
+
+<Canvas of={CardStories.Base} />
+
+## Container surface
+
+Slightly tinted background — for grouping within a busier layout.
+
+<Canvas of={CardStories.Container} />
+
+## Component API
+
+<Controls of={CardStories.Raised} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: `header`, default (body), `footer`
+- Shadow parts: `::part(container)`, `::part(header)`, `::part(body)`, `::part(footer)`
+- Reuses `brandsync-tokens`' Paper token set — there's no dedicated Card token set yet.
+
+## Accessibility
+
+- Renders as a plain, non-semantic container (no implicit ARIA role) — a card groups content
+  visually, it doesn't assert a specific document landmark. If the card's content should be
+  announced as a distinct region, wrap it with an appropriate `role`/heading in the slotted
+  content itself.
+- Interactive elements slotted into `header`/`footer` (e.g. `bs-button`) keep their own native
+  accessibility — the card itself adds no keyboard behavior.

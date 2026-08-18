@@ -1,0 +1,62 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as InputStories from './bs-input.stories';
+
+<Meta of={InputStories} />
+
+# Input
+
+## Table of Contents
+
+- [Overview](#overview)
+- [With description](#with-description)
+- [With error](#with-error)
+- [Disabled state](#disabled-state)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A single-line text field with an optional label, description, and error state.
+
+**When to use**
+- Collecting a single line of free-text, email, password, or numeric input.
+- Pair with `error` for inline validation feedback tied to that specific field.
+
+**When not to use**
+- Multi-line text — this component has no `textarea` mode.
+- A fixed set of choices — use a select/radio/checkbox component instead of free text.
+
+<Canvas of={InputStories.Default} />
+
+## With description
+
+Helper text shown below the field when there's no error.
+
+<Canvas of={InputStories.WithDescription} />
+
+## With error
+
+Error text replaces the description when both would otherwise show, and sets `aria-invalid` on
+the field (see Accessibility below).
+
+<Canvas of={InputStories.WithError} />
+
+## Disabled state
+
+<Canvas of={InputStories.Disabled} />
+
+## Component API
+
+<Controls of={InputStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Shadow parts: `::part(label)`, `::part(control)`, `::part(description)`, `::part(error)`
+
+## Accessibility
+
+- The `<label>` is programmatically associated with the `<input>` via `for`/`id` (scoped to this
+  instance's own Shadow DOM, so it's always unique) — a screen reader announces the label when the
+  field receives focus.
+- `description`/`error` text is linked to the input via `aria-describedby`, so it's announced
+  alongside the label, not just visually placed nearby.
+- Setting `error` also sets `aria-invalid="true"` on the input.

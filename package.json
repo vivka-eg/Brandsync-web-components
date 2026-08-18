@@ -1,50 +1,63 @@
 {
-  "name": "brandsync-web-components",
+  "name": "@brandsync/wc",
   "version": "0.0.1",
-  "description": "Stencil Component Starter",
+  "description": "Brandsync design system components as framework-agnostic Web Components",
   "main": "dist/index.cjs.js",
   "module": "dist/index.js",
   "types": "dist/types/index.d.ts",
   "collection": "dist/collection/collection-manifest.json",
   "collection:main": "dist/collection/index.js",
-  "unpkg": "dist/brandsync-web-components/brandsync-web-components.esm.js",
+  "unpkg": "dist/brandsync-wc/brandsync-wc.esm.js",
   "exports": {
     ".": {
-      "import": "./dist/brandsync-web-components/brandsync-web-components.esm.js",
-      "require": "./dist/brandsync-web-components/brandsync-web-components.cjs.js"
+      "import": "./dist/brandsync-wc/brandsync-wc.esm.js",
+      "require": "./dist/cjs/brandsync-wc.cjs.js"
     },
-    "./my-component": {
-      "import": "./dist/components/my-component.js",
-      "types": "./dist/components/my-component.d.ts"
+    "./dist/components": {
+      "import": "./dist/components/index.js",
+      "types": "./dist/components/index.d.ts"
     },
+    "./dist/components/*": {
+      "import": "./dist/components/*",
+      "types": "./dist/components/*"
+    },
+    "./dist/brandsync-wc/brandsync-wc.css": "./dist/brandsync-wc/brandsync-wc.css",
     "./loader": {
       "import": "./loader/index.js",
       "require": "./loader/index.cjs",
       "types": "./loader/index.d.ts"
     }
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/stenciljs/component-starter.git"
-  },
   "files": [
     "dist/",
-    "loader/"
+    "loader/",
+    "custom-elements.json"
   ],
   "scripts": {
     "build": "stencil build",
     "start": "stencil build --dev --watch --serve",
-    "test": "stencil-test --prod",
-    "test:watch": "stencil-test --prod --watch",
-    "generate": "stencil generate"
+    "test": "stencil build --prod && vitest run",
+    "test:watch": "stencil build --prod && vitest watch",
+    "generate": "stencil generate",
+    "storybook": "npm run build && storybook dev -p 6006",
+    "build-storybook": "npm run build && storybook build"
   },
   "devDependencies": {
+    "@stencil/angular-output-target": "^1.4.1",
     "@stencil/core": "^4.27.1 || ^5.0.0-0",
+    "@stencil/react-output-target": "^1.6.2",
     "@stencil/vitest": "^1.8.3",
+    "@storybook/addon-docs": "^10.5.8",
+    "@storybook/web-components-vite": "^10.5.8",
     "@types/node": "^22.13.5",
     "@vitest/browser-playwright": "^4.0.0",
+    "lit": "^3.3.3",
     "playwright": "^1.52.0",
+    "storybook": "^10.5.8",
     "vitest": "^4.0.0"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "brandsync-tokens": "^1.0.30"
+  }
 }

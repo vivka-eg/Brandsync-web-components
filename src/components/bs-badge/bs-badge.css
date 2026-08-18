@@ -1,0 +1,55 @@
+:host {
+  display: inline-block;
+}
+
+.bs-badge {
+  display: inline-flex;
+  align-items: center;
+  height: var(--bs-spacing-400);
+  padding: 0 var(--bs-spacing-200);
+  border-radius: var(--bs-border-radius-full);
+  font-size: var(--bs-font-size-xs);
+  font-weight: var(--bs-font-weight-medium);
+  font-family: inherit;
+  white-space: nowrap;
+}
+
+.bs-badge--default {
+  background: var(--bs-badge-bg-default);
+  color: var(--bs-badge-text-default);
+}
+
+.bs-badge--primary {
+  background: var(--bs-badge-bg-primary-container);
+  color: var(--bs-badge-text-primary);
+}
+
+.bs-badge--success {
+  background: var(--bs-badge-bg-success-container);
+  color: var(--bs-badge-text-success);
+}
+
+.bs-badge--warning {
+  background: var(--bs-badge-bg-warning-container);
+  color: var(--bs-badge-text-warning);
+}
+
+.bs-badge--info {
+  background: var(--bs-badge-bg-info-container);
+  color: var(--bs-badge-text-info);
+}
+
+.bs-badge--error {
+  background: var(--bs-badge-bg-error-container);
+  color: var(--bs-badge-text-error);
+}
+
+.bs-badge--neutral {
+  background: var(--bs-badge-bg-neutral-container);
+  color: var(--bs-badge-text-neutral);
+}
+
+.bs-badge--inverse {
+  background: var(--bs-badge-bg-inverse);
+  color: var(--bs-badge-text-inverse);
+}

@@ -5,64 +5,609 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { BsBadgeVariant } from "./components/bs-badge/bs-badge";
+import { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
+import { BsCardSurface } from "./components/bs-card/bs-card";
+import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
+import { BsModalSize } from "./components/bs-modal/bs-modal";
+export { BsBadgeVariant } from "./components/bs-badge/bs-badge";
+export { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
+export { BsCardSurface } from "./components/bs-card/bs-card";
+export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
+export { BsModalSize } from "./components/bs-modal/bs-modal";
 export namespace Components {
-    interface MyComponent {
+    /**
+     * A small status or category pill, usually paired with a label or list item.
+     * ## When to use
+     * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
+     * ## When not to use
+     * - As an interactive/clickable element — a badge is a label, not a control. Use a button
+     *   or chip component if it needs to be clickable.
+     * - For long text — badges are sized for one or two words.
+     */
+    interface BsBadge {
         /**
-          * The first name
+          * Maps directly to the brandsync-tokens `--bs-badge-bg-*` / `--bs-badge-text-*` sets.
+          * @default 'default'
          */
-        "first": string;
+        "variant": BsBadgeVariant;
+    }
+    /**
+     * A clickable action element for the single most important action in a given context.
+     * ## When to use
+     * - The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
+     * - Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+     * ## When not to use
+     * - For navigation between pages — use a link/nav component instead, a button implies an
+     *   in-page action, not a destination change.
+     * - For more than one primary-emphasis action in the same view — pick one, demote the rest to
+     *   `neutral`.
+     * @prop --bs-button-radius - Corner radius. Aliased to `--bs-border-radius-100` by default.
+     * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
+     * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
+     * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     */
+    interface BsButton {
         /**
-          * The last name
+          * Disables the button and applies the disabled token set.
+          * @default false
          */
-        "last": string;
+        "disabled": boolean;
         /**
-          * The middle name
+          * Sizing scale.
+          * @default 'md'
          */
-        "middle": string;
+        "size": BsButtonSize;
+        /**
+          * Native `<button>` type.
+          * @default 'button'
+         */
+        "type": 'button' | 'submit' | 'reset';
+        /**
+          * Visual style. Maps directly to the brandsync-tokens `--bs-button-*` semantic set.
+          * @default 'primary'
+         */
+        "variant": BsButtonVariant;
+    }
+    /**
+     * A bounded surface for grouping related content — a summary, a form section, a list item.
+     * ## When to use
+     * - Grouping a self-contained piece of content that needs visual separation from the page
+     *   background (e.g. a booking summary, a settings section).
+     * ## When not to use
+     * - As the only structural element on a page — cards group content, they don't replace layout.
+     * - For a dismissible/transient message — use a modal or a dedicated notification component.
+     */
+    interface BsCard {
+        /**
+          * Maps to the brandsync-tokens `--bs-paper-bg-*` set — Brandsync's tokens don't have a dedicated "card" component yet, so this reuses the existing Paper surface tokens.
+          * @default 'raised'
+         */
+        "surface": BsCardSurface;
+    }
+    /**
+     * A sortable, optionally row-selectable table for tabular data.
+     * `columns`, `rows`, and `cellRenderer` are JS-property-only — HTML attributes can only carry
+     * strings, so arrays/objects/functions must be set via `element.rows = [...]` etc., not as
+     * attributes. See CONVENTIONS.md.
+     * ## When to use
+     * - Comparing structured records across the same set of fields (a list of people, bookings, etc.).
+     * ## When not to use
+     * - A handful of unrelated key/value pairs — a simple list or card is lighter-weight.
+     * - Deeply nested/hierarchical data — this component renders one flat row per record.
+     */
+    interface BsDataTable {
+        /**
+          * Optional custom cell renderer, e.g. for an actions column. Function props are JS-property-only, same as array props -- there is no attribute equivalent. Falls back to the raw cell value.
+         */
+        "cellRenderer"?: (row: BsDataTableRow, column: BsDataTableColumn) => string;
+        /**
+          * Array prop -- must be set as a JS property (`el.columns = [...]`), not an HTML attribute, since attributes can only carry strings. See CONVENTIONS.md.
+          * @default []
+         */
+        "columns": BsDataTableColumn[];
+        /**
+          * Array prop -- same JS-property-only rule as `columns`.
+          * @default []
+         */
+        "rows": BsDataTableRow[];
+        /**
+          * @default false
+         */
+        "selectable": boolean;
+        "sortColumn"?: string;
+        /**
+          * @default 'asc'
+         */
+        "sortDirection": 'asc' | 'desc';
+    }
+    /**
+     * A single-line text field with an optional label, description, and error state.
+     * ## When to use
+     * - Collecting a single line of free-text, email, password, or numeric input.
+     * - Pair with `error` for inline validation feedback tied to that specific field.
+     * ## When not to use
+     * - Multi-line text — this component has no `textarea` mode.
+     * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
+     */
+    interface BsInput {
+        "description"?: string;
+        /**
+          * @default false
+         */
+        "disabled": boolean;
+        "error"?: string;
+        "label"?: string;
+        "placeholder"?: string;
+        /**
+          * @default 'text'
+         */
+        "type": 'text' | 'email' | 'password' | 'number';
+        /**
+          * Current value. Native `input`/`change` events don't cross the Shadow DOM boundary, so this component re-dispatches them as `bsInput`/`bsChange` custom events instead.
+          * @default ''
+         */
+        "value": string;
+    }
+    /**
+     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
+     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+     * ## When to use
+     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+     * - A short, focused task that doesn't warrant navigating to a new page.
+     * ## When not to use
+     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
+     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+     *   modal that just gets taller and taller.
+     */
+    interface BsModal {
+        "heading"?: string;
+        /**
+          * Mutable + reflected so the component can close itself (backdrop click, Escape, close button) the same way a native `<dialog>` does, while still emitting `bsClose` for the consumer to react to.
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default 'md'
+         */
+        "size": BsModalSize;
     }
 }
+export interface BsDataTableCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsDataTableElement;
+}
+export interface BsInputCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsInputElement;
+}
+export interface BsModalCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsModalElement;
+}
 declare global {
-    interface HTMLMyComponentElement extends Components.MyComponent, HTMLStencilElement {
+    /**
+     * A small status or category pill, usually paired with a label or list item.
+     * ## When to use
+     * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
+     * ## When not to use
+     * - As an interactive/clickable element — a badge is a label, not a control. Use a button
+     *   or chip component if it needs to be clickable.
+     * - For long text — badges are sized for one or two words.
+     */
+    interface HTMLBsBadgeElement extends Components.BsBadge, HTMLStencilElement {
     }
-    var HTMLMyComponentElement: {
-        prototype: HTMLMyComponentElement;
-        new (): HTMLMyComponentElement;
+    var HTMLBsBadgeElement: {
+        prototype: HTMLBsBadgeElement;
+        new (): HTMLBsBadgeElement;
+    };
+    /**
+     * A clickable action element for the single most important action in a given context.
+     * ## When to use
+     * - The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
+     * - Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+     * ## When not to use
+     * - For navigation between pages — use a link/nav component instead, a button implies an
+     *   in-page action, not a destination change.
+     * - For more than one primary-emphasis action in the same view — pick one, demote the rest to
+     *   `neutral`.
+     * @prop --bs-button-radius - Corner radius. Aliased to `--bs-border-radius-100` by default.
+     * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
+     * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
+     * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     */
+    interface HTMLBsButtonElement extends Components.BsButton, HTMLStencilElement {
+    }
+    var HTMLBsButtonElement: {
+        prototype: HTMLBsButtonElement;
+        new (): HTMLBsButtonElement;
+    };
+    /**
+     * A bounded surface for grouping related content — a summary, a form section, a list item.
+     * ## When to use
+     * - Grouping a self-contained piece of content that needs visual separation from the page
+     *   background (e.g. a booking summary, a settings section).
+     * ## When not to use
+     * - As the only structural element on a page — cards group content, they don't replace layout.
+     * - For a dismissible/transient message — use a modal or a dedicated notification component.
+     */
+    interface HTMLBsCardElement extends Components.BsCard, HTMLStencilElement {
+    }
+    var HTMLBsCardElement: {
+        prototype: HTMLBsCardElement;
+        new (): HTMLBsCardElement;
+    };
+    interface HTMLBsDataTableElementEventMap {
+        "bsSort": { column: string; direction: 'asc' | 'desc' };
+        "bsRowSelect": { id: string | number; selected: boolean };
+    }
+    /**
+     * A sortable, optionally row-selectable table for tabular data.
+     * `columns`, `rows`, and `cellRenderer` are JS-property-only — HTML attributes can only carry
+     * strings, so arrays/objects/functions must be set via `element.rows = [...]` etc., not as
+     * attributes. See CONVENTIONS.md.
+     * ## When to use
+     * - Comparing structured records across the same set of fields (a list of people, bookings, etc.).
+     * ## When not to use
+     * - A handful of unrelated key/value pairs — a simple list or card is lighter-weight.
+     * - Deeply nested/hierarchical data — this component renders one flat row per record.
+     */
+    interface HTMLBsDataTableElement extends Components.BsDataTable, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsDataTableElementEventMap>(type: K, listener: (this: HTMLBsDataTableElement, ev: BsDataTableCustomEvent<HTMLBsDataTableElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsDataTableElementEventMap>(type: K, listener: (this: HTMLBsDataTableElement, ev: BsDataTableCustomEvent<HTMLBsDataTableElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsDataTableElement: {
+        prototype: HTMLBsDataTableElement;
+        new (): HTMLBsDataTableElement;
+    };
+    interface HTMLBsInputElementEventMap {
+        "bsInput": string;
+        "bsChange": string;
+    }
+    /**
+     * A single-line text field with an optional label, description, and error state.
+     * ## When to use
+     * - Collecting a single line of free-text, email, password, or numeric input.
+     * - Pair with `error` for inline validation feedback tied to that specific field.
+     * ## When not to use
+     * - Multi-line text — this component has no `textarea` mode.
+     * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
+     */
+    interface HTMLBsInputElement extends Components.BsInput, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsInputElementEventMap>(type: K, listener: (this: HTMLBsInputElement, ev: BsInputCustomEvent<HTMLBsInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsInputElementEventMap>(type: K, listener: (this: HTMLBsInputElement, ev: BsInputCustomEvent<HTMLBsInputElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsInputElement: {
+        prototype: HTMLBsInputElement;
+        new (): HTMLBsInputElement;
+    };
+    interface HTMLBsModalElementEventMap {
+        "bsClose": void;
+    }
+    /**
+     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
+     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+     * ## When to use
+     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+     * - A short, focused task that doesn't warrant navigating to a new page.
+     * ## When not to use
+     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
+     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+     *   modal that just gets taller and taller.
+     */
+    interface HTMLBsModalElement extends Components.BsModal, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsModalElementEventMap>(type: K, listener: (this: HTMLBsModalElement, ev: BsModalCustomEvent<HTMLBsModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsModalElementEventMap>(type: K, listener: (this: HTMLBsModalElement, ev: BsModalCustomEvent<HTMLBsModalElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsModalElement: {
+        prototype: HTMLBsModalElement;
+        new (): HTMLBsModalElement;
     };
     interface HTMLElementTagNameMap {
-        "my-component": HTMLMyComponentElement;
+        "bs-badge": HTMLBsBadgeElement;
+        "bs-button": HTMLBsButtonElement;
+        "bs-card": HTMLBsCardElement;
+        "bs-data-table": HTMLBsDataTableElement;
+        "bs-input": HTMLBsInputElement;
+        "bs-modal": HTMLBsModalElement;
     }
 }
 declare namespace LocalJSX {
-    interface MyComponent {
+    /**
+     * A small status or category pill, usually paired with a label or list item.
+     * ## When to use
+     * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
+     * ## When not to use
+     * - As an interactive/clickable element — a badge is a label, not a control. Use a button
+     *   or chip component if it needs to be clickable.
+     * - For long text — badges are sized for one or two words.
+     */
+    interface BsBadge {
         /**
-          * The first name
+          * Maps directly to the brandsync-tokens `--bs-badge-bg-*` / `--bs-badge-text-*` sets.
+          * @default 'default'
          */
-        "first"?: string;
+        "variant"?: BsBadgeVariant;
+    }
+    /**
+     * A clickable action element for the single most important action in a given context.
+     * ## When to use
+     * - The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
+     * - Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+     * ## When not to use
+     * - For navigation between pages — use a link/nav component instead, a button implies an
+     *   in-page action, not a destination change.
+     * - For more than one primary-emphasis action in the same view — pick one, demote the rest to
+     *   `neutral`.
+     * @prop --bs-button-radius - Corner radius. Aliased to `--bs-border-radius-100` by default.
+     * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
+     * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
+     * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     */
+    interface BsButton {
         /**
-          * The last name
+          * Disables the button and applies the disabled token set.
+          * @default false
          */
-        "last"?: string;
+        "disabled"?: boolean;
         /**
-          * The middle name
+          * Sizing scale.
+          * @default 'md'
          */
-        "middle"?: string;
+        "size"?: BsButtonSize;
+        /**
+          * Native `<button>` type.
+          * @default 'button'
+         */
+        "type"?: 'button' | 'submit' | 'reset';
+        /**
+          * Visual style. Maps directly to the brandsync-tokens `--bs-button-*` semantic set.
+          * @default 'primary'
+         */
+        "variant"?: BsButtonVariant;
+    }
+    /**
+     * A bounded surface for grouping related content — a summary, a form section, a list item.
+     * ## When to use
+     * - Grouping a self-contained piece of content that needs visual separation from the page
+     *   background (e.g. a booking summary, a settings section).
+     * ## When not to use
+     * - As the only structural element on a page — cards group content, they don't replace layout.
+     * - For a dismissible/transient message — use a modal or a dedicated notification component.
+     */
+    interface BsCard {
+        /**
+          * Maps to the brandsync-tokens `--bs-paper-bg-*` set — Brandsync's tokens don't have a dedicated "card" component yet, so this reuses the existing Paper surface tokens.
+          * @default 'raised'
+         */
+        "surface"?: BsCardSurface;
+    }
+    /**
+     * A sortable, optionally row-selectable table for tabular data.
+     * `columns`, `rows`, and `cellRenderer` are JS-property-only — HTML attributes can only carry
+     * strings, so arrays/objects/functions must be set via `element.rows = [...]` etc., not as
+     * attributes. See CONVENTIONS.md.
+     * ## When to use
+     * - Comparing structured records across the same set of fields (a list of people, bookings, etc.).
+     * ## When not to use
+     * - A handful of unrelated key/value pairs — a simple list or card is lighter-weight.
+     * - Deeply nested/hierarchical data — this component renders one flat row per record.
+     */
+    interface BsDataTable {
+        /**
+          * Optional custom cell renderer, e.g. for an actions column. Function props are JS-property-only, same as array props -- there is no attribute equivalent. Falls back to the raw cell value.
+         */
+        "cellRenderer"?: (row: BsDataTableRow, column: BsDataTableColumn) => string;
+        /**
+          * Array prop -- must be set as a JS property (`el.columns = [...]`), not an HTML attribute, since attributes can only carry strings. See CONVENTIONS.md.
+          * @default []
+         */
+        "columns"?: BsDataTableColumn[];
+        "onBsRowSelect"?: (event: BsDataTableCustomEvent<{ id: string | number; selected: boolean }>) => void;
+        "onBsSort"?: (event: BsDataTableCustomEvent<{ column: string; direction: 'asc' | 'desc' }>) => void;
+        /**
+          * Array prop -- same JS-property-only rule as `columns`.
+          * @default []
+         */
+        "rows"?: BsDataTableRow[];
+        /**
+          * @default false
+         */
+        "selectable"?: boolean;
+        "sortColumn"?: string;
+        /**
+          * @default 'asc'
+         */
+        "sortDirection"?: 'asc' | 'desc';
+    }
+    /**
+     * A single-line text field with an optional label, description, and error state.
+     * ## When to use
+     * - Collecting a single line of free-text, email, password, or numeric input.
+     * - Pair with `error` for inline validation feedback tied to that specific field.
+     * ## When not to use
+     * - Multi-line text — this component has no `textarea` mode.
+     * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
+     */
+    interface BsInput {
+        "description"?: string;
+        /**
+          * @default false
+         */
+        "disabled"?: boolean;
+        "error"?: string;
+        "label"?: string;
+        "onBsChange"?: (event: BsInputCustomEvent<string>) => void;
+        "onBsInput"?: (event: BsInputCustomEvent<string>) => void;
+        "placeholder"?: string;
+        /**
+          * @default 'text'
+         */
+        "type"?: 'text' | 'email' | 'password' | 'number';
+        /**
+          * Current value. Native `input`/`change` events don't cross the Shadow DOM boundary, so this component re-dispatches them as `bsInput`/`bsChange` custom events instead.
+          * @default ''
+         */
+        "value"?: string;
+    }
+    /**
+     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
+     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+     * ## When to use
+     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+     * - A short, focused task that doesn't warrant navigating to a new page.
+     * ## When not to use
+     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
+     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+     *   modal that just gets taller and taller.
+     */
+    interface BsModal {
+        "heading"?: string;
+        "onBsClose"?: (event: BsModalCustomEvent<void>) => void;
+        /**
+          * Mutable + reflected so the component can close itself (backdrop click, Escape, close button) the same way a native `<dialog>` does, while still emitting `bsClose` for the consumer to react to.
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default 'md'
+         */
+        "size"?: BsModalSize;
     }
 
-    interface MyComponentAttributes {
-        "first": string;
-        "middle": string;
-        "last": string;
+    interface BsBadgeAttributes {
+        "variant": BsBadgeVariant;
+    }
+    interface BsButtonAttributes {
+        "variant": BsButtonVariant;
+        "size": BsButtonSize;
+        "disabled": boolean;
+        "type": 'button' | 'submit' | 'reset';
+    }
+    interface BsCardAttributes {
+        "surface": BsCardSurface;
+    }
+    interface BsDataTableAttributes {
+        "sortColumn": string;
+        "sortDirection": 'asc' | 'desc';
+        "selectable": boolean;
+    }
+    interface BsInputAttributes {
+        "value": string;
+        "type": 'text' | 'email' | 'password' | 'number';
+        "label": string;
+        "placeholder": string;
+        "description": string;
+        "error": string;
+        "disabled": boolean;
+    }
+    interface BsModalAttributes {
+        "open": boolean;
+        "heading": string;
+        "size": BsModalSize;
     }
 
     interface IntrinsicElements {
-        "my-component": Omit<MyComponent, keyof MyComponentAttributes> & { [K in keyof MyComponent & keyof MyComponentAttributes]?: MyComponent[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `attr:${K}`]?: MyComponentAttributes[K] } & { [K in keyof MyComponent & keyof MyComponentAttributes as `prop:${K}`]?: MyComponent[K] };
+        "bs-badge": Omit<BsBadge, keyof BsBadgeAttributes> & { [K in keyof BsBadge & keyof BsBadgeAttributes]?: BsBadge[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `attr:${K}`]?: BsBadgeAttributes[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `prop:${K}`]?: BsBadge[K] };
+        "bs-button": Omit<BsButton, keyof BsButtonAttributes> & { [K in keyof BsButton & keyof BsButtonAttributes]?: BsButton[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `attr:${K}`]?: BsButtonAttributes[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `prop:${K}`]?: BsButton[K] };
+        "bs-card": Omit<BsCard, keyof BsCardAttributes> & { [K in keyof BsCard & keyof BsCardAttributes]?: BsCard[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `attr:${K}`]?: BsCardAttributes[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `prop:${K}`]?: BsCard[K] };
+        "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
+        "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
+        "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
     }
 }
 export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
-            "my-component": LocalJSX.IntrinsicElements["my-component"] & JSXBase.HTMLAttributes<HTMLMyComponentElement>;
+            /**
+             * A small status or category pill, usually paired with a label or list item.
+             * ## When to use
+             * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
+             * ## When not to use
+             * - As an interactive/clickable element — a badge is a label, not a control. Use a button
+             *   or chip component if it needs to be clickable.
+             * - For long text — badges are sized for one or two words.
+             */
+            "bs-badge": LocalJSX.IntrinsicElements["bs-badge"] & JSXBase.HTMLAttributes<HTMLBsBadgeElement>;
+            /**
+             * A clickable action element for the single most important action in a given context.
+             * ## When to use
+             * - The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
+             * - Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+             * ## When not to use
+             * - For navigation between pages — use a link/nav component instead, a button implies an
+             *   in-page action, not a destination change.
+             * - For more than one primary-emphasis action in the same view — pick one, demote the rest to
+             *   `neutral`.
+             * @prop --bs-button-radius - Corner radius. Aliased to `--bs-border-radius-100` by default.
+             * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
+             * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
+             * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+             */
+            "bs-button": LocalJSX.IntrinsicElements["bs-button"] & JSXBase.HTMLAttributes<HTMLBsButtonElement>;
+            /**
+             * A bounded surface for grouping related content — a summary, a form section, a list item.
+             * ## When to use
+             * - Grouping a self-contained piece of content that needs visual separation from the page
+             *   background (e.g. a booking summary, a settings section).
+             * ## When not to use
+             * - As the only structural element on a page — cards group content, they don't replace layout.
+             * - For a dismissible/transient message — use a modal or a dedicated notification component.
+             */
+            "bs-card": LocalJSX.IntrinsicElements["bs-card"] & JSXBase.HTMLAttributes<HTMLBsCardElement>;
+            /**
+             * A sortable, optionally row-selectable table for tabular data.
+             * `columns`, `rows`, and `cellRenderer` are JS-property-only — HTML attributes can only carry
+             * strings, so arrays/objects/functions must be set via `element.rows = [...]` etc., not as
+             * attributes. See CONVENTIONS.md.
+             * ## When to use
+             * - Comparing structured records across the same set of fields (a list of people, bookings, etc.).
+             * ## When not to use
+             * - A handful of unrelated key/value pairs — a simple list or card is lighter-weight.
+             * - Deeply nested/hierarchical data — this component renders one flat row per record.
+             */
+            "bs-data-table": LocalJSX.IntrinsicElements["bs-data-table"] & JSXBase.HTMLAttributes<HTMLBsDataTableElement>;
+            /**
+             * A single-line text field with an optional label, description, and error state.
+             * ## When to use
+             * - Collecting a single line of free-text, email, password, or numeric input.
+             * - Pair with `error` for inline validation feedback tied to that specific field.
+             * ## When not to use
+             * - Multi-line text — this component has no `textarea` mode.
+             * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
+             */
+            "bs-input": LocalJSX.IntrinsicElements["bs-input"] & JSXBase.HTMLAttributes<HTMLBsInputElement>;
+            /**
+             * An overlay dialog that interrupts the current flow for a focused task or confirmation.
+             * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+             * ## When to use
+             * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+             * - A short, focused task that doesn't warrant navigating to a new page.
+             * ## When not to use
+             * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
+             * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+             *   modal that just gets taller and taller.
+             */
+            "bs-modal": LocalJSX.IntrinsicElements["bs-modal"] & JSXBase.HTMLAttributes<HTMLBsModalElement>;
         }
     }
 }

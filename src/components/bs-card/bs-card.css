@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.bs-card {
+  border: 1px solid var(--bs-paper-border-surface);
+  border-radius: var(--bs-border-radius-150);
+  padding: var(--bs-spacing-400);
+  font-family: inherit;
+}
+
+.bs-card--base {
+  background: var(--bs-paper-bg-base);
+}
+
+.bs-card--raised {
+  background: var(--bs-paper-bg-raised);
+  box-shadow: var(--bs-shadow-sm);
+}
+
+.bs-card--container {
+  background: var(--bs-paper-bg-container);
+}
+
+.bs-card__header ::slotted(*) {
+  margin: 0 0 var(--bs-spacing-300) 0;
+}
+
+.bs-card__footer ::slotted(*) {
+  margin: var(--bs-spacing-300) 0 0 0;
+}

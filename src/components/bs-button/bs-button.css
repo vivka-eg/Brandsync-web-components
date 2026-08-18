@@ -1,0 +1,86 @@
+:host {
+  display: inline-block;
+  --bs-button-height-sm: var(--bs-spacing-500);
+  --bs-button-height-md: var(--bs-spacing-600);
+  --bs-button-height-lg: var(--bs-spacing-700);
+  --bs-button-radius: var(--bs-border-radius-100);
+}
+
+.bs-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: var(--bs-button-radius);
+  font-family: inherit;
+  font-weight: var(--bs-font-weight-semibold);
+  cursor: pointer;
+  transition: background-color var(--bs-duration-fast, 120ms) var(--bs-easing-standard, ease);
+}
+
+.bs-button:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+
+.bs-button:disabled {
+  cursor: not-allowed;
+}
+
+.bs-button--sm {
+  height: var(--bs-button-height-sm);
+  padding: 0 var(--bs-spacing-300);
+  font-size: var(--bs-font-size-sm);
+}
+
+.bs-button--md {
+  height: var(--bs-button-height-md);
+  padding: 0 var(--bs-spacing-400);
+  font-size: var(--bs-font-size-md);
+}
+
+.bs-button--lg {
+  height: var(--bs-button-height-lg);
+  padding: 0 var(--bs-spacing-500);
+  font-size: var(--bs-font-size-lg);
+}
+
+.bs-button--primary {
+  background: var(--bs-button-primary-default);
+  color: var(--bs-text-on-action);
+}
+.bs-button--primary:hover:not(:disabled) {
+  background: var(--bs-button-primary-hover);
+}
+.bs-button--primary:active:not(:disabled) {
+  background: var(--bs-button-primary-pressed);
+}
+.bs-button--primary:disabled {
+  background: var(--bs-button-primary-disabled);
+  color: var(--bs-text-on-disabled);
+}
+
+.bs-button--neutral {
+  background: var(--bs-button-neutral-container);
+  color: var(--bs-text-default);
+}
+.bs-button--neutral:hover:not(:disabled) {
+  background: var(--bs-button-neutral-hover);
+}
+.bs-button--neutral:active:not(:disabled) {
+  background: var(--bs-button-neutral-pressed);
+}
+.bs-button--neutral:disabled {
+  background: var(--bs-button-neutral-disabled);
+  color: var(--bs-text-on-disabled);
+}
+
+.bs-button__icon--visible {
+  margin-right: var(--bs-spacing-100);
+}
+
+.bs-button__icon ::slotted(*) {
+  display: block;
+  width: 1em;
+  height: 1em;
+}
