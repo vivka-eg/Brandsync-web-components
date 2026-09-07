@@ -4,12 +4,43 @@
   --bs-button-height-md: var(--bs-spacing-600);
   --bs-button-height-lg: var(--bs-spacing-700);
   --bs-button-radius: var(--bs-border-radius-100);
+  
+  --bs-button-error-default: var(--bs-color-error-default);
+  --bs-button-error-hover: var(--bs-color-error-hover);
+  --bs-button-error-focus: var(--bs-border-error-focus);
+  --bs-button-error-pressed: var(--bs-color-error-pressed);
+  --bs-button-error-disabled: var(--bs-surface-action-disabled);
+  /* Same situation as error above: subtle/outlined/success/warning/info don't have a pre-built
+   * brandsync-tokens --bs-button-<variant>-* component layer either, so alias one locally. */
+  --bs-button-success-default: var(--bs-color-success-default);
+  --bs-button-success-hover: var(--bs-color-success-hover);
+  --bs-button-success-focus: var(--bs-border-success-focus);
+  --bs-button-success-pressed: var(--bs-color-success-pressed);
+  --bs-button-success-disabled: var(--bs-surface-action-disabled);
+  --bs-button-warning-default: var(--bs-color-warning-default);
+  --bs-button-warning-hover: var(--bs-color-warning-hover);
+  --bs-button-warning-focus: var(--bs-border-warning-focus);
+  --bs-button-warning-pressed: var(--bs-color-warning-pressed);
+  --bs-button-warning-disabled: var(--bs-surface-action-disabled);
+  --bs-button-info-default: var(--bs-color-info-default);
+  --bs-button-info-hover: var(--bs-color-info-hover);
+  --bs-button-info-focus: var(--bs-border-info-focus);
+  --bs-button-info-pressed: var(--bs-color-info-pressed);
+  --bs-button-info-disabled: var(--bs-surface-action-disabled);
+  --bs-button-subtle-hover: var(--bs-color-neutral-container);
+  --bs-button-subtle-pressed: var(--bs-color-neutral-container-pressed);
+  --bs-button-subtle-focus: var(--bs-border-primary-focus);
+  --bs-button-outlined-border: var(--bs-border-primary);
+  --bs-button-outlined-border-hover: var(--bs-border-primary-hover);
+  --bs-button-outlined-focus: var(--bs-border-primary-focus);
+  --bs-button-outlined-container: var(--bs-color-primary-container);
 }
 
 .bs-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  box-sizing: border-box;
   border: none;
   border-radius: var(--bs-button-radius);
   font-family: inherit;
@@ -75,12 +106,142 @@
   color: var(--bs-text-on-disabled);
 }
 
+.bs-button--error {
+  background: var(--bs-button-error-default);
+  color: var(--bs-text-on-action);
+}
+.bs-button--error:hover:not(:disabled) {
+  background: var(--bs-button-error-hover);
+}
+.bs-button--error:active:not(:disabled) {
+  background: var(--bs-button-error-pressed);
+}
+.bs-button--error:disabled {
+  background: var(--bs-button-error-disabled);
+  color: var(--bs-text-on-disabled);
+}
+.bs-button--error:focus-visible {
+  outline-color: var(--bs-button-error-focus);
+}
+
+.bs-button--success {
+  background: var(--bs-button-success-default);
+  color: var(--bs-text-on-action);
+}
+.bs-button--success:hover:not(:disabled) {
+  background: var(--bs-button-success-hover);
+}
+.bs-button--success:active:not(:disabled) {
+  background: var(--bs-button-success-pressed);
+}
+.bs-button--success:disabled {
+  background: var(--bs-button-success-disabled);
+  color: var(--bs-text-on-disabled);
+}
+.bs-button--success:focus-visible {
+  outline-color: var(--bs-button-success-focus);
+}
+
+
+.bs-button--warning {
+  background: var(--bs-button-warning-default);
+  color: var(--bs-text-default);
+}
+.bs-button--warning:hover:not(:disabled) {
+  background: var(--bs-button-warning-hover);
+}
+.bs-button--warning:active:not(:disabled) {
+  background: var(--bs-button-warning-pressed);
+}
+.bs-button--warning:disabled {
+  background: var(--bs-button-warning-disabled);
+  color: var(--bs-text-on-disabled);
+}
+.bs-button--warning:focus-visible {
+  outline-color: var(--bs-button-warning-focus);
+}
+
+.bs-button--info {
+  background: var(--bs-button-info-default);
+  color: var(--bs-text-on-action);
+}
+.bs-button--info:hover:not(:disabled) {
+  background: var(--bs-button-info-hover);
+}
+.bs-button--info:active:not(:disabled) {
+  background: var(--bs-button-info-pressed);
+}
+.bs-button--info:disabled {
+  background: var(--bs-button-info-disabled);
+  color: var(--bs-text-on-disabled);
+}
+.bs-button--info:focus-visible {
+  outline-color: var(--bs-button-info-focus);
+}
+
+.bs-button--subtle {
+  background: transparent;
+  color: var(--bs-color-neutral-default);
+}
+.bs-button--subtle:hover:not(:disabled) {
+  background: var(--bs-button-subtle-hover);
+}
+.bs-button--subtle:active:not(:disabled) {
+  background: var(--bs-button-subtle-pressed);
+}
+.bs-button--subtle:disabled {
+  background: transparent;
+  color: var(--bs-text-on-disabled);
+}
+.bs-button--subtle:focus-visible {
+  outline-color: var(--bs-button-subtle-focus);
+  background: var(--bs-button-subtle-hover);
+}
+
+.bs-button--outlined {
+  background: transparent;
+  color: var(--bs-color-primary-default);
+  border: 1.5px solid var(--bs-button-outlined-border);
+}
+.bs-button--outlined:hover:not(:disabled) {
+  background: var(--bs-button-outlined-container);
+  border-color: var(--bs-button-outlined-border-hover);
+}
+.bs-button--outlined:active:not(:disabled) {
+  background: var(--bs-button-outlined-container);
+  color: var(--bs-color-primary-pressed);
+  border-color: var(--bs-button-outlined-border-hover);
+}
+.bs-button--outlined:disabled {
+  opacity: var(--bs-opacity-disabled);
+  cursor: not-allowed;
+}
+.bs-button--outlined:focus-visible {
+  outline-color: var(--bs-button-outlined-focus);
+}
+
 .bs-button__icon--visible {
   margin-right: var(--bs-spacing-100);
 }
 
-.bs-button__icon ::slotted(*) {
+.bs-button__end-icon--visible {
+  margin-left: var(--bs-spacing-100);
+}
+
+.bs-button__icon ::slotted(*),
+.bs-button__end-icon ::slotted(*) {
   display: block;
   width: 1em;
   height: 1em;
+}
+
+.bs-button--icon-only {
+  padding: 0;
+  aspect-ratio: 1 / 1;
+}
+.bs-button--icon-only .bs-button__icon--visible {
+  margin-right: 0;
+}
+.bs-button--icon-only .bs-button__end-icon--visible {
+  margin-left: 0;
 }

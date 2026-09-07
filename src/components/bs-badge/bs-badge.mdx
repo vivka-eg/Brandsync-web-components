@@ -9,6 +9,7 @@ import * as BadgeStories from './bs-badge.stories';
 
 - [Overview](#overview)
 - [All variants](#all-variants)
+- [Long text (edge case)](#long-text-edge-case)
 - [Component API](#component-api)
 - [Accessibility](#accessibility)
 
@@ -28,7 +29,20 @@ A small status or category pill, usually paired with a label or list item.
 
 ## All variants
 
+Every value of the `variant` prop also has its own individually-controllable story in the
+sidebar (`Primary`, `DefaultVariant`, `Success`, `Warning`, `Info`, `Error`, `Neutral`,
+`Inverse`) — this canvas shows them side by side for comparison. `Inverse` is shown against a
+dark background, since it's designed to sit on a dark/inverse surface.
+
 <Canvas of={BadgeStories.AllVariants} />
+
+## Long text (edge case)
+
+Badges are sized for one or two words (see "When not to use" above) — this shows what happens
+when that guidance is ignored: the pill grows to fit the text rather than truncating, which can
+overflow a narrow layout.
+
+<Canvas of={BadgeStories.LongText} />
 
 ## Component API
 

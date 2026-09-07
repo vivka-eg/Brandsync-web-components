@@ -1,7 +1,7 @@
 ---
 name: pm
 description: Use for turning a feature request or bug report into a clear spec before implementation starts - clarifying scope, writing acceptance criteria, breaking work into tasks, and flagging open questions or ambiguities. Use proactively when a user request is vague or spans multiple components. Does not write or edit source code.
-tools: Read, Grep, Glob, WebSearch, WebFetch
+tools: Read, Write, Grep, Glob, WebSearch, WebFetch
 model: sonnet
 ---
 

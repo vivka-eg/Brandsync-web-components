@@ -17,6 +17,8 @@ log.txt
 .stencil/
 .idea/
 .vscode/
+.vitest-attachments/
+**/__screenshots__/
 .sass-cache/
 .versions/
 node_modules/

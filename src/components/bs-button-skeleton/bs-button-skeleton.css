@@ -1,0 +1,46 @@
+:host {
+  display: inline-block;
+  /* Mirrors bs-button.css's height tokens exactly so the skeleton matches the real button's
+   * dimensions -- this doesn't depend on bs-button's internal :host vars since these are two
+   * separate shadow roots. */
+  --bs-button-skeleton-height-sm: var(--bs-spacing-500);
+  --bs-button-skeleton-height-md: var(--bs-spacing-600);
+  --bs-button-skeleton-height-lg: var(--bs-spacing-700);
+  --bs-button-skeleton-width: 96px;
+}
+
+.bs-button-skeleton {
+  display: inline-block;
+  border-radius: var(--bs-border-radius-100);
+  width: var(--bs-button-skeleton-width);
+  background: var(--bs-color-neutral-container);
+  animation: bs-button-skeleton-pulse 1.5s ease-in-out infinite;
+}
+
+.bs-button-skeleton--sm {
+  height: var(--bs-button-skeleton-height-sm);
+}
+
+.bs-button-skeleton--md {
+  height: var(--bs-button-skeleton-height-md);
+}
+
+.bs-button-skeleton--lg {
+  height: var(--bs-button-skeleton-height-lg);
+}
+
+@keyframes bs-button-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bs-button-skeleton {
+    animation: none;
+  }
+}

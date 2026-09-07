@@ -9,9 +9,21 @@ import * as ButtonStories from './bs-button.stories';
 
 - [Overview](#overview)
 - [Neutral button](#neutral-button)
+- [Subtle button](#subtle-button)
+- [Outlined button](#outlined-button)
+- [Success button](#success-button)
+- [Warning button](#warning-button)
+- [Info button](#info-button)
+- [Error button](#error-button)
 - [Disabled state](#disabled-state)
 - [Sizes](#sizes)
+- [With icon](#with-icon)
+- [With end icon](#with-end-icon)
+- [Icon-only button](#icon-only-button)
+- [Long label (edge case)](#long-label-edge-case)
+- [All variant × size × disabled combinations](#all-variant-size-disabled-combinations)
 - [Component API](#component-api)
+- [Skeleton state](#skeleton-state)
 - [Accessibility](#accessibility)
 
 ## Overview
@@ -37,6 +49,53 @@ Lower-emphasis alternative to the primary variant, for secondary actions alongsi
 
 <Canvas of={ButtonStories.Neutral} />
 
+## Subtle button
+
+A ghost/text-only style for low-priority actions that shouldn't compete visually with the
+primary/neutral buttons around them (e.g. an inline "Learn more" next to a form).
+
+<Canvas of={ButtonStories.Subtle} />
+
+## Outlined button
+
+A bordered, transparent-background style for neutral actions that need more visual weight than
+`subtle` but shouldn't draw focus away from the primary action (e.g. "Cancel" or "Back").
+
+<Canvas of={ButtonStories.Outlined} />
+
+## Success button
+
+A semantic variant for actions whose outcome is predictable and clearly communicated by the
+button itself (e.g. "Approve", "Mark as complete") — per BrandSync guidance, only use `success`
+when the button's own label/action conveys that outcome, not to reflect some other element's
+visual state.
+
+<Canvas of={ButtonStories.Success} />
+
+## Warning button
+
+A semantic variant for actions that need the user's attention before proceeding (e.g. "Proceed
+anyway"), reserved for cases where the action's outcome is predictable and clearly communicated —
+not a general-purpose "caution" color for unrelated content.
+
+<Canvas of={ButtonStories.Warning} />
+
+## Info button
+
+A semantic variant for informational actions with a predictable, clearly communicated outcome
+(e.g. "View details"), following the same restraint as `success`/`warning` — don't reach for it
+just because something nearby happens to be styled as "info".
+
+<Canvas of={ButtonStories.Info} />
+
+## Error button
+
+Destructive actions should always use the error variant, never `neutral` — using `error` signals
+the risk of the action (e.g. "Delete account") rather than just adding visual emphasis, per
+BrandSync's own destructive-action guidance.
+
+<Canvas of={ButtonStories.Error} />
+
 ## Disabled state
 
 Uses the native `disabled` attribute, not just a visual style — see Accessibility below.
@@ -50,14 +109,61 @@ Three sizes — `sm`, `md`, `lg` — map to `brandsync-tokens`' spacing scale
 
 <Canvas of={ButtonStories.Sizes} />
 
+## With icon
+
+An optional leading icon, slotted in before the label, for buttons where a visual cue reinforces
+the action (e.g. a checkmark for "Confirm").
+
+<Canvas of={ButtonStories.WithIcon} />
+
+## With end icon
+
+An optional trailing icon, slotted in after the label, for actions where the icon reinforces a
+direction or destination rather than the action itself (e.g. a chevron for "Next").
+
+<Canvas of={ButtonStories.WithEndIcon} />
+
+## Icon-only button
+
+A button can render with only the `icon` slot and no visible label text — the `bs-button--icon-only`
+class adjusts padding so the button stays square instead of stretching to fit an empty label. Since
+there's no visible text, `aria-label` is required so the button still has an accessible name for
+screen readers.
+
+<Canvas of={ButtonStories.IconOnly} />
+
+## Long label (edge case)
+
+Buttons aren't designed to wrap or truncate long labels — this shows what happens when a label
+runs longer than the icon-and-text layout was designed for inside a narrow container.
+
+<Canvas of={ButtonStories.LongLabel} />
+
+## All variant × size × disabled combinations
+
+Every combination of `variant`, `size`, and `disabled` side by side, for a quick visual regression
+check across the full matrix at once.
+
+<Canvas of={ButtonStories.AllCombinations} />
+
 ## Component API
 
 <Controls of={ButtonStories.Primary} />
 
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
-- Slots: default (label), `icon`
-- Shadow parts: `::part(icon)`, `::part(label)`
+- Slots: default (label), `icon`, `end-icon`
+- Shadow parts: `::part(icon)`, `::part(label)`, `::part(end-icon)`
 - CSS Custom Properties: `--bs-button-radius`, `--bs-button-height-sm/md/lg`
+- `variant` is one of `primary`, `neutral`, `subtle`, `outlined`, `success`, `warning`, `info`, `error`
+- `ariaLabel` prop reflects to the native `aria-label` attribute — required for icon-only usage
+
+## Skeleton state
+
+Shown in place of a `bs-button` while its label/action isn't known yet (e.g. still being fetched
+from an API), rendered by the separate `bs-button-skeleton` element, sized to match `bs-button`'s
+`sm`/`md`/`lg` heights.
+
+<Canvas of={ButtonStories.Skeleton} />
 
 ## Accessibility
 
@@ -65,5 +171,9 @@ Three sizes — `sm`, `md`, `lg` — map to `brandsync-tokens`' spacing scale
   <kbd>Enter</kbd>/<kbd>Space</kbd> without any extra ARIA wiring.
 - `disabled` uses the native `disabled` attribute — this removes the button from the tab order
   and is announced as disabled by screen readers, not just styled to look inactive.
-- Icon-only usage (an `icon` slot with no visible label) isn't supported by this component yet;
-  always pass visible label text via the default slot so the button has an accessible name.
+- Icon-only usage (an `icon` slot with no visible label) is supported, but requires passing
+  `aria-label` so the button still has an accessible name — this component doesn't infer one for
+  you.
+- `bs-button-skeleton` adds `role="status"` and `aria-label="Loading"` on its placeholder so
+  screen readers announce the loading state; its pulse animation respects
+  `prefers-reduced-motion` and is disabled entirely for users who request reduced motion.

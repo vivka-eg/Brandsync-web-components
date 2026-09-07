@@ -7,12 +7,16 @@
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { BsBadgeVariant } from "./components/bs-badge/bs-badge";
 import { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
+import { BsButtonSize as BsButtonSize1 } from "./components/bs-button/bs-button";
 import { BsCardSurface } from "./components/bs-card/bs-card";
+import { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 import { BsModalSize } from "./components/bs-modal/bs-modal";
 export { BsBadgeVariant } from "./components/bs-badge/bs-badge";
 export { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
+export { BsButtonSize as BsButtonSize1 } from "./components/bs-button/bs-button";
 export { BsCardSurface } from "./components/bs-card/bs-card";
+export { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 export { BsModalSize } from "./components/bs-modal/bs-modal";
 export namespace Components {
@@ -37,17 +41,27 @@ export namespace Components {
      * ## When to use
      * - The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
      * - Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+     * - `variant="error"` for destructive/irreversible actions (e.g. "Delete account") — per
+     *   BrandSync guidance, destructive actions should always use the error variant, never
+     *   `neutral`, so the visual weight matches the risk of the action.
      * ## When not to use
      * - For navigation between pages — use a link/nav component instead, a button implies an
      *   in-page action, not a destination change.
      * - For more than one primary-emphasis action in the same view — pick one, demote the rest to
      *   `neutral`.
+     * - `error` purely for visual emphasis — it signals a destructive action to the user, so reserve
+     *   it for actions that actually delete/revoke/undo something.
      * @prop --bs-button-radius - Corner radius. Aliased to `--bs-border-radius-100` by default.
      * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
      * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
      * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
      */
     interface BsButton {
+        /**
+          * Accessible name for the button. Required for icon-only usage (no visible label text via the default slot) so screen readers still announce what the button does. Stencil reflects this camelCase prop to the `aria-label` HTML attribute automatically.
+          * @default null
+         */
+        "ariaLabel": string | null;
         /**
           * Disables the button and applies the disabled token set.
           * @default false
@@ -64,10 +78,34 @@ export namespace Components {
          */
         "type": 'button' | 'submit' | 'reset';
         /**
-          * Visual style. Maps directly to the brandsync-tokens `--bs-button-*` semantic set.
+          * Visual style. Maps directly to the brandsync-tokens `--bs-button-*` semantic set. `error` is for destructive/irreversible actions per BrandSync guidance, not a stronger emphasis alternative to `primary`.
           * @default 'primary'
          */
         "variant": BsButtonVariant;
+    }
+    /**
+     * A shape-matched loading placeholder for `bs-button`, shown while the real label/action isn't
+     * known yet (e.g. still being fetched from an API). Sized to match `bs-button`'s `sm`/`md`/`lg`
+     * heights so layout doesn't shift once the real button renders.
+     * This is not a submit-in-progress spinner — that's a different concern (a button that's
+     * already rendered but waiting on an async action it triggered). Use this component only when
+     * the button itself doesn't exist yet.
+     * ## When to use
+     * - In place of a `bs-button` whose label/visibility depends on data that hasn't loaded yet.
+     * ## When not to use
+     * - While a button's own click handler is running (e.g. a submit request in flight) — render the
+     *   real `bs-button` and show its own busy/spinner state instead.
+     * @prop --bs-button-skeleton-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
+     * @prop --bs-button-skeleton-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
+     * @prop --bs-button-skeleton-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     * @prop --bs-button-skeleton-width - Placeholder width. Defaults to `96px`.
+     */
+    interface BsButtonSkeleton {
+        /**
+          * Sizing scale, matching the `bs-button` size it stands in for.
+          * @default 'md'
+         */
+        "size": BsButtonSize1;
     }
     /**
      * A bounded surface for grouping related content — a summary, a form section, a list item.
@@ -84,6 +122,59 @@ export namespace Components {
           * @default 'raised'
          */
         "surface": BsCardSurface;
+    }
+    /**
+     * A chat composer input for Genie AI-style conversational interfaces: a text field
+     * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
+     * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
+     * ## When to use
+     * - The message-entry bar for an AI chat/assistant or human support conversation.
+     * ## When not to use
+     * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
+     *   purpose-built for a chat composer, not a generic form field.
+     * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
+     * @prop --bs-composer-button-radius - Corner radius of the attach/mic/action buttons. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-composer-button-size - Width/height of the attach/mic/action buttons. Aliased to `--bs-spacing-600`.
+     * @prop --bs-composer-bg - Background of the pill container. Aliased to `--bs-input-bg-default`.
+     * @prop --bs-composer-border - Border color of the pill container. Aliased to `--bs-input-border-default`.
+     * @prop --bs-composer-border-focus - Border color when the text field has focus. Aliased to `--bs-input-border-focus`.
+     * @prop --bs-composer-action-bg - Background of the primary action button. Aliased to `--bs-color-primary-default`.
+     * @prop --bs-composer-action-bg-hover - Aliased to `--bs-color-primary-hover`.
+     * @prop --bs-composer-action-bg-pressed - Aliased to `--bs-color-primary-pressed`.
+     * @prop --bs-composer-action-bg-disabled - Aliased to `--bs-surface-action-disabled`.
+     * @prop --bs-composer-action-icon - Icon color on the primary action button. Aliased to `--bs-text-on-action`.
+     * @prop --bs-composer-action-icon-disabled - Aliased to `--bs-text-on-disabled`.
+     * @prop --bs-composer-attach-icon - Icon color of the attach button. Aliased to `--bs-icon-default`.
+     * @prop --bs-composer-mic-icon - Icon color of the mic/stop-recording button. Aliased to `--bs-icon-default`.
+     * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
+     * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     */
+    interface BsComposer {
+        /**
+          * Accessible name for the text field. This component has no visible `<label>` (chat composers don't show one in the design), so `ariaLabel` is the only way a consumer gives the textbox an accessible name -- set it in every real usage.
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Overrides the variant's default placeholder.
+         */
+        "placeholder"?: string;
+        /**
+          * Which of the four mutually-exclusive composer states to render: `idle` (send, enabled), `generating` (stop, while the AI is responding), `disabled` (send, but not interactive), or `recording` (voice input in progress -- shows a waveform and a confirm action).
+          * @default 'idle'
+         */
+        "state": BsComposerState;
+        /**
+          * Current text value. Native `input` events don't cross the Shadow DOM boundary, so this component re-dispatches them as a `bsInput` custom event instead.
+          * @default ''
+         */
+        "value": string;
+        /**
+          * Which flavor of composer this is: changes the *default* placeholder text (set `placeholder` directly to override it) and, per the Figma design, renders the container border dashed instead of solid for `'human'` -- a deliberate visual cue distinguishing a human-support composer from the AI one, not a layout/token difference.
+          * @default 'ai'
+         */
+        "variant": BsComposerVariant;
     }
     /**
      * A sortable, optionally row-selectable table for tabular data.
@@ -173,6 +264,10 @@ export namespace Components {
         "size": BsModalSize;
     }
 }
+export interface BsComposerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsComposerElement;
+}
 export interface BsDataTableCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsDataTableElement;
@@ -206,11 +301,16 @@ declare global {
      * ## When to use
      * - The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
      * - Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+     * - `variant="error"` for destructive/irreversible actions (e.g. "Delete account") — per
+     *   BrandSync guidance, destructive actions should always use the error variant, never
+     *   `neutral`, so the visual weight matches the risk of the action.
      * ## When not to use
      * - For navigation between pages — use a link/nav component instead, a button implies an
      *   in-page action, not a destination change.
      * - For more than one primary-emphasis action in the same view — pick one, demote the rest to
      *   `neutral`.
+     * - `error` purely for visual emphasis — it signals a destructive action to the user, so reserve
+     *   it for actions that actually delete/revoke/undo something.
      * @prop --bs-button-radius - Corner radius. Aliased to `--bs-border-radius-100` by default.
      * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
      * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
@@ -221,6 +321,29 @@ declare global {
     var HTMLBsButtonElement: {
         prototype: HTMLBsButtonElement;
         new (): HTMLBsButtonElement;
+    };
+    /**
+     * A shape-matched loading placeholder for `bs-button`, shown while the real label/action isn't
+     * known yet (e.g. still being fetched from an API). Sized to match `bs-button`'s `sm`/`md`/`lg`
+     * heights so layout doesn't shift once the real button renders.
+     * This is not a submit-in-progress spinner — that's a different concern (a button that's
+     * already rendered but waiting on an async action it triggered). Use this component only when
+     * the button itself doesn't exist yet.
+     * ## When to use
+     * - In place of a `bs-button` whose label/visibility depends on data that hasn't loaded yet.
+     * ## When not to use
+     * - While a button's own click handler is running (e.g. a submit request in flight) — render the
+     *   real `bs-button` and show its own busy/spinner state instead.
+     * @prop --bs-button-skeleton-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
+     * @prop --bs-button-skeleton-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
+     * @prop --bs-button-skeleton-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     * @prop --bs-button-skeleton-width - Placeholder width. Defaults to `96px`.
+     */
+    interface HTMLBsButtonSkeletonElement extends Components.BsButtonSkeleton, HTMLStencilElement {
+    }
+    var HTMLBsButtonSkeletonElement: {
+        prototype: HTMLBsButtonSkeletonElement;
+        new (): HTMLBsButtonSkeletonElement;
     };
     /**
      * A bounded surface for grouping related content — a summary, a form section, a list item.
@@ -236,6 +359,55 @@ declare global {
     var HTMLBsCardElement: {
         prototype: HTMLBsCardElement;
         new (): HTMLBsCardElement;
+    };
+    interface HTMLBsComposerElementEventMap {
+        "bsInput": string;
+        "bsSubmit": void;
+        "bsStop": void;
+        "bsVoiceConfirm": void;
+        "bsAttach": void;
+        "bsMicToggle": void;
+    }
+    /**
+     * A chat composer input for Genie AI-style conversational interfaces: a text field
+     * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
+     * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
+     * ## When to use
+     * - The message-entry bar for an AI chat/assistant or human support conversation.
+     * ## When not to use
+     * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
+     *   purpose-built for a chat composer, not a generic form field.
+     * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
+     * @prop --bs-composer-button-radius - Corner radius of the attach/mic/action buttons. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-composer-button-size - Width/height of the attach/mic/action buttons. Aliased to `--bs-spacing-600`.
+     * @prop --bs-composer-bg - Background of the pill container. Aliased to `--bs-input-bg-default`.
+     * @prop --bs-composer-border - Border color of the pill container. Aliased to `--bs-input-border-default`.
+     * @prop --bs-composer-border-focus - Border color when the text field has focus. Aliased to `--bs-input-border-focus`.
+     * @prop --bs-composer-action-bg - Background of the primary action button. Aliased to `--bs-color-primary-default`.
+     * @prop --bs-composer-action-bg-hover - Aliased to `--bs-color-primary-hover`.
+     * @prop --bs-composer-action-bg-pressed - Aliased to `--bs-color-primary-pressed`.
+     * @prop --bs-composer-action-bg-disabled - Aliased to `--bs-surface-action-disabled`.
+     * @prop --bs-composer-action-icon - Icon color on the primary action button. Aliased to `--bs-text-on-action`.
+     * @prop --bs-composer-action-icon-disabled - Aliased to `--bs-text-on-disabled`.
+     * @prop --bs-composer-attach-icon - Icon color of the attach button. Aliased to `--bs-icon-default`.
+     * @prop --bs-composer-mic-icon - Icon color of the mic/stop-recording button. Aliased to `--bs-icon-default`.
+     * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
+     * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     */
+    interface HTMLBsComposerElement extends Components.BsComposer, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsComposerElementEventMap>(type: K, listener: (this: HTMLBsComposerElement, ev: BsComposerCustomEvent<HTMLBsComposerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsComposerElementEventMap>(type: K, listener: (this: HTMLBsComposerElement, ev: BsComposerCustomEvent<HTMLBsComposerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsComposerElement: {
+        prototype: HTMLBsComposerElement;
+        new (): HTMLBsComposerElement;
     };
     interface HTMLBsDataTableElementEventMap {
         "bsSort": { column: string; direction: 'asc' | 'desc' };
@@ -324,7 +496,9 @@ declare global {
     interface HTMLElementTagNameMap {
         "bs-badge": HTMLBsBadgeElement;
         "bs-button": HTMLBsButtonElement;
+        "bs-button-skeleton": HTMLBsButtonSkeletonElement;
         "bs-card": HTMLBsCardElement;
+        "bs-composer": HTMLBsComposerElement;
         "bs-data-table": HTMLBsDataTableElement;
         "bs-input": HTMLBsInputElement;
         "bs-modal": HTMLBsModalElement;
@@ -352,17 +526,27 @@ declare namespace LocalJSX {
      * ## When to use
      * - The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
      * - Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+     * - `variant="error"` for destructive/irreversible actions (e.g. "Delete account") — per
+     *   BrandSync guidance, destructive actions should always use the error variant, never
+     *   `neutral`, so the visual weight matches the risk of the action.
      * ## When not to use
      * - For navigation between pages — use a link/nav component instead, a button implies an
      *   in-page action, not a destination change.
      * - For more than one primary-emphasis action in the same view — pick one, demote the rest to
      *   `neutral`.
+     * - `error` purely for visual emphasis — it signals a destructive action to the user, so reserve
+     *   it for actions that actually delete/revoke/undo something.
      * @prop --bs-button-radius - Corner radius. Aliased to `--bs-border-radius-100` by default.
      * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
      * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
      * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
      */
     interface BsButton {
+        /**
+          * Accessible name for the button. Required for icon-only usage (no visible label text via the default slot) so screen readers still announce what the button does. Stencil reflects this camelCase prop to the `aria-label` HTML attribute automatically.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
         /**
           * Disables the button and applies the disabled token set.
           * @default false
@@ -379,10 +563,34 @@ declare namespace LocalJSX {
          */
         "type"?: 'button' | 'submit' | 'reset';
         /**
-          * Visual style. Maps directly to the brandsync-tokens `--bs-button-*` semantic set.
+          * Visual style. Maps directly to the brandsync-tokens `--bs-button-*` semantic set. `error` is for destructive/irreversible actions per BrandSync guidance, not a stronger emphasis alternative to `primary`.
           * @default 'primary'
          */
         "variant"?: BsButtonVariant;
+    }
+    /**
+     * A shape-matched loading placeholder for `bs-button`, shown while the real label/action isn't
+     * known yet (e.g. still being fetched from an API). Sized to match `bs-button`'s `sm`/`md`/`lg`
+     * heights so layout doesn't shift once the real button renders.
+     * This is not a submit-in-progress spinner — that's a different concern (a button that's
+     * already rendered but waiting on an async action it triggered). Use this component only when
+     * the button itself doesn't exist yet.
+     * ## When to use
+     * - In place of a `bs-button` whose label/visibility depends on data that hasn't loaded yet.
+     * ## When not to use
+     * - While a button's own click handler is running (e.g. a submit request in flight) — render the
+     *   real `bs-button` and show its own busy/spinner state instead.
+     * @prop --bs-button-skeleton-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
+     * @prop --bs-button-skeleton-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
+     * @prop --bs-button-skeleton-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     * @prop --bs-button-skeleton-width - Placeholder width. Defaults to `96px`.
+     */
+    interface BsButtonSkeleton {
+        /**
+          * Sizing scale, matching the `bs-button` size it stands in for.
+          * @default 'md'
+         */
+        "size"?: BsButtonSize1;
     }
     /**
      * A bounded surface for grouping related content — a summary, a form section, a list item.
@@ -399,6 +607,83 @@ declare namespace LocalJSX {
           * @default 'raised'
          */
         "surface"?: BsCardSurface;
+    }
+    /**
+     * A chat composer input for Genie AI-style conversational interfaces: a text field
+     * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
+     * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
+     * ## When to use
+     * - The message-entry bar for an AI chat/assistant or human support conversation.
+     * ## When not to use
+     * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
+     *   purpose-built for a chat composer, not a generic form field.
+     * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
+     * @prop --bs-composer-button-radius - Corner radius of the attach/mic/action buttons. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-composer-button-size - Width/height of the attach/mic/action buttons. Aliased to `--bs-spacing-600`.
+     * @prop --bs-composer-bg - Background of the pill container. Aliased to `--bs-input-bg-default`.
+     * @prop --bs-composer-border - Border color of the pill container. Aliased to `--bs-input-border-default`.
+     * @prop --bs-composer-border-focus - Border color when the text field has focus. Aliased to `--bs-input-border-focus`.
+     * @prop --bs-composer-action-bg - Background of the primary action button. Aliased to `--bs-color-primary-default`.
+     * @prop --bs-composer-action-bg-hover - Aliased to `--bs-color-primary-hover`.
+     * @prop --bs-composer-action-bg-pressed - Aliased to `--bs-color-primary-pressed`.
+     * @prop --bs-composer-action-bg-disabled - Aliased to `--bs-surface-action-disabled`.
+     * @prop --bs-composer-action-icon - Icon color on the primary action button. Aliased to `--bs-text-on-action`.
+     * @prop --bs-composer-action-icon-disabled - Aliased to `--bs-text-on-disabled`.
+     * @prop --bs-composer-attach-icon - Icon color of the attach button. Aliased to `--bs-icon-default`.
+     * @prop --bs-composer-mic-icon - Icon color of the mic/stop-recording button. Aliased to `--bs-icon-default`.
+     * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
+     * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     */
+    interface BsComposer {
+        /**
+          * Accessible name for the text field. This component has no visible `<label>` (chat composers don't show one in the design), so `ariaLabel` is the only way a consumer gives the textbox an accessible name -- set it in every real usage.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Fires when the "+" attach button is clicked.
+         */
+        "onBsAttach"?: (event: BsComposerCustomEvent<void>) => void;
+        /**
+          * Fires on every keystroke in the text field, with the current value.
+         */
+        "onBsInput"?: (event: BsComposerCustomEvent<string>) => void;
+        /**
+          * Fires when the mic/stop-recording button is clicked. The consumer decides what that means (e.g. start recording when idle/generating, or stop recording when `state="recording"`).
+         */
+        "onBsMicToggle"?: (event: BsComposerCustomEvent<void>) => void;
+        /**
+          * Fires when the primary action button is clicked while `state="generating"`.
+         */
+        "onBsStop"?: (event: BsComposerCustomEvent<void>) => void;
+        /**
+          * Fires when the primary action button is clicked while `state="idle"`.
+         */
+        "onBsSubmit"?: (event: BsComposerCustomEvent<void>) => void;
+        /**
+          * Fires when the primary action button is clicked while `state="recording"`.
+         */
+        "onBsVoiceConfirm"?: (event: BsComposerCustomEvent<void>) => void;
+        /**
+          * Overrides the variant's default placeholder.
+         */
+        "placeholder"?: string;
+        /**
+          * Which of the four mutually-exclusive composer states to render: `idle` (send, enabled), `generating` (stop, while the AI is responding), `disabled` (send, but not interactive), or `recording` (voice input in progress -- shows a waveform and a confirm action).
+          * @default 'idle'
+         */
+        "state"?: BsComposerState;
+        /**
+          * Current text value. Native `input` events don't cross the Shadow DOM boundary, so this component re-dispatches them as a `bsInput` custom event instead.
+          * @default ''
+         */
+        "value"?: string;
+        /**
+          * Which flavor of composer this is: changes the *default* placeholder text (set `placeholder` directly to override it) and, per the Figma design, renders the container border dashed instead of solid for `'human'` -- a deliberate visual cue distinguishing a human-support composer from the AI one, not a layout/token difference.
+          * @default 'ai'
+         */
+        "variant"?: BsComposerVariant;
     }
     /**
      * A sortable, optionally row-selectable table for tabular data.
@@ -501,9 +786,20 @@ declare namespace LocalJSX {
         "size": BsButtonSize;
         "disabled": boolean;
         "type": 'button' | 'submit' | 'reset';
+        "ariaLabel": string | null;
+    }
+    interface BsButtonSkeletonAttributes {
+        "size": BsButtonSize;
     }
     interface BsCardAttributes {
         "surface": BsCardSurface;
+    }
+    interface BsComposerAttributes {
+        "variant": BsComposerVariant;
+        "placeholder": string;
+        "value": string;
+        "state": BsComposerState;
+        "ariaLabel": string | null;
     }
     interface BsDataTableAttributes {
         "sortColumn": string;
@@ -528,7 +824,9 @@ declare namespace LocalJSX {
     interface IntrinsicElements {
         "bs-badge": Omit<BsBadge, keyof BsBadgeAttributes> & { [K in keyof BsBadge & keyof BsBadgeAttributes]?: BsBadge[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `attr:${K}`]?: BsBadgeAttributes[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `prop:${K}`]?: BsBadge[K] };
         "bs-button": Omit<BsButton, keyof BsButtonAttributes> & { [K in keyof BsButton & keyof BsButtonAttributes]?: BsButton[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `attr:${K}`]?: BsButtonAttributes[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `prop:${K}`]?: BsButton[K] };
+        "bs-button-skeleton": Omit<BsButtonSkeleton, keyof BsButtonSkeletonAttributes> & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes]?: BsButtonSkeleton[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `attr:${K}`]?: BsButtonSkeletonAttributes[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `prop:${K}`]?: BsButtonSkeleton[K] };
         "bs-card": Omit<BsCard, keyof BsCardAttributes> & { [K in keyof BsCard & keyof BsCardAttributes]?: BsCard[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `attr:${K}`]?: BsCardAttributes[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `prop:${K}`]?: BsCard[K] };
+        "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
@@ -553,17 +851,40 @@ declare module "@stencil/core" {
              * ## When to use
              * - The primary call to action on a screen or within a card/modal (e.g. "Book room", "Confirm").
              * - Secondary, lower-emphasis actions alongside it (use `variant="neutral"`).
+             * - `variant="error"` for destructive/irreversible actions (e.g. "Delete account") — per
+             *   BrandSync guidance, destructive actions should always use the error variant, never
+             *   `neutral`, so the visual weight matches the risk of the action.
              * ## When not to use
              * - For navigation between pages — use a link/nav component instead, a button implies an
              *   in-page action, not a destination change.
              * - For more than one primary-emphasis action in the same view — pick one, demote the rest to
              *   `neutral`.
+             * - `error` purely for visual emphasis — it signals a destructive action to the user, so reserve
+             *   it for actions that actually delete/revoke/undo something.
              * @prop --bs-button-radius - Corner radius. Aliased to `--bs-border-radius-100` by default.
              * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
              * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
              * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
              */
             "bs-button": LocalJSX.IntrinsicElements["bs-button"] & JSXBase.HTMLAttributes<HTMLBsButtonElement>;
+            /**
+             * A shape-matched loading placeholder for `bs-button`, shown while the real label/action isn't
+             * known yet (e.g. still being fetched from an API). Sized to match `bs-button`'s `sm`/`md`/`lg`
+             * heights so layout doesn't shift once the real button renders.
+             * This is not a submit-in-progress spinner — that's a different concern (a button that's
+             * already rendered but waiting on an async action it triggered). Use this component only when
+             * the button itself doesn't exist yet.
+             * ## When to use
+             * - In place of a `bs-button` whose label/visibility depends on data that hasn't loaded yet.
+             * ## When not to use
+             * - While a button's own click handler is running (e.g. a submit request in flight) — render the
+             *   real `bs-button` and show its own busy/spinner state instead.
+             * @prop --bs-button-skeleton-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
+             * @prop --bs-button-skeleton-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
+             * @prop --bs-button-skeleton-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+             * @prop --bs-button-skeleton-width - Placeholder width. Defaults to `96px`.
+             */
+            "bs-button-skeleton": LocalJSX.IntrinsicElements["bs-button-skeleton"] & JSXBase.HTMLAttributes<HTMLBsButtonSkeletonElement>;
             /**
              * A bounded surface for grouping related content — a summary, a form section, a list item.
              * ## When to use
@@ -574,6 +895,34 @@ declare module "@stencil/core" {
              * - For a dismissible/transient message — use a modal or a dedicated notification component.
              */
             "bs-card": LocalJSX.IntrinsicElements["bs-card"] & JSXBase.HTMLAttributes<HTMLBsCardElement>;
+            /**
+             * A chat composer input for Genie AI-style conversational interfaces: a text field
+             * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
+             * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
+             * ## When to use
+             * - The message-entry bar for an AI chat/assistant or human support conversation.
+             * ## When not to use
+             * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
+             *   purpose-built for a chat composer, not a generic form field.
+             * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
+             * @prop --bs-composer-button-radius - Corner radius of the attach/mic/action buttons. Aliased to `--bs-border-radius-100`.
+             * @prop --bs-composer-button-size - Width/height of the attach/mic/action buttons. Aliased to `--bs-spacing-600`.
+             * @prop --bs-composer-bg - Background of the pill container. Aliased to `--bs-input-bg-default`.
+             * @prop --bs-composer-border - Border color of the pill container. Aliased to `--bs-input-border-default`.
+             * @prop --bs-composer-border-focus - Border color when the text field has focus. Aliased to `--bs-input-border-focus`.
+             * @prop --bs-composer-action-bg - Background of the primary action button. Aliased to `--bs-color-primary-default`.
+             * @prop --bs-composer-action-bg-hover - Aliased to `--bs-color-primary-hover`.
+             * @prop --bs-composer-action-bg-pressed - Aliased to `--bs-color-primary-pressed`.
+             * @prop --bs-composer-action-bg-disabled - Aliased to `--bs-surface-action-disabled`.
+             * @prop --bs-composer-action-icon - Icon color on the primary action button. Aliased to `--bs-text-on-action`.
+             * @prop --bs-composer-action-icon-disabled - Aliased to `--bs-text-on-disabled`.
+             * @prop --bs-composer-attach-icon - Icon color of the attach button. Aliased to `--bs-icon-default`.
+             * @prop --bs-composer-mic-icon - Icon color of the mic/stop-recording button. Aliased to `--bs-icon-default`.
+             * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
+             * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
+             * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+             */
+            "bs-composer": LocalJSX.IntrinsicElements["bs-composer"] & JSXBase.HTMLAttributes<HTMLBsComposerElement>;
             /**
              * A sortable, optionally row-selectable table for tabular data.
              * `columns`, `rows`, and `cellRenderer` are JS-property-only — HTML attributes can only carry

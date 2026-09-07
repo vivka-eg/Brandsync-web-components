@@ -1,0 +1,51 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ButtonSkeletonStories from './bs-button-skeleton.stories';
+
+<Meta of={ButtonSkeletonStories} />
+
+# Button skeleton
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Sizes](#sizes)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A shape-matched loading placeholder for `bs-button`, shown while the real label/action isn't
+known yet.
+
+**When to use**
+- In place of a `bs-button` whose label/visibility depends on data that hasn't loaded yet.
+
+**When not to use**
+- While a button's own click handler is running (e.g. a submit request in flight) — render the
+  real `bs-button` and use its own busy/spinner state instead; this component is not a
+  submit-in-progress spinner.
+
+<Canvas of={ButtonSkeletonStories.Default} />
+
+## Sizes
+
+Three sizes — `sm`, `md`, `lg` — mirror `bs-button`'s own height tokens
+(`--bs-spacing-500/600/700`), so a skeleton and the real button it stands in for don't shift the
+layout when swapped.
+
+<Canvas of={ButtonSkeletonStories.Sizes} />
+
+## Component API
+
+<Controls of={ButtonSkeletonStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Shadow parts: `::part(container)`
+- CSS Custom Properties: `--bs-button-skeleton-height-sm/md/lg`, `--bs-button-skeleton-width`
+
+## Accessibility
+
+- Renders as a `<span role="status" aria-label="Loading">`, so screen readers announce the
+  loading state instead of relying on the visual pulse animation alone.
+- The pulse animation respects `prefers-reduced-motion` and is disabled entirely for users who
+  request reduced motion.

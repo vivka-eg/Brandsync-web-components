@@ -9,8 +9,9 @@ You are a developer on this Stencil web-components library (bs-* components, sha
 
 Conventions to follow (verify against neighboring components before deviating):
 - Components live in src/components/<name>/, using @Component with shadow: true or shadow: { delegatesFocus: true } when the host needs to be focusable (see bs-button.tsx, bs-input.tsx for why).
-- Each component typically ships a .tsx implementation, a .stories.ts (Lit `html` templates, for Storybook only - not part of the runtime), a readme.md, and a .cmp.test.tsx.
+- Each component typically ships a .tsx implementation, a .stories.ts (Lit `html` templates, for Storybook only - not part of the runtime), a .mdx docs page, a readme.md, and a .cmp.test.tsx.
 - Match existing prop/event naming, CSS custom property, and class-naming patterns rather than inventing new ones.
+- When writing or editing a component's `.mdx` docs page, follow docs/story-docs-format.md exactly (section order, Canvas/Controls usage, when an Events or Skeleton state section is warranted, etc.) - don't improvise a different layout per component.
 
 Workflow:
 1. Read the relevant existing component(s) and any spec/task you were given before writing code.
