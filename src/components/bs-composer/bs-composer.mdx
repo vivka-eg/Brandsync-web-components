@@ -1,0 +1,96 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ComposerStories from './bs-composer.stories';
+
+<Meta of={ComposerStories} />
+
+# Composer
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Generating state](#generating-state)
+- [Disabled state](#disabled-state)
+- [Recording state](#recording-state)
+- [All variants × states](#all-variants--states)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A pill-shaped chat composer input for Genie AI-style conversational interfaces: a text field plus
+an attach button, a mic/voice-recording toggle, and a single primary action button whose icon and
+behavior change with `state` (send, stop generating, or confirm a voice recording).
+
+**When to use**
+- The message-entry bar for an AI chat/assistant (`variant="ai"`) or a human support conversation
+  (`variant="human"`).
+
+**When not to use**
+- A general-purpose text field — use `bs-input` instead; this component's layout and states are
+  purpose-built for a chat composer, not a generic form field.
+
+<Canvas of={ComposerStories.Default} />
+
+## Generating state
+
+While the AI is producing a response, the primary action button switches from send to a stop
+(filled square) icon so the same button can cancel generation instead of submitting again.
+
+<Canvas of={ComposerStories.Generating} />
+
+## Disabled state
+
+Both the mic and primary action buttons are natively `disabled` (not just visually muted), so
+they're unreachable by keyboard and clicks are no-ops — same disabled treatment as `bs-button`.
+
+<Canvas of={ComposerStories.Disabled} />
+
+## Recording state
+
+Shows an inline static waveform placeholder next to already-typed text, and swaps the mic button
+for a stop-recording square and the primary action for a checkmark (confirm).
+
+<Canvas of={ComposerStories.Recording} />
+
+## All variants × states
+
+Every combination of `variant` and `state` side by side, for visual parity with the source design.
+
+<Canvas of={ComposerStories.AllStates} />
+
+## Component API
+
+<Controls of={ComposerStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Shadow parts: `::part(attach)`, `::part(input)`, `::part(mic)`, `::part(action)`
+- CSS custom properties: `--bs-composer-radius`, `--bs-composer-bg`, `--bs-composer-border`,
+  `--bs-composer-border-focus`, `--bs-composer-action-bg`, `--bs-composer-action-bg-hover`,
+  `--bs-composer-action-bg-pressed`, `--bs-composer-action-bg-disabled`,
+  `--bs-composer-action-icon`, `--bs-composer-action-icon-disabled`, `--bs-composer-attach-icon`,
+  `--bs-composer-mic-icon`, `--bs-composer-mic-icon-disabled`
+
+## Events
+
+| Event             | Fires when                                                        | Payload | Cancelable |
+| ------------------ | ------------------------------------------------------------------ | ------- | ---------- |
+| `bsInput`          | Every keystroke in the text field                                  | `string` (current value) | No |
+| `bsSubmit`         | The primary action button is clicked while `state="idle"`          | `void`  | No |
+| `bsStop`           | The primary action button is clicked while `state="generating"`    | `void`  | No |
+| `bsVoiceConfirm`   | The primary action button is clicked while `state="recording"`     | `void`  | No |
+| `bsAttach`         | The "+" attach button is clicked                                   | `void`  | No |
+| `bsMicToggle`      | The mic/stop-recording button is clicked                           | `void`  | No |
+
+## Accessibility
+
+- The text field has no visible `<label>` in this design — set `ariaLabel` in every real usage so
+  the field still has an accessible name for assistive technology.
+- The mic and primary action buttons use a native `disabled` attribute in `state="disabled"`, so
+  they're skipped by keyboard tab order and can't be activated, not just visually muted.
+- The primary action button's `aria-label` changes with `state` ("Send", "Stop", "Confirm") so its
+  announced name always matches its current behavior.
+- The recording-state waveform is a static, non-interactive visualization marked `aria-hidden`, so
+  it isn't announced as content — the actual "recording in progress" status is only conveyed
+  visually; a consumer needing an announced status update should pair this with an `aria-live`
+  region of their own.

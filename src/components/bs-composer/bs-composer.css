@@ -1,0 +1,185 @@
+:host {
+  display: block;
+  --bs-composer-radius: var(--bs-border-radius-150);
+  --bs-composer-button-radius: var(--bs-border-radius-100);
+  --bs-composer-button-size: var(--bs-spacing-600);
+  --bs-composer-bg: var(--bs-input-bg-default);
+  --bs-composer-border: var(--bs-input-border-default);
+  --bs-composer-border-focus: var(--bs-input-border-focus);
+
+  --bs-composer-action-bg: var(--bs-color-primary-default);
+  --bs-composer-action-bg-hover: var(--bs-color-primary-hover);
+  --bs-composer-action-bg-pressed: var(--bs-color-primary-pressed);
+  --bs-composer-action-bg-disabled: var(--bs-surface-action-disabled);
+  --bs-composer-action-icon: var(--bs-text-on-action);
+  --bs-composer-action-icon-disabled: var(--bs-text-on-disabled);
+
+  --bs-composer-attach-icon: var(--bs-icon-default);
+  --bs-composer-mic-icon: var(--bs-icon-default);
+  --bs-composer-mic-icon-disabled: var(--bs-icon-disabled);
+  --bs-composer-mic-recording-icon: var(--bs-icon-default);
+  --bs-composer-subtle-hover: var(--bs-color-neutral-container);
+  --bs-composer-subtle-pressed: var(--bs-color-neutral-container-pressed);
+
+  --bs-composer-waveform-color: var(--bs-border-default);
+}
+
+.bs-composer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--bs-composer-border);
+  border-radius: var(--bs-composer-radius);
+  background: var(--bs-composer-bg);
+  font-family: inherit;
+}
+
+.bs-composer--human {
+  border-style: dashed;
+}
+
+.bs-composer:focus-within {
+  border-color: var(--bs-composer-border-focus);
+}
+
+.bs-composer__text-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-spacing-150);
+  padding: var(--bs-spacing-150);
+}
+
+.bs-composer__input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--bs-input-text);
+  font-family: inherit;
+  font-size: var(--bs-font-size-md);
+}
+
+.bs-composer__input::placeholder {
+  color: var(--bs-input-placeholder);
+}
+
+.bs-composer__input:disabled {
+  color: var(--bs-input-text-disabled);
+  cursor: not-allowed;
+}
+
+.bs-composer__waveform {
+  display: inline-flex;
+  flex: 1;
+  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  overflow: hidden;
+}
+
+.bs-composer__waveform-bar {
+  display: inline-block;
+  flex-shrink: 0;
+  width: 2.5px;
+  border-radius: 1.5px;
+  background: var(--bs-composer-waveform-color);
+  /* Static, non-animated placeholder audio-level visualization -- a real analyzer would drive
+   * height from actual audio input. */
+  height: var(--bs-composer-bar-height, 6px);
+}
+
+.bs-composer__controls-row {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-spacing-200);
+  padding: var(--bs-spacing-150);
+}
+
+.bs-composer__spacer {
+  flex: 1;
+}
+
+.bs-composer__attach,
+.bs-composer__mic,
+.bs-composer__action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: var(--bs-composer-button-radius);
+  width: var(--bs-composer-button-size);
+  height: var(--bs-composer-button-size);
+  flex-shrink: 0;
+  transition: background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-composer__attach:focus-visible,
+.bs-composer__mic:focus-visible,
+.bs-composer__action:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+
+.bs-composer__attach svg,
+.bs-composer__mic svg,
+.bs-composer__action svg {
+  width: 24px;
+  height: 24px;
+}
+
+.bs-composer__attach,
+.bs-composer__mic {
+  background: transparent;
+}
+
+.bs-composer__attach:hover:not(:disabled),
+.bs-composer__mic:hover:not(:disabled) {
+  background: var(--bs-composer-subtle-hover);
+}
+
+.bs-composer__attach:active:not(:disabled),
+.bs-composer__mic:active:not(:disabled) {
+  background: var(--bs-composer-subtle-pressed);
+}
+
+.bs-composer__attach {
+  color: var(--bs-composer-attach-icon);
+}
+
+.bs-composer__mic {
+  color: var(--bs-composer-mic-icon);
+}
+
+.bs-composer__mic--recording {
+  color: var(--bs-composer-mic-recording-icon);
+}
+
+.bs-composer__mic:disabled {
+  color: var(--bs-composer-mic-icon-disabled);
+  cursor: not-allowed;
+}
+
+.bs-composer__action {
+  background: var(--bs-composer-action-bg);
+  color: var(--bs-composer-action-icon);
+}
+
+.bs-composer__action:hover:not(:disabled) {
+  background: var(--bs-composer-action-bg-hover);
+}
+
+.bs-composer__action:active:not(:disabled) {
+  background: var(--bs-composer-action-bg-pressed);
+}
+
+.bs-composer__action:disabled {
+  background: var(--bs-composer-action-bg-disabled);
+  color: var(--bs-composer-action-icon-disabled);
+  cursor: not-allowed;
+}
