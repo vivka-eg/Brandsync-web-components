@@ -191,6 +191,44 @@ export namespace Components {
         "sourcesCount"?: number;
     }
     /**
+     * A pill-shaped clickable suggestion chip for a Genie AI chat panel (e.g. "How can I help you?").
+     * One instance renders one chip -- to show several suggestion prompts side by side, render
+     * multiple `bs-chatbot-suggestion-button` elements inside a plain flex-wrap container; this
+     * library doesn't ship a separate list/group component for that since a `<div>` with
+     * `flex-wrap: wrap` is sufficient.
+     * ## When to use
+     * - Quick-reply/starter prompts shown above or alongside `bs-composer` in a Genie AI chat panel.
+     * ## When not to use
+     * - As a general-purpose button -- use `bs-button` instead, this component's pill shape and
+     *   tonal color treatment are specific to Genie chat suggestion prompts.
+     * @prop --bs-chatbot-suggestion-button-radius - Corner radius. Aliased to `--bs-border-radius-full`.
+     * @prop --bs-chatbot-suggestion-button-border-color - Border color. Aliased to `--bs-border-primary`.
+     * @prop --bs-chatbot-suggestion-button-bg-default - Background in the default (enabled) state.
+     * Aliased to `--bs-color-primary-container`.
+     * @prop --bs-chatbot-suggestion-button-bg-hover - Background on hover. Aliased to
+     * `--bs-color-primary-container-hover`.
+     * @prop --bs-chatbot-suggestion-button-bg-pressed - Background when pressed. Aliased directly to
+     * the primitive `--bs-brand-200` -- there's no pre-built semantic "container-pressed" token
+     * matching this tonal button's lighter pressed shade progression (50 -> 100 -> 200), so this
+     * component aliases one locally (same situation `bs-button.css` documents for its
+     * subtle/outlined/success/warning/info variants).
+     * @prop --bs-chatbot-suggestion-button-bg-focus - Background when focused. Aliased to
+     * `--bs-color-primary-container-hover` (same as hover).
+     * @prop --bs-chatbot-suggestion-button-text-default - Text color in the default state. Aliased to
+     * `--bs-text-action`.
+     * @prop --bs-chatbot-suggestion-button-text-hover - Text color on hover, pressed, and focus.
+     * Aliased to `--bs-text-action-hover`.
+     * @prop --bs-chatbot-suggestion-button-focus-ring-color - Focus ring color. Aliased to
+     * `--bs-border-primary-focus`.
+     */
+    interface BsChatbotSuggestionButton {
+        /**
+          * Disables the button and applies a reduced-opacity treatment.
+          * @default false
+         */
+        "disabled": boolean;
+    }
+    /**
      * A chat composer input for Genie AI-style conversational interfaces: a text field
      * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
      * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
@@ -382,6 +420,10 @@ export interface BsChatbotResponseActionCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsChatbotResponseActionElement;
 }
+export interface BsChatbotSuggestionButtonCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsChatbotSuggestionButtonElement;
+}
 export interface BsComposerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsComposerElement;
@@ -567,6 +609,54 @@ declare global {
     var HTMLBsChatbotResponseActionElement: {
         prototype: HTMLBsChatbotResponseActionElement;
         new (): HTMLBsChatbotResponseActionElement;
+    };
+    interface HTMLBsChatbotSuggestionButtonElementEventMap {
+        "bsSelect": void;
+    }
+    /**
+     * A pill-shaped clickable suggestion chip for a Genie AI chat panel (e.g. "How can I help you?").
+     * One instance renders one chip -- to show several suggestion prompts side by side, render
+     * multiple `bs-chatbot-suggestion-button` elements inside a plain flex-wrap container; this
+     * library doesn't ship a separate list/group component for that since a `<div>` with
+     * `flex-wrap: wrap` is sufficient.
+     * ## When to use
+     * - Quick-reply/starter prompts shown above or alongside `bs-composer` in a Genie AI chat panel.
+     * ## When not to use
+     * - As a general-purpose button -- use `bs-button` instead, this component's pill shape and
+     *   tonal color treatment are specific to Genie chat suggestion prompts.
+     * @prop --bs-chatbot-suggestion-button-radius - Corner radius. Aliased to `--bs-border-radius-full`.
+     * @prop --bs-chatbot-suggestion-button-border-color - Border color. Aliased to `--bs-border-primary`.
+     * @prop --bs-chatbot-suggestion-button-bg-default - Background in the default (enabled) state.
+     * Aliased to `--bs-color-primary-container`.
+     * @prop --bs-chatbot-suggestion-button-bg-hover - Background on hover. Aliased to
+     * `--bs-color-primary-container-hover`.
+     * @prop --bs-chatbot-suggestion-button-bg-pressed - Background when pressed. Aliased directly to
+     * the primitive `--bs-brand-200` -- there's no pre-built semantic "container-pressed" token
+     * matching this tonal button's lighter pressed shade progression (50 -> 100 -> 200), so this
+     * component aliases one locally (same situation `bs-button.css` documents for its
+     * subtle/outlined/success/warning/info variants).
+     * @prop --bs-chatbot-suggestion-button-bg-focus - Background when focused. Aliased to
+     * `--bs-color-primary-container-hover` (same as hover).
+     * @prop --bs-chatbot-suggestion-button-text-default - Text color in the default state. Aliased to
+     * `--bs-text-action`.
+     * @prop --bs-chatbot-suggestion-button-text-hover - Text color on hover, pressed, and focus.
+     * Aliased to `--bs-text-action-hover`.
+     * @prop --bs-chatbot-suggestion-button-focus-ring-color - Focus ring color. Aliased to
+     * `--bs-border-primary-focus`.
+     */
+    interface HTMLBsChatbotSuggestionButtonElement extends Components.BsChatbotSuggestionButton, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsChatbotSuggestionButtonElementEventMap>(type: K, listener: (this: HTMLBsChatbotSuggestionButtonElement, ev: BsChatbotSuggestionButtonCustomEvent<HTMLBsChatbotSuggestionButtonElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsChatbotSuggestionButtonElementEventMap>(type: K, listener: (this: HTMLBsChatbotSuggestionButtonElement, ev: BsChatbotSuggestionButtonCustomEvent<HTMLBsChatbotSuggestionButtonElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsChatbotSuggestionButtonElement: {
+        prototype: HTMLBsChatbotSuggestionButtonElement;
+        new (): HTMLBsChatbotSuggestionButtonElement;
     };
     interface HTMLBsComposerElementEventMap {
         "bsInput": string;
@@ -770,6 +860,7 @@ declare global {
         "bs-card": HTMLBsCardElement;
         "bs-chatbot-header": HTMLBsChatbotHeaderElement;
         "bs-chatbot-response-action": HTMLBsChatbotResponseActionElement;
+        "bs-chatbot-suggestion-button": HTMLBsChatbotSuggestionButtonElement;
         "bs-composer": HTMLBsComposerElement;
         "bs-data-table": HTMLBsDataTableElement;
         "bs-input": HTMLBsInputElement;
@@ -988,6 +1079,48 @@ declare namespace LocalJSX {
           * Number of sources backing the response. When set to a positive number, renders the "N sources" button (singular "1 source" / plural "N sources"). When unset or `0`, the button is not rendered at all.
          */
         "sourcesCount"?: number;
+    }
+    /**
+     * A pill-shaped clickable suggestion chip for a Genie AI chat panel (e.g. "How can I help you?").
+     * One instance renders one chip -- to show several suggestion prompts side by side, render
+     * multiple `bs-chatbot-suggestion-button` elements inside a plain flex-wrap container; this
+     * library doesn't ship a separate list/group component for that since a `<div>` with
+     * `flex-wrap: wrap` is sufficient.
+     * ## When to use
+     * - Quick-reply/starter prompts shown above or alongside `bs-composer` in a Genie AI chat panel.
+     * ## When not to use
+     * - As a general-purpose button -- use `bs-button` instead, this component's pill shape and
+     *   tonal color treatment are specific to Genie chat suggestion prompts.
+     * @prop --bs-chatbot-suggestion-button-radius - Corner radius. Aliased to `--bs-border-radius-full`.
+     * @prop --bs-chatbot-suggestion-button-border-color - Border color. Aliased to `--bs-border-primary`.
+     * @prop --bs-chatbot-suggestion-button-bg-default - Background in the default (enabled) state.
+     * Aliased to `--bs-color-primary-container`.
+     * @prop --bs-chatbot-suggestion-button-bg-hover - Background on hover. Aliased to
+     * `--bs-color-primary-container-hover`.
+     * @prop --bs-chatbot-suggestion-button-bg-pressed - Background when pressed. Aliased directly to
+     * the primitive `--bs-brand-200` -- there's no pre-built semantic "container-pressed" token
+     * matching this tonal button's lighter pressed shade progression (50 -> 100 -> 200), so this
+     * component aliases one locally (same situation `bs-button.css` documents for its
+     * subtle/outlined/success/warning/info variants).
+     * @prop --bs-chatbot-suggestion-button-bg-focus - Background when focused. Aliased to
+     * `--bs-color-primary-container-hover` (same as hover).
+     * @prop --bs-chatbot-suggestion-button-text-default - Text color in the default state. Aliased to
+     * `--bs-text-action`.
+     * @prop --bs-chatbot-suggestion-button-text-hover - Text color on hover, pressed, and focus.
+     * Aliased to `--bs-text-action-hover`.
+     * @prop --bs-chatbot-suggestion-button-focus-ring-color - Focus ring color. Aliased to
+     * `--bs-border-primary-focus`.
+     */
+    interface BsChatbotSuggestionButton {
+        /**
+          * Disables the button and applies a reduced-opacity treatment.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * Fires when the button is clicked.
+         */
+        "onBsSelect"?: (event: BsChatbotSuggestionButtonCustomEvent<void>) => void;
     }
     /**
      * A chat composer input for Genie AI-style conversational interfaces: a text field
@@ -1230,6 +1363,9 @@ declare namespace LocalJSX {
         "sourcesCount": number;
         "menuOpen": boolean;
     }
+    interface BsChatbotSuggestionButtonAttributes {
+        "disabled": boolean;
+    }
     interface BsComposerAttributes {
         "variant": BsComposerVariant;
         "placeholder": string;
@@ -1264,6 +1400,7 @@ declare namespace LocalJSX {
         "bs-card": Omit<BsCard, keyof BsCardAttributes> & { [K in keyof BsCard & keyof BsCardAttributes]?: BsCard[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `attr:${K}`]?: BsCardAttributes[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `prop:${K}`]?: BsCard[K] };
         "bs-chatbot-header": Omit<BsChatbotHeader, keyof BsChatbotHeaderAttributes> & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes]?: BsChatbotHeader[K] } & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes as `attr:${K}`]?: BsChatbotHeaderAttributes[K] } & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes as `prop:${K}`]?: BsChatbotHeader[K] };
         "bs-chatbot-response-action": Omit<BsChatbotResponseAction, keyof BsChatbotResponseActionAttributes> & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes]?: BsChatbotResponseAction[K] } & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes as `attr:${K}`]?: BsChatbotResponseActionAttributes[K] } & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes as `prop:${K}`]?: BsChatbotResponseAction[K] };
+        "bs-chatbot-suggestion-button": Omit<BsChatbotSuggestionButton, keyof BsChatbotSuggestionButtonAttributes> & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes]?: BsChatbotSuggestionButton[K] } & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes as `attr:${K}`]?: BsChatbotSuggestionButtonAttributes[K] } & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes as `prop:${K}`]?: BsChatbotSuggestionButton[K] };
         "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
@@ -1381,6 +1518,38 @@ declare module "@stencil/core" {
              * @prop --bs-chatbot-response-action-sources-line-height - Aliased to `--bs-line-height-body-sm`.
              */
             "bs-chatbot-response-action": LocalJSX.IntrinsicElements["bs-chatbot-response-action"] & JSXBase.HTMLAttributes<HTMLBsChatbotResponseActionElement>;
+            /**
+             * A pill-shaped clickable suggestion chip for a Genie AI chat panel (e.g. "How can I help you?").
+             * One instance renders one chip -- to show several suggestion prompts side by side, render
+             * multiple `bs-chatbot-suggestion-button` elements inside a plain flex-wrap container; this
+             * library doesn't ship a separate list/group component for that since a `<div>` with
+             * `flex-wrap: wrap` is sufficient.
+             * ## When to use
+             * - Quick-reply/starter prompts shown above or alongside `bs-composer` in a Genie AI chat panel.
+             * ## When not to use
+             * - As a general-purpose button -- use `bs-button` instead, this component's pill shape and
+             *   tonal color treatment are specific to Genie chat suggestion prompts.
+             * @prop --bs-chatbot-suggestion-button-radius - Corner radius. Aliased to `--bs-border-radius-full`.
+             * @prop --bs-chatbot-suggestion-button-border-color - Border color. Aliased to `--bs-border-primary`.
+             * @prop --bs-chatbot-suggestion-button-bg-default - Background in the default (enabled) state.
+             * Aliased to `--bs-color-primary-container`.
+             * @prop --bs-chatbot-suggestion-button-bg-hover - Background on hover. Aliased to
+             * `--bs-color-primary-container-hover`.
+             * @prop --bs-chatbot-suggestion-button-bg-pressed - Background when pressed. Aliased directly to
+             * the primitive `--bs-brand-200` -- there's no pre-built semantic "container-pressed" token
+             * matching this tonal button's lighter pressed shade progression (50 -> 100 -> 200), so this
+             * component aliases one locally (same situation `bs-button.css` documents for its
+             * subtle/outlined/success/warning/info variants).
+             * @prop --bs-chatbot-suggestion-button-bg-focus - Background when focused. Aliased to
+             * `--bs-color-primary-container-hover` (same as hover).
+             * @prop --bs-chatbot-suggestion-button-text-default - Text color in the default state. Aliased to
+             * `--bs-text-action`.
+             * @prop --bs-chatbot-suggestion-button-text-hover - Text color on hover, pressed, and focus.
+             * Aliased to `--bs-text-action-hover`.
+             * @prop --bs-chatbot-suggestion-button-focus-ring-color - Focus ring color. Aliased to
+             * `--bs-border-primary-focus`.
+             */
+            "bs-chatbot-suggestion-button": LocalJSX.IntrinsicElements["bs-chatbot-suggestion-button"] & JSXBase.HTMLAttributes<HTMLBsChatbotSuggestionButtonElement>;
             /**
              * A chat composer input for Genie AI-style conversational interfaces: a text field
              * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose

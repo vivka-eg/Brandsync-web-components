@@ -54,6 +54,7 @@
     "@stencil/vitest": "^1.8.3",
     "@storybook/addon-a11y": "^10.5.8",
     "@storybook/addon-docs": "^10.5.8",
+    "@storybook/addon-vitest": "^10.5.8",
     "@storybook/web-components-vite": "^10.5.8",
     "@types/node": "^22.13.5",
     "@vitest/browser-playwright": "^4.0.0",
