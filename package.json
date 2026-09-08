@@ -1,6 +1,6 @@
 {
   "name": "@brandsync/wc",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publishConfig": {
     "access": "public"
   },
@@ -26,6 +26,7 @@
       "types": "./dist/components/*"
     },
     "./dist/brandsync-wc/brandsync-wc.css": "./dist/brandsync-wc/brandsync-wc.css",
+    "./custom-elements.json": "./custom-elements.json",
     "./loader": {
       "import": "./loader/index.js",
       "require": "./loader/index.cjs",
