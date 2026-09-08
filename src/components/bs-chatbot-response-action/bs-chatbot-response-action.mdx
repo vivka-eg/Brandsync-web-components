@@ -1,0 +1,82 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ChatbotResponseActionStories from './bs-chatbot-response-action.stories';
+
+<Meta of={ChatbotResponseActionStories} />
+
+# Chatbot response action
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Without sources](#without-sources)
+- [In an AI response message](#in-an-ai-response-message)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+The row of action buttons that appears below an AI response message in a Genie chat panel: like,
+dislike, copy, regenerate, and more-options icon buttons, plus an optional "N sources" button.
+
+**When to use**
+- Directly below an AI-generated response message in a Genie chat panel.
+
+**When not to use**
+- Below a user's own message -- these actions (regenerate, like/dislike a response, etc.) only
+  make sense for AI-generated content.
+
+<Canvas of={ChatbotResponseActionStories.Default} />
+
+## Without sources
+
+When `sourcesCount` is unset or `0`, the "N sources" button is not rendered at all -- only the
+five icon buttons appear.
+
+<Canvas of={ChatbotResponseActionStories.NoSources} />
+
+## In an AI response message
+
+Demonstrates the intended integration: the action row sits directly below the response text,
+left-aligned with the message content.
+
+<Canvas of={ChatbotResponseActionStories.InResponseMessage} />
+
+## Component API
+
+<Controls of={ChatbotResponseActionStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: `like-icon`, `dislike-icon`, `copy-icon`, `regenerate-icon`, `menu-icon`, `sources-icon`
+- Shadow parts: `::part(like)`, `::part(dislike)`, `::part(copy)`, `::part(regenerate)`,
+  `::part(menu)`, `::part(sources)`
+- CSS custom properties: `--bs-chatbot-response-action-gap`,
+  `--bs-chatbot-response-action-padding-top`, `--bs-chatbot-response-action-padding-bottom`,
+  `--bs-chatbot-response-action-button-size`, `--bs-chatbot-response-action-button-radius`,
+  `--bs-chatbot-response-action-button-hover`, `--bs-chatbot-response-action-button-pressed`,
+  `--bs-chatbot-response-action-icon`, `--bs-chatbot-response-action-sources-gap`,
+  `--bs-chatbot-response-action-sources-padding-left`,
+  `--bs-chatbot-response-action-sources-padding-right`,
+  `--bs-chatbot-response-action-sources-color`, `--bs-chatbot-response-action-sources-font-size`,
+  `--bs-chatbot-response-action-sources-line-height`
+
+## Events
+
+| Event             | Fires when                          | Payload | Cancelable |
+| ----------------- | ------------------------------------ | ------- | ---------- |
+| `bsLike`          | The "Like" button is clicked         | `void`  | No         |
+| `bsDislike`       | The "Dislike" button is clicked      | `void`  | No         |
+| `bsCopy`          | The "Copy" button is clicked         | `void`  | No         |
+| `bsRegenerate`    | The "Regenerate" button is clicked   | `void`  | No         |
+| `bsMenuOpen`      | The "More options" button is clicked | `void`  | No         |
+| `bsSourcesClick`  | The "N sources" button is clicked    | `void`  | No         |
+
+## Accessibility
+
+- Each of the five icon buttons has a fixed, descriptive `aria-label` ("Like", "Dislike", "Copy",
+  "Regenerate", "More options") since they're icon-only with no visible text.
+- The "N sources" button has a visible text label (e.g. "3 sources"), so it does not need an
+  additional `aria-label`.
+- There is no toggled/pressed state for like/dislike in this component -- the Figma design only
+  specifies a single default state, so tracking "liked"/"disliked" as a visual/ARIA state is left
+  to the consuming app.

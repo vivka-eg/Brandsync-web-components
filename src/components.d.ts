@@ -124,6 +124,68 @@ export namespace Components {
         "surface": BsCardSurface;
     }
     /**
+     * The header bar that sits above `bs-composer` in a Genie AI chat panel: the Genie brand mark on
+     * the left and four fixed actions (new chat, history, expand, close) on the right.
+     * ## When to use
+     * - The top bar of a Genie AI chat panel, directly above a `bs-composer`.
+     * ## When not to use
+     * - A generic app/page header — this component's layout and actions are purpose-built for the
+     *   Genie chat panel, not a general navigation bar.
+     * @prop --bs-chatbot-header-bg - Background of the header bar. Aliased to `--bs-surface-base`.
+     * @prop --bs-chatbot-header-border - Bottom border color. Aliased to `--bs-border-default`.
+     * @prop --bs-chatbot-header-padding-top - Aliased to `--bs-spacing-200`.
+     * @prop --bs-chatbot-header-padding-bottom - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-header-padding-x - Aliased to `--bs-margin-fluid`.
+     * @prop --bs-chatbot-header-gap - Gap between the logo and the button group. Aliased to `--bs-navigation-header-gap`.
+     * @prop --bs-chatbot-header-button-size - Width/height of each icon button. Aliased to `--bs-spacing-600`.
+     * @prop --bs-chatbot-header-button-radius - Corner radius of each icon button. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-chatbot-header-button-hover - Icon button background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-chatbot-header-button-pressed - Icon button background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-chatbot-header-icon - Icon color. Aliased to `--bs-icon-default`.
+     */
+    interface BsChatbotHeader {
+        /**
+          * Whether the chat panel is currently expanded (e.g. to full viewport width/height). This component has no visibility into the surrounding layout, so it does not resize anything itself -- it only tracks and reflects the toggle state (via the `expanded` attribute, for CSS hooks, and `aria-pressed`/`aria-label` on the expand button) and emits `bsExpand` with the new value. The consuming app is responsible for actually resizing its own chat panel container in response to that event, since only the app knows what that container is.
+          * @default false
+         */
+        "expanded": boolean;
+        /**
+          * Accessible label for the header landmark, and alt text context for the logo image.
+          * @default 'Genie'
+         */
+        "heading": string;
+    }
+    /**
+     * The row of action buttons that appears below an AI response message in a Genie chat panel:
+     * like, dislike, copy, regenerate, and more-options icon buttons, plus an optional "N sources"
+     * button.
+     * ## When to use
+     * - Directly below an AI-generated response message in a Genie chat panel.
+     * ## When not to use
+     * - Below a user's own message -- these actions (regenerate, like/dislike a response, etc.) only
+     *   make sense for AI-generated content.
+     * @prop --bs-chatbot-response-action-gap - Gap between all buttons in the row. Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-response-action-padding-top - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-response-action-padding-bottom - Aliased to `--bs-spacing-50`.
+     * @prop --bs-chatbot-response-action-button-size - Width/height of each icon button. Aliased to `--bs-spacing-400`.
+     * @prop --bs-chatbot-response-action-button-radius - Corner radius of each button. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-chatbot-response-action-button-hover - Button background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-chatbot-response-action-button-pressed - Button background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-chatbot-response-action-icon - Icon color. Aliased to `--bs-icon-neutral-default`.
+     * @prop --bs-chatbot-response-action-sources-gap - Gap between the sources icon and its label. Aliased to `--bs-spacing-50`.
+     * @prop --bs-chatbot-response-action-sources-padding-left - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-response-action-sources-padding-right - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-response-action-sources-color - Text color of the sources label. Aliased to `--bs-text-neutral-default`.
+     * @prop --bs-chatbot-response-action-sources-font-size - Aliased to `--bs-font-size-sm`.
+     * @prop --bs-chatbot-response-action-sources-line-height - Aliased to `--bs-line-height-body-sm`.
+     */
+    interface BsChatbotResponseAction {
+        /**
+          * Number of sources backing the response. When set to a positive number, renders the "N sources" button (singular "1 source" / plural "N sources"). When unset or `0`, the button is not rendered at all.
+         */
+        "sourcesCount"?: number;
+    }
+    /**
      * A chat composer input for Genie AI-style conversational interfaces: a text field
      * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
      * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
@@ -269,6 +331,14 @@ export namespace Components {
         "size": BsModalSize;
     }
 }
+export interface BsChatbotHeaderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsChatbotHeaderElement;
+}
+export interface BsChatbotResponseActionCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsChatbotResponseActionElement;
+}
 export interface BsComposerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsComposerElement;
@@ -364,6 +434,92 @@ declare global {
     var HTMLBsCardElement: {
         prototype: HTMLBsCardElement;
         new (): HTMLBsCardElement;
+    };
+    interface HTMLBsChatbotHeaderElementEventMap {
+        "bsNewChat": void;
+        "bsHistory": void;
+        "bsExpand": boolean;
+        "bsClose": void;
+    }
+    /**
+     * The header bar that sits above `bs-composer` in a Genie AI chat panel: the Genie brand mark on
+     * the left and four fixed actions (new chat, history, expand, close) on the right.
+     * ## When to use
+     * - The top bar of a Genie AI chat panel, directly above a `bs-composer`.
+     * ## When not to use
+     * - A generic app/page header — this component's layout and actions are purpose-built for the
+     *   Genie chat panel, not a general navigation bar.
+     * @prop --bs-chatbot-header-bg - Background of the header bar. Aliased to `--bs-surface-base`.
+     * @prop --bs-chatbot-header-border - Bottom border color. Aliased to `--bs-border-default`.
+     * @prop --bs-chatbot-header-padding-top - Aliased to `--bs-spacing-200`.
+     * @prop --bs-chatbot-header-padding-bottom - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-header-padding-x - Aliased to `--bs-margin-fluid`.
+     * @prop --bs-chatbot-header-gap - Gap between the logo and the button group. Aliased to `--bs-navigation-header-gap`.
+     * @prop --bs-chatbot-header-button-size - Width/height of each icon button. Aliased to `--bs-spacing-600`.
+     * @prop --bs-chatbot-header-button-radius - Corner radius of each icon button. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-chatbot-header-button-hover - Icon button background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-chatbot-header-button-pressed - Icon button background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-chatbot-header-icon - Icon color. Aliased to `--bs-icon-default`.
+     */
+    interface HTMLBsChatbotHeaderElement extends Components.BsChatbotHeader, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsChatbotHeaderElementEventMap>(type: K, listener: (this: HTMLBsChatbotHeaderElement, ev: BsChatbotHeaderCustomEvent<HTMLBsChatbotHeaderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsChatbotHeaderElementEventMap>(type: K, listener: (this: HTMLBsChatbotHeaderElement, ev: BsChatbotHeaderCustomEvent<HTMLBsChatbotHeaderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsChatbotHeaderElement: {
+        prototype: HTMLBsChatbotHeaderElement;
+        new (): HTMLBsChatbotHeaderElement;
+    };
+    interface HTMLBsChatbotResponseActionElementEventMap {
+        "bsLike": void;
+        "bsDislike": void;
+        "bsCopy": void;
+        "bsRegenerate": void;
+        "bsMenuOpen": void;
+        "bsSourcesClick": void;
+    }
+    /**
+     * The row of action buttons that appears below an AI response message in a Genie chat panel:
+     * like, dislike, copy, regenerate, and more-options icon buttons, plus an optional "N sources"
+     * button.
+     * ## When to use
+     * - Directly below an AI-generated response message in a Genie chat panel.
+     * ## When not to use
+     * - Below a user's own message -- these actions (regenerate, like/dislike a response, etc.) only
+     *   make sense for AI-generated content.
+     * @prop --bs-chatbot-response-action-gap - Gap between all buttons in the row. Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-response-action-padding-top - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-response-action-padding-bottom - Aliased to `--bs-spacing-50`.
+     * @prop --bs-chatbot-response-action-button-size - Width/height of each icon button. Aliased to `--bs-spacing-400`.
+     * @prop --bs-chatbot-response-action-button-radius - Corner radius of each button. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-chatbot-response-action-button-hover - Button background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-chatbot-response-action-button-pressed - Button background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-chatbot-response-action-icon - Icon color. Aliased to `--bs-icon-neutral-default`.
+     * @prop --bs-chatbot-response-action-sources-gap - Gap between the sources icon and its label. Aliased to `--bs-spacing-50`.
+     * @prop --bs-chatbot-response-action-sources-padding-left - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-response-action-sources-padding-right - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-response-action-sources-color - Text color of the sources label. Aliased to `--bs-text-neutral-default`.
+     * @prop --bs-chatbot-response-action-sources-font-size - Aliased to `--bs-font-size-sm`.
+     * @prop --bs-chatbot-response-action-sources-line-height - Aliased to `--bs-line-height-body-sm`.
+     */
+    interface HTMLBsChatbotResponseActionElement extends Components.BsChatbotResponseAction, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsChatbotResponseActionElementEventMap>(type: K, listener: (this: HTMLBsChatbotResponseActionElement, ev: BsChatbotResponseActionCustomEvent<HTMLBsChatbotResponseActionElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsChatbotResponseActionElementEventMap>(type: K, listener: (this: HTMLBsChatbotResponseActionElement, ev: BsChatbotResponseActionCustomEvent<HTMLBsChatbotResponseActionElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsChatbotResponseActionElement: {
+        prototype: HTMLBsChatbotResponseActionElement;
+        new (): HTMLBsChatbotResponseActionElement;
     };
     interface HTMLBsComposerElementEventMap {
         "bsInput": string;
@@ -508,6 +664,8 @@ declare global {
         "bs-button": HTMLBsButtonElement;
         "bs-button-skeleton": HTMLBsButtonSkeletonElement;
         "bs-card": HTMLBsCardElement;
+        "bs-chatbot-header": HTMLBsChatbotHeaderElement;
+        "bs-chatbot-response-action": HTMLBsChatbotResponseActionElement;
         "bs-composer": HTMLBsComposerElement;
         "bs-data-table": HTMLBsDataTableElement;
         "bs-input": HTMLBsInputElement;
@@ -617,6 +775,108 @@ declare namespace LocalJSX {
           * @default 'raised'
          */
         "surface"?: BsCardSurface;
+    }
+    /**
+     * The header bar that sits above `bs-composer` in a Genie AI chat panel: the Genie brand mark on
+     * the left and four fixed actions (new chat, history, expand, close) on the right.
+     * ## When to use
+     * - The top bar of a Genie AI chat panel, directly above a `bs-composer`.
+     * ## When not to use
+     * - A generic app/page header — this component's layout and actions are purpose-built for the
+     *   Genie chat panel, not a general navigation bar.
+     * @prop --bs-chatbot-header-bg - Background of the header bar. Aliased to `--bs-surface-base`.
+     * @prop --bs-chatbot-header-border - Bottom border color. Aliased to `--bs-border-default`.
+     * @prop --bs-chatbot-header-padding-top - Aliased to `--bs-spacing-200`.
+     * @prop --bs-chatbot-header-padding-bottom - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-header-padding-x - Aliased to `--bs-margin-fluid`.
+     * @prop --bs-chatbot-header-gap - Gap between the logo and the button group. Aliased to `--bs-navigation-header-gap`.
+     * @prop --bs-chatbot-header-button-size - Width/height of each icon button. Aliased to `--bs-spacing-600`.
+     * @prop --bs-chatbot-header-button-radius - Corner radius of each icon button. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-chatbot-header-button-hover - Icon button background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-chatbot-header-button-pressed - Icon button background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-chatbot-header-icon - Icon color. Aliased to `--bs-icon-default`.
+     */
+    interface BsChatbotHeader {
+        /**
+          * Whether the chat panel is currently expanded (e.g. to full viewport width/height). This component has no visibility into the surrounding layout, so it does not resize anything itself -- it only tracks and reflects the toggle state (via the `expanded` attribute, for CSS hooks, and `aria-pressed`/`aria-label` on the expand button) and emits `bsExpand` with the new value. The consuming app is responsible for actually resizing its own chat panel container in response to that event, since only the app knows what that container is.
+          * @default false
+         */
+        "expanded"?: boolean;
+        /**
+          * Accessible label for the header landmark, and alt text context for the logo image.
+          * @default 'Genie'
+         */
+        "heading"?: string;
+        /**
+          * Fires when the "Close" button is clicked.
+         */
+        "onBsClose"?: (event: BsChatbotHeaderCustomEvent<void>) => void;
+        /**
+          * Fires when the "Expand"/"Collapse" button is clicked, with the new `expanded` value.
+         */
+        "onBsExpand"?: (event: BsChatbotHeaderCustomEvent<boolean>) => void;
+        /**
+          * Fires when the "History" button is clicked.
+         */
+        "onBsHistory"?: (event: BsChatbotHeaderCustomEvent<void>) => void;
+        /**
+          * Fires when the "New chat" button is clicked.
+         */
+        "onBsNewChat"?: (event: BsChatbotHeaderCustomEvent<void>) => void;
+    }
+    /**
+     * The row of action buttons that appears below an AI response message in a Genie chat panel:
+     * like, dislike, copy, regenerate, and more-options icon buttons, plus an optional "N sources"
+     * button.
+     * ## When to use
+     * - Directly below an AI-generated response message in a Genie chat panel.
+     * ## When not to use
+     * - Below a user's own message -- these actions (regenerate, like/dislike a response, etc.) only
+     *   make sense for AI-generated content.
+     * @prop --bs-chatbot-response-action-gap - Gap between all buttons in the row. Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-response-action-padding-top - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-response-action-padding-bottom - Aliased to `--bs-spacing-50`.
+     * @prop --bs-chatbot-response-action-button-size - Width/height of each icon button. Aliased to `--bs-spacing-400`.
+     * @prop --bs-chatbot-response-action-button-radius - Corner radius of each button. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-chatbot-response-action-button-hover - Button background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-chatbot-response-action-button-pressed - Button background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-chatbot-response-action-icon - Icon color. Aliased to `--bs-icon-neutral-default`.
+     * @prop --bs-chatbot-response-action-sources-gap - Gap between the sources icon and its label. Aliased to `--bs-spacing-50`.
+     * @prop --bs-chatbot-response-action-sources-padding-left - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-response-action-sources-padding-right - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-response-action-sources-color - Text color of the sources label. Aliased to `--bs-text-neutral-default`.
+     * @prop --bs-chatbot-response-action-sources-font-size - Aliased to `--bs-font-size-sm`.
+     * @prop --bs-chatbot-response-action-sources-line-height - Aliased to `--bs-line-height-body-sm`.
+     */
+    interface BsChatbotResponseAction {
+        /**
+          * Fires when the "Copy" button is clicked.
+         */
+        "onBsCopy"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
+        /**
+          * Fires when the "Dislike" button is clicked.
+         */
+        "onBsDislike"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
+        /**
+          * Fires when the "Like" button is clicked.
+         */
+        "onBsLike"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
+        /**
+          * Fires when the "More options" button is clicked.
+         */
+        "onBsMenuOpen"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
+        /**
+          * Fires when the "Regenerate" button is clicked.
+         */
+        "onBsRegenerate"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
+        /**
+          * Fires when the "N sources" button is clicked.
+         */
+        "onBsSourcesClick"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
+        /**
+          * Number of sources backing the response. When set to a positive number, renders the "N sources" button (singular "1 source" / plural "N sources"). When unset or `0`, the button is not rendered at all.
+         */
+        "sourcesCount"?: number;
     }
     /**
      * A chat composer input for Genie AI-style conversational interfaces: a text field
@@ -809,6 +1069,13 @@ declare namespace LocalJSX {
     interface BsCardAttributes {
         "surface": BsCardSurface;
     }
+    interface BsChatbotHeaderAttributes {
+        "heading": string;
+        "expanded": boolean;
+    }
+    interface BsChatbotResponseActionAttributes {
+        "sourcesCount": number;
+    }
     interface BsComposerAttributes {
         "variant": BsComposerVariant;
         "placeholder": string;
@@ -841,6 +1108,8 @@ declare namespace LocalJSX {
         "bs-button": Omit<BsButton, keyof BsButtonAttributes> & { [K in keyof BsButton & keyof BsButtonAttributes]?: BsButton[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `attr:${K}`]?: BsButtonAttributes[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `prop:${K}`]?: BsButton[K] };
         "bs-button-skeleton": Omit<BsButtonSkeleton, keyof BsButtonSkeletonAttributes> & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes]?: BsButtonSkeleton[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `attr:${K}`]?: BsButtonSkeletonAttributes[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `prop:${K}`]?: BsButtonSkeleton[K] };
         "bs-card": Omit<BsCard, keyof BsCardAttributes> & { [K in keyof BsCard & keyof BsCardAttributes]?: BsCard[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `attr:${K}`]?: BsCardAttributes[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `prop:${K}`]?: BsCard[K] };
+        "bs-chatbot-header": Omit<BsChatbotHeader, keyof BsChatbotHeaderAttributes> & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes]?: BsChatbotHeader[K] } & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes as `attr:${K}`]?: BsChatbotHeaderAttributes[K] } & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes as `prop:${K}`]?: BsChatbotHeader[K] };
+        "bs-chatbot-response-action": Omit<BsChatbotResponseAction, keyof BsChatbotResponseActionAttributes> & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes]?: BsChatbotResponseAction[K] } & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes as `attr:${K}`]?: BsChatbotResponseActionAttributes[K] } & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes as `prop:${K}`]?: BsChatbotResponseAction[K] };
         "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
@@ -910,6 +1179,52 @@ declare module "@stencil/core" {
              * - For a dismissible/transient message — use a modal or a dedicated notification component.
              */
             "bs-card": LocalJSX.IntrinsicElements["bs-card"] & JSXBase.HTMLAttributes<HTMLBsCardElement>;
+            /**
+             * The header bar that sits above `bs-composer` in a Genie AI chat panel: the Genie brand mark on
+             * the left and four fixed actions (new chat, history, expand, close) on the right.
+             * ## When to use
+             * - The top bar of a Genie AI chat panel, directly above a `bs-composer`.
+             * ## When not to use
+             * - A generic app/page header — this component's layout and actions are purpose-built for the
+             *   Genie chat panel, not a general navigation bar.
+             * @prop --bs-chatbot-header-bg - Background of the header bar. Aliased to `--bs-surface-base`.
+             * @prop --bs-chatbot-header-border - Bottom border color. Aliased to `--bs-border-default`.
+             * @prop --bs-chatbot-header-padding-top - Aliased to `--bs-spacing-200`.
+             * @prop --bs-chatbot-header-padding-bottom - Aliased to `--bs-spacing-100`.
+             * @prop --bs-chatbot-header-padding-x - Aliased to `--bs-margin-fluid`.
+             * @prop --bs-chatbot-header-gap - Gap between the logo and the button group. Aliased to `--bs-navigation-header-gap`.
+             * @prop --bs-chatbot-header-button-size - Width/height of each icon button. Aliased to `--bs-spacing-600`.
+             * @prop --bs-chatbot-header-button-radius - Corner radius of each icon button. Aliased to `--bs-border-radius-100`.
+             * @prop --bs-chatbot-header-button-hover - Icon button background on hover. Aliased to `--bs-color-neutral-container`.
+             * @prop --bs-chatbot-header-button-pressed - Icon button background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+             * @prop --bs-chatbot-header-icon - Icon color. Aliased to `--bs-icon-default`.
+             */
+            "bs-chatbot-header": LocalJSX.IntrinsicElements["bs-chatbot-header"] & JSXBase.HTMLAttributes<HTMLBsChatbotHeaderElement>;
+            /**
+             * The row of action buttons that appears below an AI response message in a Genie chat panel:
+             * like, dislike, copy, regenerate, and more-options icon buttons, plus an optional "N sources"
+             * button.
+             * ## When to use
+             * - Directly below an AI-generated response message in a Genie chat panel.
+             * ## When not to use
+             * - Below a user's own message -- these actions (regenerate, like/dislike a response, etc.) only
+             *   make sense for AI-generated content.
+             * @prop --bs-chatbot-response-action-gap - Gap between all buttons in the row. Aliased to `--bs-spacing-100`.
+             * @prop --bs-chatbot-response-action-padding-top - Aliased to `--bs-spacing-150`.
+             * @prop --bs-chatbot-response-action-padding-bottom - Aliased to `--bs-spacing-50`.
+             * @prop --bs-chatbot-response-action-button-size - Width/height of each icon button. Aliased to `--bs-spacing-400`.
+             * @prop --bs-chatbot-response-action-button-radius - Corner radius of each button. Aliased to `--bs-border-radius-100`.
+             * @prop --bs-chatbot-response-action-button-hover - Button background on hover. Aliased to `--bs-color-neutral-container`.
+             * @prop --bs-chatbot-response-action-button-pressed - Button background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+             * @prop --bs-chatbot-response-action-icon - Icon color. Aliased to `--bs-icon-neutral-default`.
+             * @prop --bs-chatbot-response-action-sources-gap - Gap between the sources icon and its label. Aliased to `--bs-spacing-50`.
+             * @prop --bs-chatbot-response-action-sources-padding-left - Aliased to `--bs-spacing-100`.
+             * @prop --bs-chatbot-response-action-sources-padding-right - Aliased to `--bs-spacing-150`.
+             * @prop --bs-chatbot-response-action-sources-color - Text color of the sources label. Aliased to `--bs-text-neutral-default`.
+             * @prop --bs-chatbot-response-action-sources-font-size - Aliased to `--bs-font-size-sm`.
+             * @prop --bs-chatbot-response-action-sources-line-height - Aliased to `--bs-line-height-body-sm`.
+             */
+            "bs-chatbot-response-action": LocalJSX.IntrinsicElements["bs-chatbot-response-action"] & JSXBase.HTMLAttributes<HTMLBsChatbotResponseActionElement>;
             /**
              * A chat composer input for Genie AI-style conversational interfaces: a text field
              * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose

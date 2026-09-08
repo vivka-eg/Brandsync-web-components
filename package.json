@@ -52,6 +52,7 @@
     "@stencil/core": "^4.27.1 || ^5.0.0-0",
     "@stencil/react-output-target": "^1.6.2",
     "@stencil/vitest": "^1.8.3",
+    "@storybook/addon-a11y": "^10.5.8",
     "@storybook/addon-docs": "^10.5.8",
     "@storybook/web-components-vite": "^10.5.8",
     "@types/node": "^22.13.5",

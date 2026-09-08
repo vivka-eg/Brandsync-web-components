@@ -1,0 +1,66 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ChatbotHeaderStories from './bs-chatbot-header.stories';
+
+<Meta of={ChatbotHeaderStories} />
+
+# Chatbot header
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Chat panel (header + composer)](#chat-panel-header--composer)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+The header bar that sits above `bs-composer` in a Genie AI chat panel: the Genie brand mark on
+the left and four fixed actions (new chat, history, expand, close) on the right.
+
+**When to use**
+- The top bar of a Genie AI chat panel, directly above a `bs-composer`.
+
+**When not to use**
+- A generic app/page header — this component's layout and actions are purpose-built for the
+  Genie chat panel, not a general navigation bar.
+
+<Canvas of={ChatbotHeaderStories.Default} />
+
+## Chat panel (header + composer)
+
+`bs-chatbot-header` and `bs-composer` are designed to be stacked directly together to form a
+complete Genie AI chat panel — the header pinned to the top, the composer below it.
+
+<Canvas of={ChatbotHeaderStories.WithComposer} />
+
+## Component API
+
+<Controls of={ChatbotHeaderStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Shadow parts: `::part(logo)`, `::part(new-chat)`, `::part(history)`, `::part(expand)`, `::part(close)`
+- CSS custom properties: `--bs-chatbot-header-bg`, `--bs-chatbot-header-border`,
+  `--bs-chatbot-header-padding-top`, `--bs-chatbot-header-padding-bottom`,
+  `--bs-chatbot-header-padding-x`, `--bs-chatbot-header-gap`, `--bs-chatbot-header-button-size`,
+  `--bs-chatbot-header-button-radius`, `--bs-chatbot-header-button-hover`,
+  `--bs-chatbot-header-button-pressed`, `--bs-chatbot-header-icon`
+
+## Events
+
+| Event       | Fires when                          | Payload | Cancelable |
+| ----------- | ------------------------------------ | ------- | ---------- |
+| `bsNewChat` | The "New chat" button is clicked     | `void`  | No         |
+| `bsHistory` | The "History" button is clicked      | `void`  | No         |
+| `bsExpand`  | The "Expand" button is clicked       | `void`  | No         |
+| `bsClose`   | The "Close" button is clicked        | `void`  | No         |
+
+## Accessibility
+
+- The header renders with `role="banner"` and an `aria-label` sourced from the `heading` prop
+  (default `"Genie"`), giving assistive technology an accessible name for the landmark.
+- The logo image's `alt` text also uses `heading`, so overriding it (e.g. to `"Support"` for a
+  human-support variant of the panel) updates both the landmark name and the image's accessible
+  name together.
+- Each of the four icon buttons has a fixed, descriptive `aria-label` ("New chat", "History",
+  "Expand", "Close") since they're icon-only with no visible text.
