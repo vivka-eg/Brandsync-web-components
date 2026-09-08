@@ -1,0 +1,57 @@
+:host {
+  display: inline-block;
+  --bs-chatbot-suggestion-button-radius: var(--bs-border-radius-full);
+  --bs-chatbot-suggestion-button-border-color: var(--bs-border-primary);
+  --bs-chatbot-suggestion-button-bg-default: var(--bs-color-primary-container);
+  --bs-chatbot-suggestion-button-bg-hover: var(--bs-color-primary-container-hover);
+  /* No pre-built semantic "container-pressed" token matches this tonal button's lighter pressed
+   * shade progression (50 -> 100 -> 200) -- alias the primitive directly, same precedent
+   * documented in bs-button.css for its subtle/outlined/success/warning/info variants. */
+  --bs-chatbot-suggestion-button-bg-pressed: var(--bs-brand-200);
+  --bs-chatbot-suggestion-button-bg-focus: var(--bs-color-primary-container-hover);
+  --bs-chatbot-suggestion-button-text-default: var(--bs-text-action);
+  --bs-chatbot-suggestion-button-text-hover: var(--bs-text-action-hover);
+  --bs-chatbot-suggestion-button-focus-ring-color: var(--bs-border-primary-focus);
+}
+
+.bs-chatbot-suggestion-button {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  min-width: 80px;
+  padding: var(--bs-spacing-100) var(--bs-spacing-200);
+  border: var(--bs-border-width-thin) solid var(--bs-chatbot-suggestion-button-border-color);
+  border-radius: var(--bs-chatbot-suggestion-button-radius);
+  background: var(--bs-chatbot-suggestion-button-bg-default);
+  color: var(--bs-chatbot-suggestion-button-text-default);
+  font-family: inherit;
+  font-size: var(--bs-font-size-md);
+  line-height: calc(var(--bs-line-height-body-md) * 1px);
+  text-align: center;
+  cursor: pointer;
+  transition: background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-chatbot-suggestion-button:hover:not(:disabled) {
+  background: var(--bs-chatbot-suggestion-button-bg-hover);
+  color: var(--bs-chatbot-suggestion-button-text-hover);
+}
+
+.bs-chatbot-suggestion-button:active:not(:disabled) {
+  background: var(--bs-chatbot-suggestion-button-bg-pressed);
+  color: var(--bs-chatbot-suggestion-button-text-hover);
+}
+
+.bs-chatbot-suggestion-button:focus-visible {
+  background: var(--bs-chatbot-suggestion-button-bg-focus);
+  color: var(--bs-chatbot-suggestion-button-text-hover);
+  outline: var(--bs-border-width-medium) solid var(--bs-chatbot-suggestion-button-focus-ring-color);
+  outline-offset: 3px;
+}
+
+.bs-chatbot-suggestion-button:disabled {
+  opacity: var(--bs-opacity-disabled);
+  cursor: not-allowed;
+}

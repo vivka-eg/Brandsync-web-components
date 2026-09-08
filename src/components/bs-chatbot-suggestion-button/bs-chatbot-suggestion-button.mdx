@@ -1,0 +1,65 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as ChatbotSuggestionButtonStories from './bs-chatbot-suggestion-button.stories';
+
+<Meta of={ChatbotSuggestionButtonStories} />
+
+# Chatbot suggestion button
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Multiple suggestions (flex-wrap row)](#multiple-suggestions-flex-wrap-row)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A pill-shaped clickable suggestion chip for a Genie AI chat panel (e.g. "How can I help you?").
+One instance renders one chip -- to show several suggestion prompts side by side, render multiple
+`bs-chatbot-suggestion-button` elements inside a plain flex-wrap container.
+
+**When to use**
+- Quick-reply/starter prompts shown above or alongside `bs-composer` in a Genie AI chat panel.
+
+**When not to use**
+- As a general-purpose button — use `bs-button` instead, this component's pill shape and tonal
+  color treatment are specific to Genie chat suggestion prompts.
+
+<Canvas of={ChatbotSuggestionButtonStories.Default} />
+
+## Multiple suggestions (flex-wrap row)
+
+This component doesn't ship a separate list/group wrapper — a consumer lays out several suggestion
+chips together with a plain `<div>` using `flex-wrap: wrap`, as shown here.
+
+<Canvas of={ChatbotSuggestionButtonStories.SuggestionRow} />
+
+## Component API
+
+<Controls of={ChatbotSuggestionButtonStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default slot (label text)
+- Shadow parts: `::part(button)`
+- CSS custom properties: `--bs-chatbot-suggestion-button-radius`,
+  `--bs-chatbot-suggestion-button-border-color`, `--bs-chatbot-suggestion-button-bg-default`,
+  `--bs-chatbot-suggestion-button-bg-hover`, `--bs-chatbot-suggestion-button-bg-pressed`,
+  `--bs-chatbot-suggestion-button-bg-focus`, `--bs-chatbot-suggestion-button-text-default`,
+  `--bs-chatbot-suggestion-button-text-hover`, `--bs-chatbot-suggestion-button-focus-ring-color`
+
+## Events
+
+| Event      | Fires when                | Payload | Cancelable |
+| ---------- | -------------------------- | ------- | ---------- |
+| `bsSelect` | The button is clicked      | `void`  | No         |
+
+## Accessibility
+
+- Renders as a native `<button>`, so it's keyboard-focusable and activatable (Enter/Space) with no
+  extra ARIA needed.
+- The 4 Figma-specified interaction states (Enabled/Hover/Pressed/Focus) map directly to native CSS
+  pseudo-classes (`:hover`, `:active`, `:focus-visible`) on the inner button — there's no custom
+  `state` prop.
+- `disabled` applies the native `disabled` attribute, which removes the button from the tab order
+  and blocks both click and keyboard activation automatically.
