@@ -18,6 +18,12 @@ icon and behavior change with `state` (send, stop generating, or confirm a voice
 - A general-purpose text field — use `bs-input` instead; this component's layout and states are
   purpose-built for a chat composer, not a generic form field.
 
+## Focus
+Uses `shadow: { delegatesFocus: true }`, so calling `.focus()` on the `<bs-composer>` host
+element itself (not just its internal `<input>`) moves focus into the shadow-DOM text field --
+useful for e.g. focusing the composer after a parent view mounts, without reaching into its
+shadow root.
+
 ## Properties
 
 | Property      | Attribute     | Description                                                                                                                                                                                                                                                                                                                           | Type                                                  | Default     |
@@ -39,6 +45,13 @@ icon and behavior change with `state` (send, stop generating, or confirm a voice
 | `bsStop`         | Fires when the primary action button is clicked while `state="generating"`.                                                                                                        | `CustomEvent<void>`   |
 | `bsSubmit`       | Fires when the primary action button is clicked while `state="idle"`.                                                                                                              | `CustomEvent<void>`   |
 | `bsVoiceConfirm` | Fires when the primary action button is clicked while `state="recording"`.                                                                                                         | `CustomEvent<void>`   |
+
+
+## Slots
+
+| Slot            | Description                                                                                                                                                                                                                                                                                                                 |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"actions-end"` | Extra consumer-supplied controls appended after the primary action button in the controls row (e.g. a product-specific "Tools" button). Slotted content is placed inline in the same flex row as attach/mic/action, so a slotted element should size itself to roughly match `--bs-composer-button-size` to align visually. |
 
 
 ## Shadow Parts

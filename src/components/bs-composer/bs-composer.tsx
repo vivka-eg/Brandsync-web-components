@@ -28,6 +28,16 @@ const WAVEFORM_BAR_HEIGHTS = [
  * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
  *   purpose-built for a chat composer, not a generic form field.
  *
+ * ## Focus
+ * Uses `shadow: { delegatesFocus: true }`, so calling `.focus()` on the `<bs-composer>` host
+ * element itself (not just its internal `<input>`) moves focus into the shadow-DOM text field --
+ * useful for e.g. focusing the composer after a parent view mounts, without reaching into its
+ * shadow root.
+ *
+ * @slot actions-end - Extra consumer-supplied controls appended after the primary action button
+ *   in the controls row (e.g. a product-specific "Tools" button). Slotted content is placed
+ *   inline in the same flex row as attach/mic/action, so a slotted element should size itself to
+ *   roughly match `--bs-composer-button-size` to align visually.
  * @part attach - The "+" attach button.
  * @part input - The native text `<input>`.
  * @part mic - The secondary icon button (microphone, or the stop-recording square while `state="recording"`).
@@ -193,6 +203,7 @@ export class BsComposer {
           >
             {this.renderActionIcon()}
           </button>
+          <slot name="actions-end"></slot>
         </div>
       </div>
     );

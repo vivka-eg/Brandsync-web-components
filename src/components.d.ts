@@ -132,6 +132,11 @@ export namespace Components {
      * ## When not to use
      * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
      *   purpose-built for a chat composer, not a generic form field.
+     * ## Focus
+     * Uses `shadow: { delegatesFocus: true }`, so calling `.focus()` on the `<bs-composer>` host
+     * element itself (not just its internal `<input>`) moves focus into the shadow-DOM text field --
+     * useful for e.g. focusing the composer after a parent view mounts, without reaching into its
+     * shadow root.
      * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
      * @prop --bs-composer-button-radius - Corner radius of the attach/mic/action buttons. Aliased to `--bs-border-radius-100`.
      * @prop --bs-composer-button-size - Width/height of the attach/mic/action buttons. Aliased to `--bs-spacing-600`.
@@ -377,6 +382,11 @@ declare global {
      * ## When not to use
      * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
      *   purpose-built for a chat composer, not a generic form field.
+     * ## Focus
+     * Uses `shadow: { delegatesFocus: true }`, so calling `.focus()` on the `<bs-composer>` host
+     * element itself (not just its internal `<input>`) moves focus into the shadow-DOM text field --
+     * useful for e.g. focusing the composer after a parent view mounts, without reaching into its
+     * shadow root.
      * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
      * @prop --bs-composer-button-radius - Corner radius of the attach/mic/action buttons. Aliased to `--bs-border-radius-100`.
      * @prop --bs-composer-button-size - Width/height of the attach/mic/action buttons. Aliased to `--bs-spacing-600`.
@@ -617,6 +627,11 @@ declare namespace LocalJSX {
      * ## When not to use
      * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
      *   purpose-built for a chat composer, not a generic form field.
+     * ## Focus
+     * Uses `shadow: { delegatesFocus: true }`, so calling `.focus()` on the `<bs-composer>` host
+     * element itself (not just its internal `<input>`) moves focus into the shadow-DOM text field --
+     * useful for e.g. focusing the composer after a parent view mounts, without reaching into its
+     * shadow root.
      * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
      * @prop --bs-composer-button-radius - Corner radius of the attach/mic/action buttons. Aliased to `--bs-border-radius-100`.
      * @prop --bs-composer-button-size - Width/height of the attach/mic/action buttons. Aliased to `--bs-spacing-600`.
@@ -904,6 +919,11 @@ declare module "@stencil/core" {
              * ## When not to use
              * - A general-purpose text field — use `bs-input` instead; this component's layout and states are
              *   purpose-built for a chat composer, not a generic form field.
+             * ## Focus
+             * Uses `shadow: { delegatesFocus: true }`, so calling `.focus()` on the `<bs-composer>` host
+             * element itself (not just its internal `<input>`) moves focus into the shadow-DOM text field --
+             * useful for e.g. focusing the composer after a parent view mounts, without reaching into its
+             * shadow root.
              * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
              * @prop --bs-composer-button-radius - Corner radius of the attach/mic/action buttons. Aliased to `--bs-border-radius-100`.
              * @prop --bs-composer-button-size - Width/height of the attach/mic/action buttons. Aliased to `--bs-spacing-600`.

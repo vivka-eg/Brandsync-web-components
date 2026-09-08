@@ -38,6 +38,27 @@ describe('bs-composer', () => {
     expect(input).toEqualAttribute('aria-label', 'Message');
   });
 
+  it('renders consumer-supplied content in the actions-end slot, after the primary action button', async () => {
+    const { root } = await render(
+      <bs-composer>
+        <button slot="actions-end" aria-label="Tools">
+          Tools
+        </button>
+      </bs-composer>,
+    );
+    const slot = root.shadowRoot.querySelector('slot[name="actions-end"]') as HTMLSlotElement;
+    expect(slot).not.toBeNull();
+    const assigned = slot.assignedElements();
+    expect(assigned).toHaveLength(1);
+    expect(assigned[0]).toEqualAttribute('aria-label', 'Tools');
+
+    const controlsRow = root.shadowRoot.querySelector('.bs-composer__controls-row');
+    const children = Array.from(controlsRow.children);
+    const slotIndex = children.indexOf(slot);
+    const actionIndex = children.findIndex(el => el.getAttribute('part') === 'action');
+    expect(slotIndex).toBeGreaterThan(actionIndex);
+  });
+
   it('emits bsInput with the current value as the user types', async () => {
     const { root, spyOnEvent } = await render(<bs-composer></bs-composer>);
     const spy = spyOnEvent('bsInput');
