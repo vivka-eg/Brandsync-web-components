@@ -1,0 +1,72 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as MenuItemStories from './bs-menu-item.stories';
+
+<Meta of={MenuItemStories} />
+
+# Menu item
+
+## Table of Contents
+
+- [Overview](#overview)
+- [With an icon](#with-an-icon)
+- [In a bs-menu](#in-a-bs-menu)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A single selectable row inside a `bs-menu`: an optional icon plus a text label, rendered as a real
+`<button>` for correct keyboard/click semantics.
+
+**When to use**
+- As a child of `bs-menu`, one per selectable action/option.
+
+**When not to use**
+- Outside of `bs-menu` -- this component's sizing/hover treatment is designed to sit inside the
+  menu's rounded, padded list box.
+
+<Canvas of={MenuItemStories.Default} />
+
+## With an icon
+
+The `icon` slot is optional and has no default fallback glyph -- unlike some other components in
+this library, `bs-menu-item` is generic and has no confirmed default icon, so every usage supplies
+its own. When nothing is slotted, no icon space is reserved.
+
+<Canvas of={MenuItemStories.WithIcon} />
+
+## In a bs-menu
+
+`bs-menu-item` is designed to be used as a child of `bs-menu`, which supplies the rounded,
+elevated, padded list box around a stack of items.
+
+<Canvas of={MenuItemStories.InAMenu} />
+
+## Component API
+
+<Controls of={MenuItemStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: `icon`, default (label text)
+- Shadow parts: `::part(item)`, `::part(icon)`, `::part(label)`
+- CSS custom properties: `--bs-menu-item-radius`, `--bs-menu-item-padding-y`,
+  `--bs-menu-item-padding-x`, `--bs-menu-item-gap`, `--bs-menu-item-hover`,
+  `--bs-menu-item-pressed`, `--bs-menu-item-color`, `--bs-menu-item-font-size`,
+  `--bs-menu-item-line-height`
+
+## Events
+
+| Event      | Fires when             | Payload | Cancelable |
+| ---------- | ----------------------- | ------- | ---------- |
+| `bsSelect` | The item is clicked      | `void`  | No         |
+
+## Accessibility
+
+- Renders a real `<button type="button">` with `role="menuitem"`, so it participates correctly in
+  tab order and native click/keyboard activation (<kbd>Enter</kbd>/<kbd>Space</kbd>).
+- The icon slot is `aria-hidden` at the consumer's discretion (icons are typically decorative next
+  to a visible text label) -- `bs-menu-item` itself does not add `aria-hidden` to slotted icon
+  content, so a consumer slotting in a meaningful icon should add that themselves.
+- No arrow-key roving focus between sibling items is implemented -- users move between items with
+  <kbd>Tab</kbd>, same as any list of buttons.

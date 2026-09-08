@@ -107,8 +107,8 @@ describe('bs-chatbot-response-action', () => {
     expect(sourcesSpy.length).toBe(0);
   });
 
-  it('emits bsMenuOpen when the more-options button is clicked, and not the other events', async () => {
-    const { root, spyOnEvent } = await render(<bs-chatbot-response-action sourcesCount={3}></bs-chatbot-response-action>);
+  it('emits bsMenuOpen with true when the more-options button is clicked, and not the other events', async () => {
+    const { root, waitForChanges, spyOnEvent } = await render(<bs-chatbot-response-action sourcesCount={3}></bs-chatbot-response-action>);
     const likeSpy = spyOnEvent('bsLike');
     const dislikeSpy = spyOnEvent('bsDislike');
     const copySpy = spyOnEvent('bsCopy');
@@ -117,13 +117,65 @@ describe('bs-chatbot-response-action', () => {
     const sourcesSpy = spyOnEvent('bsSourcesClick');
 
     (root.shadowRoot.querySelector('[part="menu"]') as HTMLButtonElement).click();
+    await waitForChanges();
 
     expect(menuSpy).toHaveReceivedEventTimes(1);
+    expect(menuSpy).toHaveReceivedEventDetail(true);
+    expect((root as HTMLBsChatbotResponseActionElement).menuOpen).toBe(true);
     expect(likeSpy.length).toBe(0);
     expect(dislikeSpy.length).toBe(0);
     expect(copySpy.length).toBe(0);
     expect(regenerateSpy.length).toBe(0);
     expect(sourcesSpy.length).toBe(0);
+  });
+
+  it('emits bsMenuOpen with false when the more-options button is clicked again to close it', async () => {
+    const { root, waitForChanges, spyOnEvent } = await render(<bs-chatbot-response-action sourcesCount={3}></bs-chatbot-response-action>);
+    const menuSpy = spyOnEvent('bsMenuOpen');
+    const menuButton = root.shadowRoot.querySelector('[part="menu"]') as HTMLButtonElement;
+
+    menuButton.click();
+    await waitForChanges();
+    menuButton.click();
+    await waitForChanges();
+
+    expect(menuSpy).toHaveReceivedEventTimes(2);
+    expect(menuSpy).toHaveReceivedEventDetail(false);
+    expect((root as HTMLBsChatbotResponseActionElement).menuOpen).toBe(false);
+  });
+
+  it('does not render the menu slot wrapper when menuOpen is false', async () => {
+    const { root } = await render(<bs-chatbot-response-action></bs-chatbot-response-action>);
+    expect(root.shadowRoot.querySelector('slot[name="menu"]')).toBeNull();
+  });
+
+  it('renders the menu slot wrapper when menuOpen is true', async () => {
+    const { root } = await render(<bs-chatbot-response-action menuOpen={true}></bs-chatbot-response-action>);
+    expect(root.shadowRoot.querySelector('slot[name="menu"]')).not.toBeNull();
+  });
+
+  it('closes the menu and emits bsMenuOpen(false) on a click outside the host', async () => {
+    const { root, waitForChanges, spyOnEvent } = await render(<bs-chatbot-response-action menuOpen={true}></bs-chatbot-response-action>);
+    const menuSpy = spyOnEvent('bsMenuOpen');
+
+    document.body.click();
+    await waitForChanges();
+
+    expect((root as HTMLBsChatbotResponseActionElement).menuOpen).toBe(false);
+    expect(menuSpy).toHaveReceivedEventTimes(1);
+    expect(menuSpy).toHaveReceivedEventDetail(false);
+  });
+
+  it('closes the menu on Escape', async () => {
+    const { root, waitForChanges, spyOnEvent } = await render(<bs-chatbot-response-action menuOpen={true}></bs-chatbot-response-action>);
+    const menuSpy = spyOnEvent('bsMenuOpen');
+
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }));
+    await waitForChanges();
+
+    expect((root as HTMLBsChatbotResponseActionElement).menuOpen).toBe(false);
+    expect(menuSpy).toHaveReceivedEventTimes(1);
+    expect(menuSpy).toHaveReceivedEventDetail(false);
   });
 
   it('emits bsSourcesClick when the sources button is clicked, and not the other events', async () => {

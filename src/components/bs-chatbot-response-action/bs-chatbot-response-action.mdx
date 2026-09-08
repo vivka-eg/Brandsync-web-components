@@ -10,6 +10,7 @@ import * as ChatbotResponseActionStories from './bs-chatbot-response-action.stor
 - [Overview](#overview)
 - [Without sources](#without-sources)
 - [In an AI response message](#in-an-ai-response-message)
+- [More options menu](#more-options-menu)
 - [Component API](#component-api)
 - [Events](#events)
 - [Accessibility](#accessibility)
@@ -42,12 +43,22 @@ left-aligned with the message content.
 
 <Canvas of={ChatbotResponseActionStories.InResponseMessage} />
 
+## More options menu
+
+The "more options" (kebab) button exposes a `menu` named slot, rendered in a popup positioned
+directly below it, shown only while `menuOpen` is `true`. This component doesn't own any
+menu content itself -- pair it with a `bs-menu` containing `bs-menu-item`s, wiring the button's
+`bsMenuOpen` event to toggle the menu's visibility, mirroring how `bs-chatbot-header`'s
+`WithComposer` story wires `bsExpand` to resize the surrounding panel.
+
+<Canvas of={ChatbotResponseActionStories.WithMenu} />
+
 ## Component API
 
 <Controls of={ChatbotResponseActionStories.Default} />
 
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
-- Slots: `like-icon`, `dislike-icon`, `copy-icon`, `regenerate-icon`, `menu-icon`, `sources-icon`
+- Slots: `like-icon`, `dislike-icon`, `copy-icon`, `regenerate-icon`, `menu-icon`, `menu`, `sources-icon`
 - Shadow parts: `::part(like)`, `::part(dislike)`, `::part(copy)`, `::part(regenerate)`,
   `::part(menu)`, `::part(sources)`
 - CSS custom properties: `--bs-chatbot-response-action-gap`,
@@ -68,7 +79,7 @@ left-aligned with the message content.
 | `bsDislike`       | The "Dislike" button is clicked      | `void`  | No         |
 | `bsCopy`          | The "Copy" button is clicked         | `void`  | No         |
 | `bsRegenerate`    | The "Regenerate" button is clicked   | `void`  | No         |
-| `bsMenuOpen`      | The "More options" button is clicked | `void`  | No         |
+| `bsMenuOpen`      | The "More options" button is clicked, or the menu closes (click outside, Escape) | `boolean` (new `menuOpen` value) | No         |
 | `bsSourcesClick`  | The "N sources" button is clicked    | `void`  | No         |
 
 ## Accessibility
@@ -80,3 +91,8 @@ left-aligned with the message content.
 - There is no toggled/pressed state for like/dislike in this component -- the Figma design only
   specifies a single default state, so tracking "liked"/"disliked" as a visual/ARIA state is left
   to the consuming app.
+- The "More options" button has `aria-haspopup="menu"` and `aria-expanded` reflecting `menuOpen`.
+  The menu popup itself is only present in the DOM (and accessibility tree) while `menuOpen` is
+  `true` -- it's not just visually hidden while closed.
+- The menu closes on a click outside the component, or on <kbd>Escape</kbd>, matching the pattern
+  used by `bs-modal`.

@@ -63,6 +63,19 @@
   background: var(--bs-chatbot-response-action-button-pressed);
 }
 
+.bs-chatbot-response-action__menu-wrapper {
+  position: relative;
+  display: inline-flex;
+  flex-shrink: 0;
+}
+
+.bs-chatbot-response-action__menu-popup {
+  position: absolute;
+  top: calc(100% + var(--bs-spacing-50));
+  left: 0;
+  z-index: 1;
+}
+
 .bs-chatbot-response-action__sources {
   display: inline-flex;
   align-items: center;

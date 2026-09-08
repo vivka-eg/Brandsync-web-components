@@ -181,6 +181,11 @@ export namespace Components {
      */
     interface BsChatbotResponseAction {
         /**
+          * Whether the "more options" popup menu (the `menu` slot) is currently open. Mutable + reflected so the component can track/close itself (kebab click, click outside, Escape) the same way `bs-chatbot-header`'s `expanded` prop tracks its own toggle state, while still emitting `bsMenuOpen` for the consumer to react to.
+          * @default false
+         */
+        "menuOpen": boolean;
+        /**
           * Number of sources backing the response. When set to a positive number, renders the "N sources" button (singular "1 source" / plural "N sources"). When unset or `0`, the button is not rendered at all.
          */
         "sourcesCount"?: number;
@@ -308,6 +313,44 @@ export namespace Components {
         "value": string;
     }
     /**
+     * A generic dropdown/popup menu container: a rounded, elevated list of items (typically
+     * `bs-menu-item` elements).
+     * ## When to use
+     * - A popup list of actions/options triggered by another control (e.g. a "more options" kebab
+     *   button), such as `bs-chatbot-response-action`'s `menu` slot.
+     * ## When not to use
+     * - A persistent, always-visible list of options -- this component is purpose-built as a popup
+     *   surface (rounded corners, elevation shadow), not a plain list.
+     * @prop --bs-menu-bg - Background of the menu box. Aliased to `--bs-surface-raised`.
+     * @prop --bs-menu-radius - Corner radius of the menu box. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-menu-padding-y - Top/bottom padding of the menu box. Aliased to `--bs-spacing-50`.
+     * @prop --bs-menu-gap - Gap between slotted items. Aliased to `--bs-spacing-50`.
+     * @prop --bs-menu-shadow - Elevation shadow of the menu box. Aliased to `--bs-shadow-sm`.
+     */
+    interface BsMenu {
+    }
+    /**
+     * A single selectable row inside a `bs-menu`: an optional icon plus a text label, rendered as a
+     * real `<button>` for correct keyboard/click semantics.
+     * ## When to use
+     * - As a child of `bs-menu`, one per selectable action/option.
+     * ## When not to use
+     * - Outside of `bs-menu` -- this component's sizing/hover treatment is designed to sit inside the
+     *   menu's rounded, padded list box.
+     * @prop --bs-menu-item-radius - Corner radius of the row. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
+     * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
+     * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
+     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+     * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+     * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
+     * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
+     */
+    interface BsMenuItem {
+    }
+    /**
      * An overlay dialog that interrupts the current flow for a focused task or confirmation.
      * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
      * ## When to use
@@ -350,6 +393,10 @@ export interface BsDataTableCustomEvent<T> extends CustomEvent<T> {
 export interface BsInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsInputElement;
+}
+export interface BsMenuItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsMenuItemElement;
 }
 export interface BsModalCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -480,7 +527,7 @@ declare global {
         "bsDislike": void;
         "bsCopy": void;
         "bsRegenerate": void;
-        "bsMenuOpen": void;
+        "bsMenuOpen": boolean;
         "bsSourcesClick": void;
     }
     /**
@@ -631,6 +678,63 @@ declare global {
         prototype: HTMLBsInputElement;
         new (): HTMLBsInputElement;
     };
+    /**
+     * A generic dropdown/popup menu container: a rounded, elevated list of items (typically
+     * `bs-menu-item` elements).
+     * ## When to use
+     * - A popup list of actions/options triggered by another control (e.g. a "more options" kebab
+     *   button), such as `bs-chatbot-response-action`'s `menu` slot.
+     * ## When not to use
+     * - A persistent, always-visible list of options -- this component is purpose-built as a popup
+     *   surface (rounded corners, elevation shadow), not a plain list.
+     * @prop --bs-menu-bg - Background of the menu box. Aliased to `--bs-surface-raised`.
+     * @prop --bs-menu-radius - Corner radius of the menu box. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-menu-padding-y - Top/bottom padding of the menu box. Aliased to `--bs-spacing-50`.
+     * @prop --bs-menu-gap - Gap between slotted items. Aliased to `--bs-spacing-50`.
+     * @prop --bs-menu-shadow - Elevation shadow of the menu box. Aliased to `--bs-shadow-sm`.
+     */
+    interface HTMLBsMenuElement extends Components.BsMenu, HTMLStencilElement {
+    }
+    var HTMLBsMenuElement: {
+        prototype: HTMLBsMenuElement;
+        new (): HTMLBsMenuElement;
+    };
+    interface HTMLBsMenuItemElementEventMap {
+        "bsSelect": void;
+    }
+    /**
+     * A single selectable row inside a `bs-menu`: an optional icon plus a text label, rendered as a
+     * real `<button>` for correct keyboard/click semantics.
+     * ## When to use
+     * - As a child of `bs-menu`, one per selectable action/option.
+     * ## When not to use
+     * - Outside of `bs-menu` -- this component's sizing/hover treatment is designed to sit inside the
+     *   menu's rounded, padded list box.
+     * @prop --bs-menu-item-radius - Corner radius of the row. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
+     * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
+     * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
+     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+     * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+     * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
+     * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
+     */
+    interface HTMLBsMenuItemElement extends Components.BsMenuItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsMenuItemElementEventMap>(type: K, listener: (this: HTMLBsMenuItemElement, ev: BsMenuItemCustomEvent<HTMLBsMenuItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsMenuItemElementEventMap>(type: K, listener: (this: HTMLBsMenuItemElement, ev: BsMenuItemCustomEvent<HTMLBsMenuItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsMenuItemElement: {
+        prototype: HTMLBsMenuItemElement;
+        new (): HTMLBsMenuItemElement;
+    };
     interface HTMLBsModalElementEventMap {
         "bsClose": void;
     }
@@ -669,6 +773,8 @@ declare global {
         "bs-composer": HTMLBsComposerElement;
         "bs-data-table": HTMLBsDataTableElement;
         "bs-input": HTMLBsInputElement;
+        "bs-menu": HTMLBsMenuElement;
+        "bs-menu-item": HTMLBsMenuItemElement;
         "bs-modal": HTMLBsModalElement;
     }
 }
@@ -850,6 +956,11 @@ declare namespace LocalJSX {
      */
     interface BsChatbotResponseAction {
         /**
+          * Whether the "more options" popup menu (the `menu` slot) is currently open. Mutable + reflected so the component can track/close itself (kebab click, click outside, Escape) the same way `bs-chatbot-header`'s `expanded` prop tracks its own toggle state, while still emitting `bsMenuOpen` for the consumer to react to.
+          * @default false
+         */
+        "menuOpen"?: boolean;
+        /**
           * Fires when the "Copy" button is clicked.
          */
         "onBsCopy"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
@@ -862,9 +973,9 @@ declare namespace LocalJSX {
          */
         "onBsLike"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
         /**
-          * Fires when the "More options" button is clicked.
+          * Fires when the "More options" button is clicked or the menu is closed (click outside, Escape), with the new `menuOpen` value.
          */
-        "onBsMenuOpen"?: (event: BsChatbotResponseActionCustomEvent<void>) => void;
+        "onBsMenuOpen"?: (event: BsChatbotResponseActionCustomEvent<boolean>) => void;
         /**
           * Fires when the "Regenerate" button is clicked.
          */
@@ -1029,6 +1140,48 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     /**
+     * A generic dropdown/popup menu container: a rounded, elevated list of items (typically
+     * `bs-menu-item` elements).
+     * ## When to use
+     * - A popup list of actions/options triggered by another control (e.g. a "more options" kebab
+     *   button), such as `bs-chatbot-response-action`'s `menu` slot.
+     * ## When not to use
+     * - A persistent, always-visible list of options -- this component is purpose-built as a popup
+     *   surface (rounded corners, elevation shadow), not a plain list.
+     * @prop --bs-menu-bg - Background of the menu box. Aliased to `--bs-surface-raised`.
+     * @prop --bs-menu-radius - Corner radius of the menu box. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-menu-padding-y - Top/bottom padding of the menu box. Aliased to `--bs-spacing-50`.
+     * @prop --bs-menu-gap - Gap between slotted items. Aliased to `--bs-spacing-50`.
+     * @prop --bs-menu-shadow - Elevation shadow of the menu box. Aliased to `--bs-shadow-sm`.
+     */
+    interface BsMenu {
+    }
+    /**
+     * A single selectable row inside a `bs-menu`: an optional icon plus a text label, rendered as a
+     * real `<button>` for correct keyboard/click semantics.
+     * ## When to use
+     * - As a child of `bs-menu`, one per selectable action/option.
+     * ## When not to use
+     * - Outside of `bs-menu` -- this component's sizing/hover treatment is designed to sit inside the
+     *   menu's rounded, padded list box.
+     * @prop --bs-menu-item-radius - Corner radius of the row. Aliased to `--bs-border-radius-100`.
+     * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
+     * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
+     * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
+     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+     * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+     * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
+     * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
+     */
+    interface BsMenuItem {
+        /**
+          * Fires when the item is clicked.
+         */
+        "onBsSelect"?: (event: BsMenuItemCustomEvent<void>) => void;
+    }
+    /**
      * An overlay dialog that interrupts the current flow for a focused task or confirmation.
      * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
      * ## When to use
@@ -1075,6 +1228,7 @@ declare namespace LocalJSX {
     }
     interface BsChatbotResponseActionAttributes {
         "sourcesCount": number;
+        "menuOpen": boolean;
     }
     interface BsComposerAttributes {
         "variant": BsComposerVariant;
@@ -1113,6 +1267,8 @@ declare namespace LocalJSX {
         "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
+        "bs-menu": BsMenu;
+        "bs-menu-item": BsMenuItem;
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
     }
 }
@@ -1280,6 +1436,42 @@ declare module "@stencil/core" {
              * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
              */
             "bs-input": LocalJSX.IntrinsicElements["bs-input"] & JSXBase.HTMLAttributes<HTMLBsInputElement>;
+            /**
+             * A generic dropdown/popup menu container: a rounded, elevated list of items (typically
+             * `bs-menu-item` elements).
+             * ## When to use
+             * - A popup list of actions/options triggered by another control (e.g. a "more options" kebab
+             *   button), such as `bs-chatbot-response-action`'s `menu` slot.
+             * ## When not to use
+             * - A persistent, always-visible list of options -- this component is purpose-built as a popup
+             *   surface (rounded corners, elevation shadow), not a plain list.
+             * @prop --bs-menu-bg - Background of the menu box. Aliased to `--bs-surface-raised`.
+             * @prop --bs-menu-radius - Corner radius of the menu box. Aliased to `--bs-border-radius-100`.
+             * @prop --bs-menu-padding-y - Top/bottom padding of the menu box. Aliased to `--bs-spacing-50`.
+             * @prop --bs-menu-gap - Gap between slotted items. Aliased to `--bs-spacing-50`.
+             * @prop --bs-menu-shadow - Elevation shadow of the menu box. Aliased to `--bs-shadow-sm`.
+             */
+            "bs-menu": LocalJSX.IntrinsicElements["bs-menu"] & JSXBase.HTMLAttributes<HTMLBsMenuElement>;
+            /**
+             * A single selectable row inside a `bs-menu`: an optional icon plus a text label, rendered as a
+             * real `<button>` for correct keyboard/click semantics.
+             * ## When to use
+             * - As a child of `bs-menu`, one per selectable action/option.
+             * ## When not to use
+             * - Outside of `bs-menu` -- this component's sizing/hover treatment is designed to sit inside the
+             *   menu's rounded, padded list box.
+             * @prop --bs-menu-item-radius - Corner radius of the row. Aliased to `--bs-border-radius-100`.
+             * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
+             * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
+             * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
+             * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+             * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+             * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+             * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+             * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
+             * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
+             */
+            "bs-menu-item": LocalJSX.IntrinsicElements["bs-menu-item"] & JSXBase.HTMLAttributes<HTMLBsMenuItemElement>;
             /**
              * An overlay dialog that interrupts the current flow for a focused task or confirmation.
              * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.

@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, h } from '@stencil/core';
+import { Component, Element, Prop, Event, EventEmitter, Listen, h } from '@stencil/core';
 
 /**
  * The row of action buttons that appears below an AI response message in a Genie chat panel:
@@ -17,6 +17,8 @@ import { Component, Prop, Event, EventEmitter, h } from '@stencil/core';
  * @slot copy-icon - Overrides the default "Copy" button icon.
  * @slot regenerate-icon - Overrides the default "Regenerate" button icon.
  * @slot menu-icon - Overrides the default "More options" button icon.
+ * @slot menu - A `bs-menu` (or other content) rendered in a popup positioned below the "More
+ * options" button, shown only while `menuOpen` is `true`.
  * @slot sources-icon - Overrides the default icon in the "N sources" button.
  * @part like - The "Like" icon button.
  * @part dislike - The "Dislike" icon button.
@@ -45,12 +47,22 @@ import { Component, Prop, Event, EventEmitter, h } from '@stencil/core';
   shadow: true,
 })
 export class BsChatbotResponseAction {
+  @Element() host: HTMLElement;
+
   /**
    * Number of sources backing the response. When set to a positive number, renders the "N
    * sources" button (singular "1 source" / plural "N sources"). When unset or `0`, the button is
    * not rendered at all.
    */
   @Prop() sourcesCount?: number;
+
+  /**
+   * Whether the "more options" popup menu (the `menu` slot) is currently open. Mutable + reflected
+   * so the component can track/close itself (kebab click, click outside, Escape) the same way
+   * `bs-chatbot-header`'s `expanded` prop tracks its own toggle state, while still emitting
+   * `bsMenuOpen` for the consumer to react to.
+   */
+  @Prop({ mutable: true, reflect: true }) menuOpen = false;
 
   /** Fires when the "Like" button is clicked. */
   @Event() bsLike: EventEmitter<void>;
@@ -64,8 +76,9 @@ export class BsChatbotResponseAction {
   /** Fires when the "Regenerate" button is clicked. */
   @Event() bsRegenerate: EventEmitter<void>;
 
-  /** Fires when the "More options" button is clicked. */
-  @Event() bsMenuOpen: EventEmitter<void>;
+  /** Fires when the "More options" button is clicked or the menu is closed (click outside,
+   * Escape), with the new `menuOpen` value. */
+  @Event() bsMenuOpen: EventEmitter<boolean>;
 
   /** Fires when the "N sources" button is clicked. */
   @Event() bsSourcesClick: EventEmitter<void>;
@@ -87,8 +100,29 @@ export class BsChatbotResponseAction {
   };
 
   private onMenuClick = () => {
-    this.bsMenuOpen.emit();
+    this.menuOpen = !this.menuOpen;
+    this.bsMenuOpen.emit(this.menuOpen);
   };
+
+  private closeMenu = () => {
+    if (!this.menuOpen) return;
+    this.menuOpen = false;
+    this.bsMenuOpen.emit(this.menuOpen);
+  };
+
+  @Listen('click', { target: 'document' })
+  onDocumentClick(ev: MouseEvent) {
+    if (this.menuOpen && !ev.composedPath().includes(this.host)) {
+      this.closeMenu();
+    }
+  }
+
+  @Listen('keydown', { target: 'document' })
+  onKeydown(ev: KeyboardEvent) {
+    if (this.menuOpen && ev.key === 'Escape') {
+      this.closeMenu();
+    }
+  }
 
   private onSourcesClick = () => {
     this.bsSourcesClick.emit();
@@ -125,11 +159,26 @@ export class BsChatbotResponseAction {
             <RegenerateIcon />
           </slot>
         </button>
-        <button type="button" part="menu" class="bs-chatbot-response-action__button" aria-label="More options" onClick={this.onMenuClick}>
-          <slot name="menu-icon">
-            <MenuIcon />
-          </slot>
-        </button>
+        <div class="bs-chatbot-response-action__menu-wrapper">
+          <button
+            type="button"
+            part="menu"
+            class="bs-chatbot-response-action__button"
+            aria-label="More options"
+            aria-haspopup="menu"
+            aria-expanded={this.menuOpen ? 'true' : 'false'}
+            onClick={this.onMenuClick}
+          >
+            <slot name="menu-icon">
+              <MenuIcon />
+            </slot>
+          </button>
+          {this.menuOpen && (
+            <div class="bs-chatbot-response-action__menu-popup">
+              <slot name="menu"></slot>
+            </div>
+          )}
+        </div>
         {hasSources && (
           <button type="button" part="sources" class="bs-chatbot-response-action__sources" onClick={this.onSourcesClick}>
             <slot name="sources-icon">

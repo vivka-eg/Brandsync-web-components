@@ -1,0 +1,44 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as MenuStories from './bs-menu.stories';
+
+<Meta of={MenuStories} />
+
+# Menu
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A generic dropdown/popup menu container: a rounded, elevated list of items (typically
+`bs-menu-item` elements).
+
+**When to use**
+- A popup list of actions/options triggered by another control (e.g. a "more options" kebab
+  button), such as `bs-chatbot-response-action`'s `menu` slot.
+
+**When not to use**
+- A persistent, always-visible list of options -- this component is purpose-built as a popup
+  surface (rounded corners, elevation shadow), not a plain list.
+
+<Canvas of={MenuStories.Default} />
+
+## Component API
+
+<Controls of={MenuStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (accepts `bs-menu-item` elements, or any other content)
+- Shadow parts: `::part(list)`
+- CSS custom properties: `--bs-menu-bg`, `--bs-menu-radius`, `--bs-menu-padding-y`, `--bs-menu-gap`,
+  `--bs-menu-shadow`
+
+## Accessibility
+
+- The host renders with `role="menu"` on its inner box (via the `list` part).
+- `bs-menu` itself does not manage focus or keyboard navigation between items -- it's a visual
+  container only. Pairing it with `bs-menu-item` (a real `<button>` per item) gives correct native
+  tab/click semantics, but arrow-key roving focus between items is not implemented.
