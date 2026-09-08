@@ -46,3 +46,41 @@ import '@brandsync/wc/dist/components/bs-button.js';
 
 React and Angular get auto-generated wrapper packages (`@stencil/react-output-target` /
 `@stencil/angular-output-target`) built from the same source — see `stencil.config.ts`.
+
+## Design tokens — required, not optional
+
+Every component's shadow-DOM CSS is written entirely against `--bs-*` custom properties
+(`--bs-input-bg-default`, `--bs-composer-button-size`, `--bs-spacing-150`, ...). **This package does
+not inject those variables anywhere** -- it only *consumes* them. If the consuming app hasn't
+defined them, every `var(--bs-something)` (none of these declarations have a fallback) resolves to
+its CSS-invalid-at-computed-value fallback: `border: none`, `background: transparent`,
+`width`/`height`/`padding`/`gap: 0`, browser-default `font-size`. The component still renders in
+the DOM -- it just silently collapses (no visible border/box, buttons shrink to nothing, text
+fields push onto their own line) with no console error or exception pointing at the missing
+tokens, which makes it a confusing first bug to debug.
+
+Fix: load the token stylesheet this package ships (vendored from `brandsync-tokens`) once,
+globally, in the consuming app -- **before** any `bs-*` element renders:
+
+```css
+/* e.g. src/styles.css / global.css / angular.json "styles" array */
+@import '@brandsync/wc/dist/brandsync-wc/brandsync-wc.css';
+```
+
+```html
+<!-- plain HTML/CDN consumption -->
+<link rel="stylesheet" href="https://unpkg.com/@brandsync/wc/dist/brandsync-wc/brandsync-wc.css">
+```
+
+This applies identically to the HTML/CDN path, npm+bundler path, and the React/Angular wrapper
+packages -- none of them auto-inject it. If a consuming app already has its own differently-named
+design tokens (e.g. `--surface-base` instead of `--bs-color-surface-base`), that app-level token
+file does **not** satisfy this requirement even if the values match conceptually -- the shadow-DOM
+CSS only resolves `--bs-*`-prefixed names, so the vendored stylesheet above must be loaded
+regardless.
+
+Known harmless noise: the vendored `brandsync-wc.css` currently contains a handful of malformed
+token declarations from an upstream `brandsync-tokens` export step (e.g.
+`--bs-5-brand-colors-jade-brand-700: {Brand Colors.teal.700};`), which some build tools (e.g.
+Angular's CSS budget/lint step) warn about. These are pre-existing in the vendored dependency, not
+introduced by this package, and don't affect any token this library actually uses.
