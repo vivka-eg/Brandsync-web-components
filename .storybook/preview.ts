@@ -1,8 +1,39 @@
 import type { Preview, Decorator } from '@storybook/web-components-vite';
 import { setCustomElementsManifest } from '@storybook/web-components';
-import { defineCustomElements } from '../loader';
 import customElementsManifest from '../custom-elements.json';
 import '../src/global/index.css';
+
+// Deliberately NOT using `defineCustomElements()` from '../loader' here. That loader is Stencil's
+// *lazy* dist output: each component's JS is fetched via a runtime `import()` whose path is
+// computed dynamically (relative to the loader's own resolved URL) at the moment a given tag is
+// first used, not a static string Vite's bundler can see ahead of time. That's invisible in local
+// `storybook dev` (Vite's dev server serves any file from disk on request, static analysis or
+// not), but `build-storybook`'s production Vite build can only bundle/copy files it can discover
+// via static import analysis -- so every one of those lazy per-component chunks (bs-composer.js,
+// bs-button.js, etc.) silently gets left out of storybook-static/, and every component 404s with
+// "Constructor for ... was not found" the moment it's hosted anywhere (confirmed by inspecting our
+// own already-built storybook-static/assets/ -- zero .entry.js files present).
+//
+// The fix is to import each component from the *non-lazy* `dist-custom-elements` output instead
+// (dist/components/<tag>.js -- self-contained, calls customElements.define on import, no dynamic
+// import() inside). A plain top-level `import` is a static reference Vite can always resolve and
+// bundle correctly in both dev and static-build modes.
+//
+// Keep this list in sync with src/components/*/ -- add a line here for every new component.
+import '../dist/components/bs-badge.js';
+import '../dist/components/bs-button.js';
+import '../dist/components/bs-button-skeleton.js';
+import '../dist/components/bs-card.js';
+import '../dist/components/bs-chatbot-header.js';
+import '../dist/components/bs-chatbot-response-action.js';
+import '../dist/components/bs-chatbot-suggestion-button.js';
+import '../dist/components/bs-composer.js';
+import '../dist/components/bs-data-table.js';
+import '../dist/components/bs-input.js';
+import '../dist/components/bs-menu.js';
+import '../dist/components/bs-menu-item.js';
+import '../dist/components/bs-modal.js';
+import '../dist/components/bs-tooltip.js';
 
 // Drives the auto-generated props/slots/parts tables on each component's Docs page from the
 // same @Prop/@slot/@part JSDoc tags in the .tsx source -- one source of truth, not a hand-written
@@ -16,8 +47,6 @@ const robotoLink = document.createElement('link');
 robotoLink.rel = 'stylesheet';
 robotoLink.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;600;700;900&display=swap';
 document.head.appendChild(robotoLink);
-
-defineCustomElements();
 
 // brandsync-tokens themes via a `[data-theme="dark"]` attribute selector in tokens.css -- CSS
 // custom properties inherit through shadow DOM boundaries, so setting this on the preview
