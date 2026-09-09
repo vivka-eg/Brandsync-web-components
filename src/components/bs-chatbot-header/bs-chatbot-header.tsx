@@ -34,6 +34,7 @@ import { GENIE_LOGO_SVG } from './genie-logo';
  * @prop --bs-chatbot-header-padding-bottom - Aliased to `--bs-spacing-100`.
  * @prop --bs-chatbot-header-padding-x - Aliased to `--bs-margin-fluid`.
  * @prop --bs-chatbot-header-gap - Gap between the logo and the button group. Aliased to `--bs-navigation-header-gap`.
+ * @prop --bs-chatbot-header-actions-gap - Gap between the individual action buttons. Aliased to `--bs-spacing-100`.
  * @prop --bs-chatbot-header-button-size - Width/height of each icon button. Aliased to `--bs-spacing-600`.
  * @prop --bs-chatbot-header-button-radius - Corner radius of each icon button. Aliased to `--bs-border-radius-100`.
  * @prop --bs-chatbot-header-button-hover - Icon button background on hover. Aliased to `--bs-color-neutral-container`.

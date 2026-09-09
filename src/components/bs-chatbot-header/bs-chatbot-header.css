@@ -6,6 +6,7 @@
   --bs-chatbot-header-padding-bottom: var(--bs-spacing-100);
   --bs-chatbot-header-padding-x: var(--bs-margin-fluid);
   --bs-chatbot-header-gap: var(--bs-navigation-header-gap);
+  --bs-chatbot-header-actions-gap: var(--bs-spacing-100);
   --bs-chatbot-header-button-size: var(--bs-spacing-600);
   --bs-chatbot-header-button-radius: var(--bs-border-radius-100);
   --bs-chatbot-header-button-hover: var(--bs-color-neutral-container);
@@ -41,6 +42,7 @@
 .bs-chatbot-header__actions {
   display: flex;
   align-items: center;
+  gap: var(--bs-chatbot-header-actions-gap);
   flex-shrink: 0;
 }
 
