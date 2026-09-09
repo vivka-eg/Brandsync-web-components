@@ -1,4 +1,4 @@
-import type { Preview } from '@storybook/web-components-vite';
+import type { Preview, Decorator } from '@storybook/web-components-vite';
 import { setCustomElementsManifest } from '@storybook/web-components';
 import { defineCustomElements } from '../loader';
 import customElementsManifest from '../custom-elements.json';
@@ -19,7 +19,37 @@ document.head.appendChild(robotoLink);
 
 defineCustomElements();
 
+// brandsync-tokens themes via a `[data-theme="dark"]` attribute selector in tokens.css -- CSS
+// custom properties inherit through shadow DOM boundaries, so setting this on the preview
+// iframe's <html> re-themes every bs-* component's internals automatically, no per-component
+// changes needed. Also flips the canvas background so the empty space around a component matches
+// its surface, not just the component itself.
+const withThemeAttribute: Decorator = (story, context) => {
+  const theme = context.globals.theme ?? 'light';
+  document.documentElement.setAttribute('data-theme', theme);
+  document.body.style.background = 'var(--bs-surface-base)';
+  return story();
+};
+
 const preview: Preview = {
+  globalTypes: {
+    theme: {
+      name: 'Theme',
+      description: 'brandsync-tokens color theme',
+      toolbar: {
+        icon: 'circlehollow',
+        items: [
+          { value: 'light', icon: 'sun', title: 'Light' },
+          { value: 'dark', icon: 'moon', title: 'Dark' },
+        ],
+        dynamicTitle: true,
+      },
+    },
+  },
+  initialGlobals: {
+    theme: 'light',
+  },
+  decorators: [withThemeAttribute],
   // Each component now gets a hand-authored .mdx docs page (Carbon-style: overview, named
   // variant sections, Component API, Accessibility) instead of the generic autodocs template.
   parameters: {
