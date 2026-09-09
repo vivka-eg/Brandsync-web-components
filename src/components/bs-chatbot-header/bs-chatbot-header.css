@@ -96,7 +96,12 @@
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
+  /* Hides immediately (no delay) but waits --bs-duration-slow before showing, so the tooltip
+   * doesn't flash in on every incidental pointer pass-over -- standard tooltip UX, and this
+   * duration token already collapses to 0ms under prefers-reduced-motion (see tokens.css), so
+   * no separate reduced-motion handling is needed here. */
   transition: opacity var(--bs-duration-fast) var(--bs-easing-standard);
+  transition-delay: 0s;
   white-space: nowrap;
   z-index: 1;
 }
@@ -105,4 +110,5 @@
 .bs-chatbot-header__tooltip-wrapper:focus-within .bs-chatbot-header__tooltip {
   opacity: 1;
   visibility: visible;
+  transition-delay: var(--bs-duration-slow);
 }
