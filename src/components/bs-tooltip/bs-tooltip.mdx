@@ -1,0 +1,58 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TooltipStories from './bs-tooltip.stories';
+
+<Meta of={TooltipStories} />
+
+# Tooltip
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Positioned against a trigger](#positioned-against-a-trigger)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
+next to a trigger element.
+
+**When to use**
+- A short, contextual hint of extra information shown next to a trigger element on hover/focus,
+  where the host app owns the show/hide and positioning logic.
+
+**When not to use**
+- A component that manages its own trigger interaction (hover/focus listeners) or positioning --
+  this component intentionally does not do that; wire that up in the consuming app instead.
+
+<Canvas of={TooltipStories.Default} />
+
+## Positioned against a trigger
+
+`bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it doesn't manage its own
+visibility or positioning relative to a trigger element. This story shows the intended consumption
+pattern: a wrapping `position: relative` container with the tooltip absolutely positioned below its
+trigger (the arrow points up, toward the trigger), the same approach `bs-chatbot-response-action`
+uses for its own `menu` slot.
+
+<Canvas of={TooltipStories.WithTrigger} />
+
+## Component API
+
+<Controls of={TooltipStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (the tooltip's message content)
+- Shadow parts: `::part(bubble)`, `::part(arrow)`
+- CSS custom properties: `--bs-tooltip-bg`, `--bs-tooltip-color`, `--bs-tooltip-radius`,
+  `--bs-tooltip-padding-x`, `--bs-tooltip-padding-y`, `--bs-tooltip-max-width`,
+  `--bs-tooltip-shadow`, `--bs-tooltip-font-size`, `--bs-tooltip-line-height`
+- `placement` prop: only `'top'` is implemented today (arrow at the top of the bubble, pointing
+  up toward a trigger above it) -- the only variant confirmed from the source Figma component.
+
+## Accessibility
+
+- `bs-tooltip` renders purely visual markup with no ARIA role, `aria-describedby` wiring, or
+  focus management -- a consuming app is responsible for associating the bubble with its trigger
+  (e.g. `aria-describedby`) and for showing/hiding it on hover and keyboard focus, not just hover
+  alone.

@@ -1,0 +1,45 @@
+:host {
+  display: inline-block;
+  --bs-tooltip-bg: var(--bs-surface-inverse);
+  --bs-tooltip-color: var(--bs-text-inverse);
+  --bs-tooltip-radius: var(--bs-border-radius-50);
+  --bs-tooltip-padding-x: var(--bs-spacing-200);
+  --bs-tooltip-padding-y: var(--bs-spacing-100);
+  --bs-tooltip-max-width: 200px;
+  /* Figma's exported shadow is -1px 4px 8px rgba(0, 0, 0, 0.08) -- none of the --bs-shadow-* tokens
+   * match (they all use the rgba(33,38,46,...) ambient/key color pair), so this is aliased to the
+   * literal value directly, same precedent as bs-chatbot-suggestion-button's --bs-brand-200 alias
+   * for its pressed state (see bs-chatbot-suggestion-button.css). */
+  --bs-tooltip-shadow: -1px 4px 8px rgba(0, 0, 0, 0.08);
+  --bs-tooltip-font-size: var(--bs-font-size-sm);
+  --bs-tooltip-line-height: var(--bs-line-height-body-sm);
+}
+
+.bs-tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.bs-tooltip__bubble {
+  box-sizing: border-box;
+  max-width: var(--bs-tooltip-max-width);
+  padding: var(--bs-tooltip-padding-y) var(--bs-tooltip-padding-x);
+  background: var(--bs-tooltip-bg);
+  color: var(--bs-tooltip-color);
+  border-radius: var(--bs-tooltip-radius);
+  box-shadow: var(--bs-tooltip-shadow);
+  font-family: inherit;
+  font-size: var(--bs-tooltip-font-size);
+  line-height: calc(var(--bs-tooltip-line-height) * 1px);
+}
+
+.bs-tooltip__arrow {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--bs-tooltip-bg);
+  clip-path: polygon(50% 0, 0% 100%, 100% 100%);
+}
