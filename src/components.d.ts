@@ -131,6 +131,12 @@ export namespace Components {
      * ## When not to use
      * - A generic app/page header — this component's layout and actions are purpose-built for the
      *   Genie chat panel, not a general navigation bar.
+     * Each action button shows a `bs-tooltip` (placement="top", i.e. positioned below the button with
+     * its arrow pointing up toward it -- fits naturally since this header sits at the top of a panel)
+     * on hover/focus, driven by plain CSS (`:hover`/`:focus-within` on a wrapper, no extra JS state).
+     * The tooltip is `aria-hidden` since it's a purely visual reinforcement of each button's existing
+     * `aria-label` -- screen readers already get the accessible name from the button itself, so the
+     * tooltip doesn't need to be (and shouldn't be) announced a second time.
      * @prop --bs-chatbot-header-bg - Background of the header bar. Aliased to `--bs-surface-base`.
      * @prop --bs-chatbot-header-border - Bottom border color. Aliased to `--bs-border-default`.
      * @prop --bs-chatbot-header-padding-top - Aliased to `--bs-spacing-200`.
@@ -411,6 +417,40 @@ export namespace Components {
          */
         "size": BsModalSize;
     }
+    /**
+     * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
+     * next to a trigger element.
+     * `bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it does not manage its own
+     * visibility, hover/focus triggering, or positioning relative to a trigger element. A consuming
+     * app is responsible for showing/hiding it and for positioning it against its trigger (e.g. via a
+     * wrapping `position: relative`/`absolute` pattern, the same approach used by
+     * `bs-chatbot-response-action` for its own `menu` slot).
+     * ## When to use
+     * - A short, contextual hint of extra information shown next to a trigger element on hover/focus,
+     *   where the host app owns the show/hide and positioning logic.
+     * ## When not to use
+     * - A component that manages its own trigger interaction (hover/focus listeners) or positioning --
+     *   this component intentionally does not do that; wire that up in the consuming app instead.
+     * @prop --bs-tooltip-bg - Background of the bubble and arrow. Aliased to `--bs-surface-inverse`.
+     * @prop --bs-tooltip-color - Text color of the slotted content. Aliased to `--bs-text-inverse`.
+     * @prop --bs-tooltip-radius - Corner radius of the bubble. Aliased to `--bs-border-radius-50`.
+     * @prop --bs-tooltip-padding-x - Left/right padding of the bubble. Aliased to `--bs-spacing-200`.
+     * @prop --bs-tooltip-padding-y - Top/bottom padding of the bubble. Aliased to `--bs-spacing-100`.
+     * @prop --bs-tooltip-max-width - Max width of the bubble. Aliased to `200px`, Figma's own reference
+     * width (the bubble's width is otherwise variable based on content).
+     * @prop --bs-tooltip-shadow - Elevation shadow of the bubble. See `bs-tooltip.css` for why this is
+     * a literal value rather than a `--bs-shadow-*` token alias.
+     * @prop --bs-tooltip-font-size - Font size of the slotted content. Aliased to `--bs-font-size-sm`.
+     * @prop --bs-tooltip-line-height - Line height of the slotted content. Aliased to
+     * `--bs-line-height-body-sm`.
+     */
+    interface BsTooltip {
+        /**
+          * Which edge of the bubble the arrow points from, and therefore which side of a trigger the bubble should be placed on. `'top'` is the only value implemented -- it is the only variant confirmed from the Figma "EG Tooltip" component (arrow at the top of the bubble, pointing up). Bottom/left/right variants aren't implemented pending further Figma design confirmation.
+          * @default 'top'
+         */
+        "placement": 'top';
+    }
 }
 export interface BsChatbotHeaderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -538,6 +578,12 @@ declare global {
      * ## When not to use
      * - A generic app/page header — this component's layout and actions are purpose-built for the
      *   Genie chat panel, not a general navigation bar.
+     * Each action button shows a `bs-tooltip` (placement="top", i.e. positioned below the button with
+     * its arrow pointing up toward it -- fits naturally since this header sits at the top of a panel)
+     * on hover/focus, driven by plain CSS (`:hover`/`:focus-within` on a wrapper, no extra JS state).
+     * The tooltip is `aria-hidden` since it's a purely visual reinforcement of each button's existing
+     * `aria-label` -- screen readers already get the accessible name from the button itself, so the
+     * tooltip doesn't need to be (and shouldn't be) announced a second time.
      * @prop --bs-chatbot-header-bg - Background of the header bar. Aliased to `--bs-surface-base`.
      * @prop --bs-chatbot-header-border - Bottom border color. Aliased to `--bs-border-default`.
      * @prop --bs-chatbot-header-padding-top - Aliased to `--bs-spacing-200`.
@@ -853,6 +899,39 @@ declare global {
         prototype: HTMLBsModalElement;
         new (): HTMLBsModalElement;
     };
+    /**
+     * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
+     * next to a trigger element.
+     * `bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it does not manage its own
+     * visibility, hover/focus triggering, or positioning relative to a trigger element. A consuming
+     * app is responsible for showing/hiding it and for positioning it against its trigger (e.g. via a
+     * wrapping `position: relative`/`absolute` pattern, the same approach used by
+     * `bs-chatbot-response-action` for its own `menu` slot).
+     * ## When to use
+     * - A short, contextual hint of extra information shown next to a trigger element on hover/focus,
+     *   where the host app owns the show/hide and positioning logic.
+     * ## When not to use
+     * - A component that manages its own trigger interaction (hover/focus listeners) or positioning --
+     *   this component intentionally does not do that; wire that up in the consuming app instead.
+     * @prop --bs-tooltip-bg - Background of the bubble and arrow. Aliased to `--bs-surface-inverse`.
+     * @prop --bs-tooltip-color - Text color of the slotted content. Aliased to `--bs-text-inverse`.
+     * @prop --bs-tooltip-radius - Corner radius of the bubble. Aliased to `--bs-border-radius-50`.
+     * @prop --bs-tooltip-padding-x - Left/right padding of the bubble. Aliased to `--bs-spacing-200`.
+     * @prop --bs-tooltip-padding-y - Top/bottom padding of the bubble. Aliased to `--bs-spacing-100`.
+     * @prop --bs-tooltip-max-width - Max width of the bubble. Aliased to `200px`, Figma's own reference
+     * width (the bubble's width is otherwise variable based on content).
+     * @prop --bs-tooltip-shadow - Elevation shadow of the bubble. See `bs-tooltip.css` for why this is
+     * a literal value rather than a `--bs-shadow-*` token alias.
+     * @prop --bs-tooltip-font-size - Font size of the slotted content. Aliased to `--bs-font-size-sm`.
+     * @prop --bs-tooltip-line-height - Line height of the slotted content. Aliased to
+     * `--bs-line-height-body-sm`.
+     */
+    interface HTMLBsTooltipElement extends Components.BsTooltip, HTMLStencilElement {
+    }
+    var HTMLBsTooltipElement: {
+        prototype: HTMLBsTooltipElement;
+        new (): HTMLBsTooltipElement;
+    };
     interface HTMLElementTagNameMap {
         "bs-badge": HTMLBsBadgeElement;
         "bs-button": HTMLBsButtonElement;
@@ -867,6 +946,7 @@ declare global {
         "bs-menu": HTMLBsMenuElement;
         "bs-menu-item": HTMLBsMenuItemElement;
         "bs-modal": HTMLBsModalElement;
+        "bs-tooltip": HTMLBsTooltipElement;
     }
 }
 declare namespace LocalJSX {
@@ -981,6 +1061,12 @@ declare namespace LocalJSX {
      * ## When not to use
      * - A generic app/page header — this component's layout and actions are purpose-built for the
      *   Genie chat panel, not a general navigation bar.
+     * Each action button shows a `bs-tooltip` (placement="top", i.e. positioned below the button with
+     * its arrow pointing up toward it -- fits naturally since this header sits at the top of a panel)
+     * on hover/focus, driven by plain CSS (`:hover`/`:focus-within` on a wrapper, no extra JS state).
+     * The tooltip is `aria-hidden` since it's a purely visual reinforcement of each button's existing
+     * `aria-label` -- screen readers already get the accessible name from the button itself, so the
+     * tooltip doesn't need to be (and shouldn't be) announced a second time.
      * @prop --bs-chatbot-header-bg - Background of the header bar. Aliased to `--bs-surface-base`.
      * @prop --bs-chatbot-header-border - Bottom border color. Aliased to `--bs-border-default`.
      * @prop --bs-chatbot-header-padding-top - Aliased to `--bs-spacing-200`.
@@ -1338,6 +1424,40 @@ declare namespace LocalJSX {
          */
         "size"?: BsModalSize;
     }
+    /**
+     * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
+     * next to a trigger element.
+     * `bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it does not manage its own
+     * visibility, hover/focus triggering, or positioning relative to a trigger element. A consuming
+     * app is responsible for showing/hiding it and for positioning it against its trigger (e.g. via a
+     * wrapping `position: relative`/`absolute` pattern, the same approach used by
+     * `bs-chatbot-response-action` for its own `menu` slot).
+     * ## When to use
+     * - A short, contextual hint of extra information shown next to a trigger element on hover/focus,
+     *   where the host app owns the show/hide and positioning logic.
+     * ## When not to use
+     * - A component that manages its own trigger interaction (hover/focus listeners) or positioning --
+     *   this component intentionally does not do that; wire that up in the consuming app instead.
+     * @prop --bs-tooltip-bg - Background of the bubble and arrow. Aliased to `--bs-surface-inverse`.
+     * @prop --bs-tooltip-color - Text color of the slotted content. Aliased to `--bs-text-inverse`.
+     * @prop --bs-tooltip-radius - Corner radius of the bubble. Aliased to `--bs-border-radius-50`.
+     * @prop --bs-tooltip-padding-x - Left/right padding of the bubble. Aliased to `--bs-spacing-200`.
+     * @prop --bs-tooltip-padding-y - Top/bottom padding of the bubble. Aliased to `--bs-spacing-100`.
+     * @prop --bs-tooltip-max-width - Max width of the bubble. Aliased to `200px`, Figma's own reference
+     * width (the bubble's width is otherwise variable based on content).
+     * @prop --bs-tooltip-shadow - Elevation shadow of the bubble. See `bs-tooltip.css` for why this is
+     * a literal value rather than a `--bs-shadow-*` token alias.
+     * @prop --bs-tooltip-font-size - Font size of the slotted content. Aliased to `--bs-font-size-sm`.
+     * @prop --bs-tooltip-line-height - Line height of the slotted content. Aliased to
+     * `--bs-line-height-body-sm`.
+     */
+    interface BsTooltip {
+        /**
+          * Which edge of the bubble the arrow points from, and therefore which side of a trigger the bubble should be placed on. `'top'` is the only value implemented -- it is the only variant confirmed from the Figma "EG Tooltip" component (arrow at the top of the bubble, pointing up). Bottom/left/right variants aren't implemented pending further Figma design confirmation.
+          * @default 'top'
+         */
+        "placement"?: 'top';
+    }
 
     interface BsBadgeAttributes {
         "variant": BsBadgeVariant;
@@ -1392,6 +1512,9 @@ declare namespace LocalJSX {
         "heading": string;
         "size": BsModalSize;
     }
+    interface BsTooltipAttributes {
+        "placement": 'top';
+    }
 
     interface IntrinsicElements {
         "bs-badge": Omit<BsBadge, keyof BsBadgeAttributes> & { [K in keyof BsBadge & keyof BsBadgeAttributes]?: BsBadge[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `attr:${K}`]?: BsBadgeAttributes[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `prop:${K}`]?: BsBadge[K] };
@@ -1407,6 +1530,7 @@ declare namespace LocalJSX {
         "bs-menu": BsMenu;
         "bs-menu-item": BsMenuItem;
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
+        "bs-tooltip": Omit<BsTooltip, keyof BsTooltipAttributes> & { [K in keyof BsTooltip & keyof BsTooltipAttributes]?: BsTooltip[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `attr:${K}`]?: BsTooltipAttributes[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `prop:${K}`]?: BsTooltip[K] };
     }
 }
 export { LocalJSX as JSX };
@@ -1480,6 +1604,12 @@ declare module "@stencil/core" {
              * ## When not to use
              * - A generic app/page header — this component's layout and actions are purpose-built for the
              *   Genie chat panel, not a general navigation bar.
+             * Each action button shows a `bs-tooltip` (placement="top", i.e. positioned below the button with
+             * its arrow pointing up toward it -- fits naturally since this header sits at the top of a panel)
+             * on hover/focus, driven by plain CSS (`:hover`/`:focus-within` on a wrapper, no extra JS state).
+             * The tooltip is `aria-hidden` since it's a purely visual reinforcement of each button's existing
+             * `aria-label` -- screen readers already get the accessible name from the button itself, so the
+             * tooltip doesn't need to be (and shouldn't be) announced a second time.
              * @prop --bs-chatbot-header-bg - Background of the header bar. Aliased to `--bs-surface-base`.
              * @prop --bs-chatbot-header-border - Bottom border color. Aliased to `--bs-border-default`.
              * @prop --bs-chatbot-header-padding-top - Aliased to `--bs-spacing-200`.
@@ -1653,6 +1783,34 @@ declare module "@stencil/core" {
              *   modal that just gets taller and taller.
              */
             "bs-modal": LocalJSX.IntrinsicElements["bs-modal"] & JSXBase.HTMLAttributes<HTMLBsModalElement>;
+            /**
+             * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
+             * next to a trigger element.
+             * `bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it does not manage its own
+             * visibility, hover/focus triggering, or positioning relative to a trigger element. A consuming
+             * app is responsible for showing/hiding it and for positioning it against its trigger (e.g. via a
+             * wrapping `position: relative`/`absolute` pattern, the same approach used by
+             * `bs-chatbot-response-action` for its own `menu` slot).
+             * ## When to use
+             * - A short, contextual hint of extra information shown next to a trigger element on hover/focus,
+             *   where the host app owns the show/hide and positioning logic.
+             * ## When not to use
+             * - A component that manages its own trigger interaction (hover/focus listeners) or positioning --
+             *   this component intentionally does not do that; wire that up in the consuming app instead.
+             * @prop --bs-tooltip-bg - Background of the bubble and arrow. Aliased to `--bs-surface-inverse`.
+             * @prop --bs-tooltip-color - Text color of the slotted content. Aliased to `--bs-text-inverse`.
+             * @prop --bs-tooltip-radius - Corner radius of the bubble. Aliased to `--bs-border-radius-50`.
+             * @prop --bs-tooltip-padding-x - Left/right padding of the bubble. Aliased to `--bs-spacing-200`.
+             * @prop --bs-tooltip-padding-y - Top/bottom padding of the bubble. Aliased to `--bs-spacing-100`.
+             * @prop --bs-tooltip-max-width - Max width of the bubble. Aliased to `200px`, Figma's own reference
+             * width (the bubble's width is otherwise variable based on content).
+             * @prop --bs-tooltip-shadow - Elevation shadow of the bubble. See `bs-tooltip.css` for why this is
+             * a literal value rather than a `--bs-shadow-*` token alias.
+             * @prop --bs-tooltip-font-size - Font size of the slotted content. Aliased to `--bs-font-size-sm`.
+             * @prop --bs-tooltip-line-height - Line height of the slotted content. Aliased to
+             * `--bs-line-height-body-sm`.
+             */
+            "bs-tooltip": LocalJSX.IntrinsicElements["bs-tooltip"] & JSXBase.HTMLAttributes<HTMLBsTooltipElement>;
         }
     }
 }

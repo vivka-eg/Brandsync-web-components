@@ -79,3 +79,28 @@
 .bs-chatbot-header__button:active {
   background: var(--bs-chatbot-header-button-pressed);
 }
+
+.bs-chatbot-header__tooltip-wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.bs-chatbot-header__tooltip {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: var(--bs-spacing-100);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity var(--bs-duration-fast) var(--bs-easing-standard);
+  white-space: nowrap;
+  z-index: 1;
+}
+
+.bs-chatbot-header__tooltip-wrapper:hover .bs-chatbot-header__tooltip,
+.bs-chatbot-header__tooltip-wrapper:focus-within .bs-chatbot-header__tooltip {
+  opacity: 1;
+  visibility: visible;
+}

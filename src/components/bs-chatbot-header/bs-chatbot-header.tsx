@@ -12,6 +12,13 @@ import { GENIE_LOGO_SVG } from './genie-logo';
  * - A generic app/page header — this component's layout and actions are purpose-built for the
  *   Genie chat panel, not a general navigation bar.
  *
+ * Each action button shows a `bs-tooltip` (placement="top", i.e. positioned below the button with
+ * its arrow pointing up toward it -- fits naturally since this header sits at the top of a panel)
+ * on hover/focus, driven by plain CSS (`:hover`/`:focus-within` on a wrapper, no extra JS state).
+ * The tooltip is `aria-hidden` since it's a purely visual reinforcement of each button's existing
+ * `aria-label` -- screen readers already get the accessible name from the button itself, so the
+ * tooltip doesn't need to be (and shouldn't be) announced a second time.
+ *
  * @slot new-chat-icon - Overrides the default "New chat" button icon.
  * @slot history-icon - Overrides the default "History" button icon.
  * @slot expand-icon - Overrides the default "Expand"/"Collapse" button icon (rendered regardless of `expanded` -- there is no separate confirmed "collapsed" glyph in the design, so swap it yourself via this slot if you need one).
@@ -86,33 +93,53 @@ export class BsChatbotHeader {
       <div class="bs-chatbot-header" role="banner" aria-label={this.heading}>
         <div part="logo" class="bs-chatbot-header__logo" role="img" aria-label={this.heading} innerHTML={GENIE_LOGO_SVG}></div>
         <div class="bs-chatbot-header__actions">
-          <button type="button" part="new-chat" class="bs-chatbot-header__button" aria-label="New chat" onClick={this.onNewChatClick}>
-            <slot name="new-chat-icon">
-              <NewChatIcon />
-            </slot>
-          </button>
-          <button type="button" part="history" class="bs-chatbot-header__button" aria-label="History" onClick={this.onHistoryClick}>
-            <slot name="history-icon">
-              <HistoryIcon />
-            </slot>
-          </button>
-          <button
-            type="button"
-            part="expand"
-            class="bs-chatbot-header__button"
-            aria-label={this.expanded ? 'Collapse' : 'Expand'}
-            aria-pressed={this.expanded ? 'true' : 'false'}
-            onClick={this.onExpandClick}
-          >
-            <slot name="expand-icon">
-              <ExpandIcon />
-            </slot>
-          </button>
-          <button type="button" part="close" class="bs-chatbot-header__button" aria-label="Close" onClick={this.onCloseClick}>
-            <slot name="close-icon">
-              <CloseIcon />
-            </slot>
-          </button>
+          <span class="bs-chatbot-header__tooltip-wrapper">
+            <button type="button" part="new-chat" class="bs-chatbot-header__button" aria-label="New chat" onClick={this.onNewChatClick}>
+              <slot name="new-chat-icon">
+                <NewChatIcon />
+              </slot>
+            </button>
+            <bs-tooltip class="bs-chatbot-header__tooltip" placement="top" aria-hidden="true">
+              New chat
+            </bs-tooltip>
+          </span>
+          <span class="bs-chatbot-header__tooltip-wrapper">
+            <button type="button" part="history" class="bs-chatbot-header__button" aria-label="History" onClick={this.onHistoryClick}>
+              <slot name="history-icon">
+                <HistoryIcon />
+              </slot>
+            </button>
+            <bs-tooltip class="bs-chatbot-header__tooltip" placement="top" aria-hidden="true">
+              History
+            </bs-tooltip>
+          </span>
+          <span class="bs-chatbot-header__tooltip-wrapper">
+            <button
+              type="button"
+              part="expand"
+              class="bs-chatbot-header__button"
+              aria-label={this.expanded ? 'Collapse' : 'Expand'}
+              aria-pressed={this.expanded ? 'true' : 'false'}
+              onClick={this.onExpandClick}
+            >
+              <slot name="expand-icon">
+                <ExpandIcon />
+              </slot>
+            </button>
+            <bs-tooltip class="bs-chatbot-header__tooltip" placement="top" aria-hidden="true">
+              {this.expanded ? 'Collapse' : 'Expand'}
+            </bs-tooltip>
+          </span>
+          <span class="bs-chatbot-header__tooltip-wrapper">
+            <button type="button" part="close" class="bs-chatbot-header__button" aria-label="Close" onClick={this.onCloseClick}>
+              <slot name="close-icon">
+                <CloseIcon />
+              </slot>
+            </button>
+            <bs-tooltip class="bs-chatbot-header__tooltip" placement="top" aria-hidden="true">
+              Close
+            </bs-tooltip>
+          </span>
         </div>
       </div>
     );

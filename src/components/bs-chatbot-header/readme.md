@@ -17,6 +17,13 @@ the left and four fixed actions (new chat, history, expand, close) on the right.
 - A generic app/page header — this component's layout and actions are purpose-built for the
   Genie chat panel, not a general navigation bar.
 
+Each action button shows a `bs-tooltip` (placement="top", i.e. positioned below the button with
+its arrow pointing up toward it -- fits naturally since this header sits at the top of a panel)
+on hover/focus, driven by plain CSS (`:hover`/`:focus-within` on a wrapper, no extra JS state).
+The tooltip is `aria-hidden` since it's a purely visual reinforcement of each button's existing
+`aria-label` -- screen readers already get the accessible name from the button itself, so the
+tooltip doesn't need to be (and shouldn't be) announced a second time.
+
 ## Properties
 
 | Property   | Attribute  | Description                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Type      | Default   |
@@ -55,6 +62,19 @@ the left and four fixed actions (new chat, history, expand, close) on the right.
 | `"logo"`     | The Genie brand mark (inline SVG).   |
 | `"new-chat"` | The "New chat" icon button.          |
 
+
+## Dependencies
+
+### Depends on
+
+- [bs-tooltip](../bs-tooltip)
+
+### Graph
+```mermaid
+graph TD;
+  bs-chatbot-header --> bs-tooltip
+  style bs-chatbot-header fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 
