@@ -14,8 +14,8 @@ import * as AiThinkingStories from './bs-ai-thinking.stories';
 ## Overview
 
 A small inline status indicator for a Genie AI chat panel: the colorful Genie mark next to a label
-(e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while an
-operation is in progress.
+(e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band while
+an operation is in progress.
 
 **When to use**
 - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
@@ -34,8 +34,8 @@ operation is in progress.
 - Slots: none
 - Shadow parts: `::part(icon)`, `::part(label)`
 - CSS custom properties: `--bs-ai-thinking-gap`, `--bs-ai-thinking-icon-size`,
-  `--bs-ai-thinking-text`, `--bs-ai-thinking-font-size`, `--bs-ai-thinking-line-height`,
-  `--bs-ai-thinking-cycle-duration`
+  `--bs-ai-thinking-text`, `--bs-ai-thinking-shimmer-highlight`, `--bs-ai-thinking-font-size`,
+  `--bs-ai-thinking-line-height`, `--bs-ai-thinking-cycle-duration`
 
 ## Accessibility
 
@@ -43,5 +43,5 @@ operation is in progress.
   label when it changes (e.g. "Retrieving" → "Thinking") without needing focus.
 - The icon is decorative (`alt=""`, `aria-hidden="true"`) — the label text is the only accessible
   content.
-- The label's pulse animation is disabled under `prefers-reduced-motion: reduce` (text stays fully
-  visible instead).
+- The label's shimmer animation is disabled under `prefers-reduced-motion: reduce` (text renders as
+  a plain solid color instead).

@@ -22,24 +22,23 @@ export { BsModalSize } from "./components/bs-modal/bs-modal";
 export namespace Components {
     /**
      * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
-     * (e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while
-     * an operation is in progress.
+     * (e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band
+     * while an operation is in progress.
      * ## When to use
      * - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
      *   response is being generated (retrieving context, searching, thinking).
      * ## When not to use
      * - A blocking/full-panel loading state -- this is a small inline indicator, not a spinner overlay.
-     * The label's pulse animation reproduces Figma's exact keyframe track (a plain opacity
-     * fade-in/hold/reset with the source's own cubic-bezier easing) rather than an invented
-     * shimmer-sweep -- the source design only specifies this one animation.
      * @prop --bs-ai-thinking-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
      * @prop --bs-ai-thinking-icon-size - Width/height of the icon.
-     * @prop --bs-ai-thinking-text - Label color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-text - Label base color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-shimmer-highlight - Color of the moving highlight band. Aliased to
+     * `--bs-text-default` (more prominent than `--bs-text-muted` in both themes).
      * @prop --bs-ai-thinking-font-size - Label font size. Aliased to `--bs-font-size-md`.
      * @prop --bs-ai-thinking-line-height - Label line height. Aliased to `--bs-line-height-body-md`.
-     * @prop --bs-ai-thinking-cycle-duration - Duration of one pulse loop. Figma specifies exactly 2s,
-     * longer than any `--bs-duration-*` token (max `--bs-duration-slower` is 500ms), so this is
-     * aliased directly to the literal value.
+     * @prop --bs-ai-thinking-cycle-duration - Duration of one shimmer sweep. Figma's own keyframe
+     * track for this label runs over exactly 2s, longer than any `--bs-duration-*` token (max
+     * `--bs-duration-slower` is 500ms), so this is aliased directly to the literal value.
      */
     interface BsAiThinking {
         /**
@@ -516,24 +515,23 @@ export interface BsModalCustomEvent<T> extends CustomEvent<T> {
 declare global {
     /**
      * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
-     * (e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while
-     * an operation is in progress.
+     * (e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band
+     * while an operation is in progress.
      * ## When to use
      * - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
      *   response is being generated (retrieving context, searching, thinking).
      * ## When not to use
      * - A blocking/full-panel loading state -- this is a small inline indicator, not a spinner overlay.
-     * The label's pulse animation reproduces Figma's exact keyframe track (a plain opacity
-     * fade-in/hold/reset with the source's own cubic-bezier easing) rather than an invented
-     * shimmer-sweep -- the source design only specifies this one animation.
      * @prop --bs-ai-thinking-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
      * @prop --bs-ai-thinking-icon-size - Width/height of the icon.
-     * @prop --bs-ai-thinking-text - Label color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-text - Label base color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-shimmer-highlight - Color of the moving highlight band. Aliased to
+     * `--bs-text-default` (more prominent than `--bs-text-muted` in both themes).
      * @prop --bs-ai-thinking-font-size - Label font size. Aliased to `--bs-font-size-md`.
      * @prop --bs-ai-thinking-line-height - Label line height. Aliased to `--bs-line-height-body-md`.
-     * @prop --bs-ai-thinking-cycle-duration - Duration of one pulse loop. Figma specifies exactly 2s,
-     * longer than any `--bs-duration-*` token (max `--bs-duration-slower` is 500ms), so this is
-     * aliased directly to the literal value.
+     * @prop --bs-ai-thinking-cycle-duration - Duration of one shimmer sweep. Figma's own keyframe
+     * track for this label runs over exactly 2s, longer than any `--bs-duration-*` token (max
+     * `--bs-duration-slower` is 500ms), so this is aliased directly to the literal value.
      */
     interface HTMLBsAiThinkingElement extends Components.BsAiThinking, HTMLStencilElement {
     }
@@ -1010,24 +1008,23 @@ declare global {
 declare namespace LocalJSX {
     /**
      * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
-     * (e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while
-     * an operation is in progress.
+     * (e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band
+     * while an operation is in progress.
      * ## When to use
      * - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
      *   response is being generated (retrieving context, searching, thinking).
      * ## When not to use
      * - A blocking/full-panel loading state -- this is a small inline indicator, not a spinner overlay.
-     * The label's pulse animation reproduces Figma's exact keyframe track (a plain opacity
-     * fade-in/hold/reset with the source's own cubic-bezier easing) rather than an invented
-     * shimmer-sweep -- the source design only specifies this one animation.
      * @prop --bs-ai-thinking-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
      * @prop --bs-ai-thinking-icon-size - Width/height of the icon.
-     * @prop --bs-ai-thinking-text - Label color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-text - Label base color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-shimmer-highlight - Color of the moving highlight band. Aliased to
+     * `--bs-text-default` (more prominent than `--bs-text-muted` in both themes).
      * @prop --bs-ai-thinking-font-size - Label font size. Aliased to `--bs-font-size-md`.
      * @prop --bs-ai-thinking-line-height - Label line height. Aliased to `--bs-line-height-body-md`.
-     * @prop --bs-ai-thinking-cycle-duration - Duration of one pulse loop. Figma specifies exactly 2s,
-     * longer than any `--bs-duration-*` token (max `--bs-duration-slower` is 500ms), so this is
-     * aliased directly to the literal value.
+     * @prop --bs-ai-thinking-cycle-duration - Duration of one shimmer sweep. Figma's own keyframe
+     * track for this label runs over exactly 2s, longer than any `--bs-duration-*` token (max
+     * `--bs-duration-slower` is 500ms), so this is aliased directly to the literal value.
      */
     interface BsAiThinking {
         /**
@@ -1630,24 +1627,23 @@ declare module "@stencil/core" {
         interface IntrinsicElements {
             /**
              * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
-             * (e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while
-             * an operation is in progress.
+             * (e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band
+             * while an operation is in progress.
              * ## When to use
              * - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
              *   response is being generated (retrieving context, searching, thinking).
              * ## When not to use
              * - A blocking/full-panel loading state -- this is a small inline indicator, not a spinner overlay.
-             * The label's pulse animation reproduces Figma's exact keyframe track (a plain opacity
-             * fade-in/hold/reset with the source's own cubic-bezier easing) rather than an invented
-             * shimmer-sweep -- the source design only specifies this one animation.
              * @prop --bs-ai-thinking-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
              * @prop --bs-ai-thinking-icon-size - Width/height of the icon.
-             * @prop --bs-ai-thinking-text - Label color. Aliased to `--bs-text-muted`.
+             * @prop --bs-ai-thinking-text - Label base color. Aliased to `--bs-text-muted`.
+             * @prop --bs-ai-thinking-shimmer-highlight - Color of the moving highlight band. Aliased to
+             * `--bs-text-default` (more prominent than `--bs-text-muted` in both themes).
              * @prop --bs-ai-thinking-font-size - Label font size. Aliased to `--bs-font-size-md`.
              * @prop --bs-ai-thinking-line-height - Label line height. Aliased to `--bs-line-height-body-md`.
-             * @prop --bs-ai-thinking-cycle-duration - Duration of one pulse loop. Figma specifies exactly 2s,
-             * longer than any `--bs-duration-*` token (max `--bs-duration-slower` is 500ms), so this is
-             * aliased directly to the literal value.
+             * @prop --bs-ai-thinking-cycle-duration - Duration of one shimmer sweep. Figma's own keyframe
+             * track for this label runs over exactly 2s, longer than any `--bs-duration-*` token (max
+             * `--bs-duration-slower` is 500ms), so this is aliased directly to the literal value.
              */
             "bs-ai-thinking": LocalJSX.IntrinsicElements["bs-ai-thinking"] & JSXBase.HTMLAttributes<HTMLBsAiThinkingElement>;
             /**

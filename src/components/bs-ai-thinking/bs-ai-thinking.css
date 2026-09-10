@@ -3,9 +3,15 @@
   --bs-ai-thinking-gap: var(--bs-spacing-100);
   --bs-ai-thinking-icon-size: 24px;
   --bs-ai-thinking-text: var(--bs-text-muted);
+  /* The moving highlight band in the shimmer sweep. Aliased to --bs-text-default rather than
+   * Figma's literal gradient stop (#cedeff, tuned for light mode only) -- --bs-text-default is
+   * already more prominent than --bs-text-muted in both themes (near-black on white in light,
+   * white in dark), so the sweep reads as a highlight in either theme without a separate
+   * dark-mode override. */
+  --bs-ai-thinking-shimmer-highlight: var(--bs-text-default);
   --bs-ai-thinking-font-size: var(--bs-font-size-md);
   --bs-ai-thinking-line-height: var(--bs-line-height-body-md);
-  /* Figma's keyframe track for this label runs over exactly 2s -- no --bs-duration-* token
+  /* Figma's own keyframe track for this label runs over exactly 2s -- no --bs-duration-* token
    * reaches that high (the longest, --bs-duration-slower, is 500ms), so this is aliased directly
    * to the literal value, same precedent as bs-tooltip's --bs-tooltip-shadow. */
   --bs-ai-thinking-cycle-duration: 2s;
@@ -27,34 +33,42 @@
 }
 
 .bs-ai-thinking__label {
-  color: var(--bs-ai-thinking-text);
   font-size: var(--bs-ai-thinking-font-size);
   line-height: calc(var(--bs-ai-thinking-line-height) * 1px);
-  animation: bs-ai-thinking-pulse var(--bs-ai-thinking-cycle-duration) linear infinite;
+  background-image: linear-gradient(
+    90deg,
+    var(--bs-ai-thinking-text) 0%,
+    var(--bs-ai-thinking-text) 44%,
+    var(--bs-ai-thinking-shimmer-highlight) 50%,
+    var(--bs-ai-thinking-text) 56%,
+    var(--bs-ai-thinking-text) 100%
+  );
+  background-size: 200% 100%;
+  background-position: 200% 0;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+  animation: bs-ai-thinking-shimmer var(--bs-ai-thinking-cycle-duration) linear infinite;
 }
 
-/* Reproduces Figma's exact keyframe track for this node (hold hidden briefly, ease in with the
- * source's own cubic-bezier, hold visible, then reset) -- a breathing pulse, not an invented
- * shimmer sweep. */
-@keyframes bs-ai-thinking-pulse {
+/* Sweeps a brighter highlight band across the label left-to-right, looping -- a standard
+ * "AI is working" text shimmer, replacing the literal opacity-pulse keyframe track Figma
+ * exported (a plain fade-in/hold/reset), per explicit request. */
+@keyframes bs-ai-thinking-shimmer {
   0% {
-    opacity: 0;
-  }
-  8.175% {
-    animation-timing-function: cubic-bezier(0.5, 0, 0.5, 1);
-    opacity: 0;
-  }
-  80.546% {
-    opacity: 1;
+    background-position: 200% 0;
   }
   100% {
-    opacity: 1;
+    background-position: -200% 0;
   }
 }
 
 @media (prefers-reduced-motion: reduce) {
   .bs-ai-thinking__label {
     animation: none;
-    opacity: 1;
+    background-image: none;
+    -webkit-text-fill-color: currentcolor;
+    color: var(--bs-ai-thinking-text);
   }
 }
