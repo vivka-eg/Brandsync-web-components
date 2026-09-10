@@ -1,0 +1,47 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AiThinkingStories from './bs-ai-thinking.stories';
+
+<Meta of={AiThinkingStories} />
+
+# AI thinking
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A small inline status indicator for a Genie AI chat panel: the colorful Genie mark next to a label
+(e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while an
+operation is in progress.
+
+**When to use**
+- Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
+  response is being generated.
+
+**When not to use**
+- A blocking/full-panel loading state — this is a small inline indicator, not a spinner overlay.
+
+<Canvas of={AiThinkingStories.Default} />
+
+## Component API
+
+<Controls of={AiThinkingStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: none
+- Shadow parts: `::part(icon)`, `::part(label)`
+- CSS custom properties: `--bs-ai-thinking-gap`, `--bs-ai-thinking-icon-size`,
+  `--bs-ai-thinking-text`, `--bs-ai-thinking-font-size`, `--bs-ai-thinking-line-height`,
+  `--bs-ai-thinking-cycle-duration`
+
+## Accessibility
+
+- The root element is `role="status"` with `aria-live="polite"`, so assistive tech announces the
+  label when it changes (e.g. "Retrieving" → "Thinking") without needing focus.
+- The icon is decorative (`alt=""`, `aria-hidden="true"`) — the label text is the only accessible
+  content.
+- The label's pulse animation is disabled under `prefers-reduced-motion: reduce` (text stays fully
+  visible instead).

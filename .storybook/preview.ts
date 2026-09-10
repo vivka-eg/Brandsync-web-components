@@ -20,6 +20,7 @@ import '../src/global/index.css';
 // bundle correctly in both dev and static-build modes.
 //
 // Keep this list in sync with src/components/*/ -- add a line here for every new component.
+import '../dist/components/bs-ai-thinking.js';
 import '../dist/components/bs-badge.js';
 import '../dist/components/bs-button.js';
 import '../dist/components/bs-button-skeleton.js';

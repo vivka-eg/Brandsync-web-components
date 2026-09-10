@@ -21,6 +21,34 @@ export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs
 export { BsModalSize } from "./components/bs-modal/bs-modal";
 export namespace Components {
     /**
+     * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
+     * (e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while
+     * an operation is in progress.
+     * ## When to use
+     * - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
+     *   response is being generated (retrieving context, searching, thinking).
+     * ## When not to use
+     * - A blocking/full-panel loading state -- this is a small inline indicator, not a spinner overlay.
+     * The label's pulse animation reproduces Figma's exact keyframe track (a plain opacity
+     * fade-in/hold/reset with the source's own cubic-bezier easing) rather than an invented
+     * shimmer-sweep -- the source design only specifies this one animation.
+     * @prop --bs-ai-thinking-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
+     * @prop --bs-ai-thinking-icon-size - Width/height of the icon.
+     * @prop --bs-ai-thinking-text - Label color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-font-size - Label font size. Aliased to `--bs-font-size-md`.
+     * @prop --bs-ai-thinking-line-height - Label line height. Aliased to `--bs-line-height-body-md`.
+     * @prop --bs-ai-thinking-cycle-duration - Duration of one pulse loop. Figma specifies exactly 2s,
+     * longer than any `--bs-duration-*` token (max `--bs-duration-slower` is 500ms), so this is
+     * aliased directly to the literal value.
+     */
+    interface BsAiThinking {
+        /**
+          * The status text shown next to the icon, e.g. "Retrieving", "Thinking", "Searching".
+          * @default 'Thinking'
+         */
+        "label": string;
+    }
+    /**
      * A small status or category pill, usually paired with a label or list item.
      * ## When to use
      * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
@@ -487,6 +515,33 @@ export interface BsModalCustomEvent<T> extends CustomEvent<T> {
 }
 declare global {
     /**
+     * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
+     * (e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while
+     * an operation is in progress.
+     * ## When to use
+     * - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
+     *   response is being generated (retrieving context, searching, thinking).
+     * ## When not to use
+     * - A blocking/full-panel loading state -- this is a small inline indicator, not a spinner overlay.
+     * The label's pulse animation reproduces Figma's exact keyframe track (a plain opacity
+     * fade-in/hold/reset with the source's own cubic-bezier easing) rather than an invented
+     * shimmer-sweep -- the source design only specifies this one animation.
+     * @prop --bs-ai-thinking-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
+     * @prop --bs-ai-thinking-icon-size - Width/height of the icon.
+     * @prop --bs-ai-thinking-text - Label color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-font-size - Label font size. Aliased to `--bs-font-size-md`.
+     * @prop --bs-ai-thinking-line-height - Label line height. Aliased to `--bs-line-height-body-md`.
+     * @prop --bs-ai-thinking-cycle-duration - Duration of one pulse loop. Figma specifies exactly 2s,
+     * longer than any `--bs-duration-*` token (max `--bs-duration-slower` is 500ms), so this is
+     * aliased directly to the literal value.
+     */
+    interface HTMLBsAiThinkingElement extends Components.BsAiThinking, HTMLStencilElement {
+    }
+    var HTMLBsAiThinkingElement: {
+        prototype: HTMLBsAiThinkingElement;
+        new (): HTMLBsAiThinkingElement;
+    };
+    /**
      * A small status or category pill, usually paired with a label or list item.
      * ## When to use
      * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
@@ -935,6 +990,7 @@ declare global {
         new (): HTMLBsTooltipElement;
     };
     interface HTMLElementTagNameMap {
+        "bs-ai-thinking": HTMLBsAiThinkingElement;
         "bs-badge": HTMLBsBadgeElement;
         "bs-button": HTMLBsButtonElement;
         "bs-button-skeleton": HTMLBsButtonSkeletonElement;
@@ -952,6 +1008,34 @@ declare global {
     }
 }
 declare namespace LocalJSX {
+    /**
+     * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
+     * (e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while
+     * an operation is in progress.
+     * ## When to use
+     * - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
+     *   response is being generated (retrieving context, searching, thinking).
+     * ## When not to use
+     * - A blocking/full-panel loading state -- this is a small inline indicator, not a spinner overlay.
+     * The label's pulse animation reproduces Figma's exact keyframe track (a plain opacity
+     * fade-in/hold/reset with the source's own cubic-bezier easing) rather than an invented
+     * shimmer-sweep -- the source design only specifies this one animation.
+     * @prop --bs-ai-thinking-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
+     * @prop --bs-ai-thinking-icon-size - Width/height of the icon.
+     * @prop --bs-ai-thinking-text - Label color. Aliased to `--bs-text-muted`.
+     * @prop --bs-ai-thinking-font-size - Label font size. Aliased to `--bs-font-size-md`.
+     * @prop --bs-ai-thinking-line-height - Label line height. Aliased to `--bs-line-height-body-md`.
+     * @prop --bs-ai-thinking-cycle-duration - Duration of one pulse loop. Figma specifies exactly 2s,
+     * longer than any `--bs-duration-*` token (max `--bs-duration-slower` is 500ms), so this is
+     * aliased directly to the literal value.
+     */
+    interface BsAiThinking {
+        /**
+          * The status text shown next to the icon, e.g. "Retrieving", "Thinking", "Searching".
+          * @default 'Thinking'
+         */
+        "label"?: string;
+    }
     /**
      * A small status or category pill, usually paired with a label or list item.
      * ## When to use
@@ -1462,6 +1546,9 @@ declare namespace LocalJSX {
         "placement"?: 'top';
     }
 
+    interface BsAiThinkingAttributes {
+        "label": string;
+    }
     interface BsBadgeAttributes {
         "variant": BsBadgeVariant;
     }
@@ -1520,6 +1607,7 @@ declare namespace LocalJSX {
     }
 
     interface IntrinsicElements {
+        "bs-ai-thinking": Omit<BsAiThinking, keyof BsAiThinkingAttributes> & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes]?: BsAiThinking[K] } & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes as `attr:${K}`]?: BsAiThinkingAttributes[K] } & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes as `prop:${K}`]?: BsAiThinking[K] };
         "bs-badge": Omit<BsBadge, keyof BsBadgeAttributes> & { [K in keyof BsBadge & keyof BsBadgeAttributes]?: BsBadge[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `attr:${K}`]?: BsBadgeAttributes[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `prop:${K}`]?: BsBadge[K] };
         "bs-button": Omit<BsButton, keyof BsButtonAttributes> & { [K in keyof BsButton & keyof BsButtonAttributes]?: BsButton[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `attr:${K}`]?: BsButtonAttributes[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `prop:${K}`]?: BsButton[K] };
         "bs-button-skeleton": Omit<BsButtonSkeleton, keyof BsButtonSkeletonAttributes> & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes]?: BsButtonSkeleton[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `attr:${K}`]?: BsButtonSkeletonAttributes[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `prop:${K}`]?: BsButtonSkeleton[K] };
@@ -1540,6 +1628,28 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            /**
+             * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
+             * (e.g. "Retrieving", "Thinking", "Searching") whose text pulses in a slow breathing loop while
+             * an operation is in progress.
+             * ## When to use
+             * - Inline in a Genie AI chat transcript to show what the assistant is currently doing while a
+             *   response is being generated (retrieving context, searching, thinking).
+             * ## When not to use
+             * - A blocking/full-panel loading state -- this is a small inline indicator, not a spinner overlay.
+             * The label's pulse animation reproduces Figma's exact keyframe track (a plain opacity
+             * fade-in/hold/reset with the source's own cubic-bezier easing) rather than an invented
+             * shimmer-sweep -- the source design only specifies this one animation.
+             * @prop --bs-ai-thinking-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
+             * @prop --bs-ai-thinking-icon-size - Width/height of the icon.
+             * @prop --bs-ai-thinking-text - Label color. Aliased to `--bs-text-muted`.
+             * @prop --bs-ai-thinking-font-size - Label font size. Aliased to `--bs-font-size-md`.
+             * @prop --bs-ai-thinking-line-height - Label line height. Aliased to `--bs-line-height-body-md`.
+             * @prop --bs-ai-thinking-cycle-duration - Duration of one pulse loop. Figma specifies exactly 2s,
+             * longer than any `--bs-duration-*` token (max `--bs-duration-slower` is 500ms), so this is
+             * aliased directly to the literal value.
+             */
+            "bs-ai-thinking": LocalJSX.IntrinsicElements["bs-ai-thinking"] & JSXBase.HTMLAttributes<HTMLBsAiThinkingElement>;
             /**
              * A small status or category pill, usually paired with a label or list item.
              * ## When to use
