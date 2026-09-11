@@ -42,6 +42,16 @@
   border-color: var(--bs-composer-border-focus);
 }
 
+.bs-composer__attachments-row {
+  display: none;
+}
+
+/* No padding of its own -- slotted content (e.g. bs-attachment-list) already supplies its own
+ * inset, matching how the `actions-end` slot also imposes no spacing on what's slotted into it. */
+.bs-composer__attachments-row--visible {
+  display: block;
+}
+
 .bs-composer__text-row {
   display: flex;
   align-items: center;

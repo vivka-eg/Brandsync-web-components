@@ -59,6 +59,25 @@ describe('bs-composer', () => {
     expect(slotIndex).toBeGreaterThan(actionIndex);
   });
 
+  it('does not show the attachments row when nothing is slotted into it', async () => {
+    const { root } = await render(<bs-composer></bs-composer>);
+    const row = root.shadowRoot.querySelector('[part="attachments"]');
+    expect(row.className).not.toContain('bs-composer__attachments-row--visible');
+  });
+
+  it('shows the attachments row and renders slotted content when something is assigned to it', async () => {
+    const { root } = await render(
+      <bs-composer>
+        <div slot="attachments">attachments here</div>
+      </bs-composer>,
+    );
+    const row = root.shadowRoot.querySelector('[part="attachments"]');
+    expect(row.className).toContain('bs-composer__attachments-row--visible');
+
+    const slot = root.shadowRoot.querySelector('slot[name="attachments"]') as HTMLSlotElement;
+    expect(slot.assignedElements()).toHaveLength(1);
+  });
+
   it('emits bsInput with the current value as the user types', async () => {
     const { root, spyOnEvent } = await render(<bs-composer></bs-composer>);
     const spy = spyOnEvent('bsInput');

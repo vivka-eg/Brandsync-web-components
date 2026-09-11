@@ -1,0 +1,57 @@
+import { Meta, Canvas } from '@storybook/addon-docs/blocks';
+import * as ChatbotStories from './bs-ai-chatbot.stories';
+
+<Meta of={ChatbotStories} />
+
+# AI Chatbot (showcase)
+
+**This is not a real component.** `bs-ai-chatbot` isn't a registered custom element — this page
+composes the existing Genie AI components into realistic full-panel use cases, since no single
+component's own story shows how they fit together end to end.
+
+Components used across these stories: `bs-chatbot-header`, `bs-ai-greeting`,
+`bs-chatbot-suggestion-button`, `bs-composer`, `bs-composer-status-banner`, `bs-attachment-list`,
+`bs-attachment`, `bs-ai-thinking`, `bs-chatbot-response-action`, `bs-chatbot-sources-drawer`,
+`bs-source-link`, `bs-ai-disclaimer`.
+
+Each use case below is its own full chat-panel composition (a dozen+ custom elements each). This
+page only embeds one live preview -- mounting all six at once on a single Docs page is what was
+making it hang. **Open the rest directly from the sidebar** under `bs-ai-chatbot`: "Active
+conversation", "AI is thinking", "Sources drawer open", "Uploading attachments", "Send failed".
+
+## Empty state
+
+Before the user has sent a message: `bs-ai-greeting` + starter `bs-chatbot-suggestion-button`
+chips, above an idle composer.
+
+<Canvas of={ChatbotStories.EmptyState} />
+
+## Active conversation
+
+A user message, an AI response with `bs-chatbot-response-action` below it (including a sources
+count), and the composer ready for the next message. See the "Active conversation" story.
+
+## AI is thinking
+
+`bs-ai-thinking` shown while a response is being generated; the composer's primary action switches
+to "Stop" (`state="generating"`). See the "AI is thinking" story.
+
+## Sources drawer open
+
+The "N sources" flow: `bs-chatbot-sources-drawer` slides in as an overlay *within* the chat
+panel's own bounds after clicking the sources button in `bs-chatbot-response-action` -- not a
+separate side-by-side column widening the panel. The backdrop + slide-in positioning is
+consumer-composed (this library doesn't ship a dedicated overlay/drawer wrapper), the same way
+`bs-modal` demonstrates the equivalent centered-dialog pattern. See the "Sources drawer open"
+story.
+
+## Uploading attachments
+
+`bs-composer-status-banner` (`type="info"`) + `bs-attachment-list` (loading state) inside the
+composer's `attachments` slot, per how those components are actually meant to compose together.
+See the "Uploading attachments" story.
+
+## Send failed
+
+`bs-composer-status-banner` (`type="error"`, with a "Retry" action) surfacing a failed send. See
+the "Send failed" story.

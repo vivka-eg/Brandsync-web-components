@@ -1,0 +1,42 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AiDisclaimerStories from './bs-ai-disclaimer.stories';
+
+<Meta of={AiDisclaimerStories} />
+
+# AI disclaimer
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A centered caption disclaimer for a Genie AI chat panel, e.g. "AI can make mistakes. Please verify
+important information."
+
+**When to use**
+- Below or above `bs-composer` in a Genie AI chat panel, to remind users AI output can be wrong.
+
+**When not to use**
+- General-purpose caption/helper text unrelated to AI — use plain text or `bs-input`'s description
+  slot instead.
+
+<Canvas of={AiDisclaimerStories.Default} />
+
+## Component API
+
+<Controls of={AiDisclaimerStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default slot (the disclaimer text/content)
+- Shadow parts: `::part(text)`
+- CSS custom properties: `--bs-ai-disclaimer-padding-x`, `--bs-ai-disclaimer-text-color`,
+  `--bs-ai-disclaimer-font-size`, `--bs-ai-disclaimer-line-height`
+
+## Accessibility
+
+- Renders as plain centered text with no interactive elements — no extra ARIA is needed.
+- The default slot accepts rich content (e.g. a link to a help/policy page), so a consuming app can
+  add one without this component needing an invented `href` prop.

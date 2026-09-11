@@ -1,0 +1,87 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as FeedbackStories from './bs-chatbot-feedback.stories';
+
+<Meta of={FeedbackStories} />
+
+# Chatbot Feedback
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Submitted](#submitted)
+- [All states](#all-states)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A star-rating feedback card shown at the end of a Genie AI chat: a heading/subtitle, a 5-star
+rating, an optional comment, and either "Submit feedback" + "Start new chat" (before submitting)
+or just "Start new chat" (after).
+
+**When to use**
+- Prompting for feedback on a Genie response or chat session, typically after the user ends or
+  restarts a conversation.
+
+**When not to use**
+- A generic star-rating input elsewhere in the product — this component's copy and layout are
+  purpose-built for the Genie feedback flow, not a reusable rating control.
+
+<Canvas of={FeedbackStories.Default} />
+
+## Submitted
+
+The heading and subtitle aren't freeform — before submitting they're always the fixed "How was
+your experience..." copy; after submitting, they're determined entirely by the rating (1-2 stars
+reads apologetic, 3 neutral, 4-5 positive), matching the source design exactly. "Start new chat"
+also switches from outlined to the primary (filled) treatment once it's the only action left.
+
+<Canvas of={FeedbackStories.OneStarSubmitted} />
+<Canvas of={FeedbackStories.ThreeStarsSubmitted} />
+<Canvas of={FeedbackStories.FiveStarsSubmitted} />
+
+## All states
+
+<Canvas of={FeedbackStories.AllStates} />
+
+## Component API
+
+<Controls of={FeedbackStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: none
+- Shadow parts: `::part(close)`, `::part(heading)`, `::part(subtitle)`, `::part(star)`,
+  `::part(label)`, `::part(textarea)`, `::part(comment)`, `::part(submit)`, `::part(new-chat)`
+- CSS custom properties: `--bs-chatbot-feedback-bg`, `--bs-chatbot-feedback-border`,
+  `--bs-chatbot-feedback-radius`, `--bs-chatbot-feedback-padding-x`,
+  `--bs-chatbot-feedback-padding-y`, `--bs-chatbot-feedback-max-width`,
+  `--bs-chatbot-feedback-gap`, `--bs-chatbot-feedback-top-gap`,
+  `--bs-chatbot-feedback-heading-color`, `--bs-chatbot-feedback-subtitle-color`,
+  `--bs-chatbot-feedback-star-filled`, `--bs-chatbot-feedback-star-empty`,
+  `--bs-chatbot-feedback-comment-color`, `--bs-chatbot-feedback-close-hover`,
+  `--bs-chatbot-feedback-primary-bg`, `--bs-chatbot-feedback-primary-bg-hover`,
+  `--bs-chatbot-feedback-primary-bg-disabled`, `--bs-chatbot-feedback-outlined-border`,
+  `--bs-chatbot-feedback-outlined-hover`, `--bs-chatbot-feedback-outlined-text`
+
+## Events
+
+| Event             | Fires when                                    | Payload                             | Cancelable |
+| ----------------- | ---------------------------------------------- | ------------------------------------ | ---------- |
+| `bsRatingChange`  | A star is clicked (before submitting)          | `number` (1-5)                       | No         |
+| `bsCommentInput`  | Every keystroke in the comment textarea        | `string` (current value)             | No         |
+| `bsSubmit`        | "Submit feedback" is clicked                   | `{ rating: number, comment: string }`| No         |
+| `bsNewChat`       | "Start new chat" is clicked                    | `void`                               | No         |
+| `bsClose`         | The close button is clicked                    | `void`                               | No         |
+
+## Accessibility
+
+- The five stars form a `role="radiogroup"` of `role="radio"` buttons with `aria-checked`, so
+  assistive tech announces the rating as a single choice among 5, not five independent toggles.
+- Stars are natively `disabled` once `submitted` is true, so they're unreachable by keyboard and
+  clicks are no-ops — not just visually inert.
+- "Submit feedback" is natively `disabled` until a rating is given, preventing an empty submission.
+- The close button has a fixed `aria-label="Close"` since it's icon-only.
+- This component does not remove or reset itself in response to any event — the consuming app owns
+  visibility (in response to `bsClose`) and resetting `rating`/`submitted`/`comment` (in response
+  to `bsNewChat`).

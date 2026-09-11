@@ -1,0 +1,67 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AttachmentListStories from './bs-attachment-list.stories';
+
+<Meta of={AttachmentListStories} />
+
+# Attachment List
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Three attachments](#three-attachments)
+- [Many attachments (scrollable)](#many-attachments-scrollable)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A horizontally-scrolling row wrapper for one or more `bs-attachment` previews, for slotting into
+`bs-composer`'s `attachments` slot when a Genie AI chat message has file attachments.
+
+**When to use**
+- Wrapping any number of `bs-attachment` elements the user has attached to a message, so they lay
+  out in a single row and scroll horizontally instead of wrapping/overflowing once there are more
+  than fit the available width.
+
+**When not to use**
+- A single attachment on its own — just render `bs-attachment` directly, this wrapper's
+  scroll/fade affordance only matters once there's more content than fits.
+
+<Canvas of={AttachmentListStories.OneAttachment} />
+
+## Three attachments
+
+<Canvas of={AttachmentListStories.ThreeAttachments} />
+
+## Many attachments (scrollable)
+
+Once the slotted attachments no longer fit the available width, the row becomes horizontally
+scrollable, a right-edge fade appears to hint there's more content, and a scrollbar thumb reveals
+on hover/focus.
+
+<Canvas of={AttachmentListStories.ManyAttachments} />
+
+## Component API
+
+<Controls of={AttachmentListStories.OneAttachment} />
+
+Layout and scroll behavior are automatic based on the slotted content's width relative to the
+container — `aria-label` is the only prop.
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (one or more `bs-attachment` elements)
+- Shadow parts: `::part(row)`, `::part(fade)`
+- CSS custom properties: `--bs-attachment-list-gap`, `--bs-attachment-list-padding`,
+  `--bs-attachment-list-fade-color`, `--bs-attachment-list-fade-width`,
+  `--bs-attachment-list-scrollbar-thumb`
+
+## Accessibility
+
+- The scrollable row has `role="group"` and `aria-label="Attachments"` by default (override via
+  `aria-label`), so assistive tech announces it as a distinct region rather than an unlabeled
+  scroll container.
+- The fade overlay is `aria-hidden` and `pointer-events: none` — purely a visual hint, never
+  intercepts clicks or gets announced.
+- The scrollbar thumb only differs in color on hover/focus; the scroll track itself is always
+  present and keyboard-scrollable (native `overflow-x: auto` + arrow/Page keys once the row has
+  focus).

@@ -60,6 +60,20 @@ export const Recording: Story = {
   args: { state: 'recording', value: 'Here is what I have so far' },
 };
 
+export const WithAttachments: Story = {
+  name: 'With attachments',
+  render: () => html`
+    <div style="max-width: 420px;">
+      <bs-composer aria-label="Message">
+        <bs-attachment-list slot="attachments">
+          <bs-attachment type="image" image-src="https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=200&h=200&fit=crop"></bs-attachment>
+          <bs-attachment type="pdf" file-name="Dummy-pdf-in-here"></bs-attachment>
+        </bs-attachment-list>
+      </bs-composer>
+    </div>
+  `,
+};
+
 export const AllStates: Story = {
   name: 'All variants × states',
   render: () => html`

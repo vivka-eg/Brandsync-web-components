@@ -1,0 +1,56 @@
+:host {
+  display: block;
+  --bs-attachment-list-gap: 10px;
+  --bs-attachment-list-padding: var(--bs-spacing-150);
+  --bs-attachment-list-fade-color: var(--bs-static-white);
+  --bs-attachment-list-fade-width: var(--bs-spacing-800);
+  --bs-attachment-list-scrollbar-thumb: var(--bs-neutral-300);
+}
+
+.bs-attachment-list {
+  box-sizing: border-box;
+  position: relative;
+}
+
+.bs-attachment-list__row {
+  box-sizing: border-box;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--bs-attachment-list-gap);
+  padding: var(--bs-attachment-list-padding);
+  overflow-x: auto;
+  /* Hidden by default (Firefox); WebKit/Blink hide it via the ::-webkit-scrollbar rules below
+   * instead, then reveal a styled thumb on hover/focus -- see the comment there for why this
+   * can't be a single cross-browser rule. */
+  scrollbar-width: none;
+}
+
+.bs-attachment-list__row::-webkit-scrollbar {
+  height: 4px;
+}
+
+.bs-attachment-list__row::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.bs-attachment-list__row::-webkit-scrollbar-thumb {
+  /* Transparent (not display:none) so the thumb still reserves its track space and the reveal on
+   * hover/focus below is just a color change, not a layout shift. */
+  background: transparent;
+  border-radius: var(--bs-border-radius-full);
+}
+
+.bs-attachment-list__row:hover::-webkit-scrollbar-thumb,
+.bs-attachment-list__row:focus-within::-webkit-scrollbar-thumb {
+  background: var(--bs-attachment-list-scrollbar-thumb);
+}
+
+.bs-attachment-list__fade {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: var(--bs-attachment-list-fade-width);
+  pointer-events: none;
+  background: linear-gradient(to right, transparent, var(--bs-attachment-list-fade-color));
+}

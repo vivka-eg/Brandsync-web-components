@@ -1,0 +1,173 @@
+:host {
+  display: block;
+  --bs-composer-status-banner-radius: var(--bs-border-radius-150);
+  --bs-composer-status-banner-padding-x: var(--bs-spacing-150);
+  --bs-composer-status-banner-padding-top: var(--bs-spacing-100);
+  --bs-composer-status-banner-padding-bottom: var(--bs-spacing-200);
+  --bs-composer-status-banner-gap: var(--bs-spacing-100);
+  --bs-composer-status-banner-icon-gap: var(--bs-spacing-75);
+
+  --bs-composer-status-banner-error-bg: var(--bs-color-error-container);
+  --bs-composer-status-banner-error-text: var(--bs-text-error);
+  --bs-composer-status-banner-error-action-bg: var(--bs-color-error-default);
+  --bs-composer-status-banner-error-action-bg-hover: var(--bs-color-error-hover);
+
+  --bs-composer-status-banner-info-bg: var(--bs-color-info-container);
+  --bs-composer-status-banner-info-text: var(--bs-text-info);
+  --bs-composer-status-banner-info-action-bg: var(--bs-color-info-default);
+  --bs-composer-status-banner-info-action-bg-hover: var(--bs-color-info-hover);
+
+  --bs-composer-status-banner-neutral-bg: var(--bs-color-neutral-container);
+  --bs-composer-status-banner-neutral-text: var(--bs-text-default);
+  --bs-composer-status-banner-neutral-action-bg: var(--bs-color-neutral-container);
+  --bs-composer-status-banner-neutral-action-bg-hover: var(--bs-color-neutral-container-hover);
+  --bs-composer-status-banner-neutral-action-border: var(--bs-border-neutral-container);
+
+  --bs-composer-status-banner-warning-bg: var(--bs-color-warning-container);
+  --bs-composer-status-banner-warning-text: var(--bs-text-warning);
+  --bs-composer-status-banner-warning-action-bg: var(--bs-color-warning-default);
+  --bs-composer-status-banner-warning-action-bg-hover: var(--bs-color-warning-hover);
+
+  --bs-composer-status-banner-close-hover-bg: var(--bs-color-neutral-container-hover);
+}
+
+.bs-composer-status-banner {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--bs-composer-status-banner-gap);
+  padding: var(--bs-composer-status-banner-padding-top) var(--bs-composer-status-banner-padding-x) var(--bs-composer-status-banner-padding-bottom);
+  border-radius: var(--bs-composer-status-banner-radius) var(--bs-composer-status-banner-radius) 0 0;
+  font-family: inherit;
+}
+
+.bs-composer-status-banner--error {
+  background: var(--bs-composer-status-banner-error-bg);
+  color: var(--bs-composer-status-banner-error-text);
+}
+
+.bs-composer-status-banner--info {
+  background: var(--bs-composer-status-banner-info-bg);
+  color: var(--bs-composer-status-banner-info-text);
+}
+
+.bs-composer-status-banner--neutral {
+  background: var(--bs-composer-status-banner-neutral-bg);
+  color: var(--bs-composer-status-banner-neutral-text);
+}
+
+.bs-composer-status-banner--warning {
+  background: var(--bs-composer-status-banner-warning-bg);
+  color: var(--bs-composer-status-banner-warning-text);
+}
+
+.bs-composer-status-banner__message-group {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  flex: 1 0 0;
+  min-width: 0;
+  gap: var(--bs-composer-status-banner-icon-gap);
+}
+
+.bs-composer-status-banner__icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+}
+
+.bs-composer-status-banner__icon ::slotted(*) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bs-composer-status-banner__message {
+  margin: 0;
+  flex: 1 0 0;
+  min-width: 0;
+  font-size: var(--bs-font-size-md);
+  line-height: calc(var(--bs-line-height-body-md) * 1px);
+  word-break: break-word;
+}
+
+.bs-composer-status-banner__action {
+  box-sizing: border-box;
+  flex-shrink: 0;
+  height: 32px;
+  padding: 0 var(--bs-spacing-150);
+  border: none;
+  border-radius: var(--bs-border-radius-100);
+  color: var(--bs-text-on-action);
+  font-family: inherit;
+  font-size: var(--bs-font-size-sm);
+  font-weight: var(--bs-font-weight-medium);
+  line-height: calc(var(--bs-line-height-body-sm) * 1px);
+  cursor: pointer;
+  transition: background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-composer-status-banner--error .bs-composer-status-banner__action {
+  background: var(--bs-composer-status-banner-error-action-bg);
+}
+.bs-composer-status-banner--error .bs-composer-status-banner__action:hover {
+  background: var(--bs-composer-status-banner-error-action-bg-hover);
+}
+
+.bs-composer-status-banner--info .bs-composer-status-banner__action {
+  background: var(--bs-composer-status-banner-info-action-bg);
+}
+.bs-composer-status-banner--info .bs-composer-status-banner__action:hover {
+  background: var(--bs-composer-status-banner-info-action-bg-hover);
+}
+
+.bs-composer-status-banner--warning .bs-composer-status-banner__action {
+  background: var(--bs-composer-status-banner-warning-action-bg);
+}
+.bs-composer-status-banner--warning .bs-composer-status-banner__action:hover {
+  background: var(--bs-composer-status-banner-warning-action-bg-hover);
+}
+
+/* The only variant whose action button is outlined (container bg + visible border) instead of a
+ * solid semantic color -- there's no strong "neutral action" brand color to fill it with. */
+.bs-composer-status-banner--neutral .bs-composer-status-banner__action {
+  background: var(--bs-composer-status-banner-neutral-action-bg);
+  border: var(--bs-border-width-thin) solid var(--bs-composer-status-banner-neutral-action-border);
+  color: var(--bs-text-default);
+}
+.bs-composer-status-banner--neutral .bs-composer-status-banner__action:hover {
+  background: var(--bs-composer-status-banner-neutral-action-bg-hover);
+}
+
+.bs-composer-status-banner__close {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: none;
+  border-radius: var(--bs-border-radius-100);
+  color: inherit;
+  cursor: pointer;
+  transition: background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-composer-status-banner__close:hover {
+  background: var(--bs-composer-status-banner-close-hover-bg);
+}
+
+.bs-composer-status-banner__close svg {
+  width: 20px;
+  height: 20px;
+}
+
+.bs-composer-status-banner__close:focus-visible,
+.bs-composer-status-banner__action:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 1px;
+}

@@ -1,0 +1,99 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as StatusBannerStories from './bs-composer-status-banner.stories';
+
+<Meta of={StatusBannerStories} />
+
+# Composer Status Banner
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Info / Neutral / Warning](#info--neutral--warning)
+- [With action button](#with-action-button)
+- [All types](#all-types)
+- [Above bs-composer](#above-bs-composer)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A full-width status banner for use directly above `bs-composer`, surfacing a message about the
+composer's current state (e.g. a send failure, an informational notice) with an optional
+"Continue"-style action button and an optional close button.
+
+**When to use**
+- A message tied to the composer itself (send failed, rate-limited, draft restored, etc.) that
+  needs to sit directly above it.
+
+**When not to use**
+- A toast/snackbar notification unrelated to the composer — this component is not self-dismissing
+  and has no positioning of its own (it's a static block, not an overlay).
+
+<Canvas of={StatusBannerStories.Default} />
+
+## Info / Neutral / Warning
+
+<Canvas of={StatusBannerStories.Info} />
+<Canvas of={StatusBannerStories.Neutral} />
+<Canvas of={StatusBannerStories.Warning} />
+
+## With action button
+
+Set `showButton` to render a secondary action alongside the message (e.g. "Retry"). Its color
+follows `type`, except `type="neutral"`, whose action button is outlined instead of solid since
+there's no strong "neutral action" brand color to fill it with.
+
+<Canvas of={StatusBannerStories.WithAction} />
+
+## All types
+
+<Canvas of={StatusBannerStories.AllTypes} />
+
+## Above bs-composer
+
+The intended real-world placement: `bs-attachment-list` goes *inside* `bs-composer` (via its
+`attachments` slot), not as a separate element outside it -- only the banner sits outside, tucked
+slightly behind the composer's top edge (a negative `margin-bottom` on the banner, matching the
+source design) so the two read as one continuous surface instead of two stacked cards with a
+visible seam.
+
+<Canvas of={StatusBannerStories.AboveComposer} />
+
+## Component API
+
+<Controls of={StatusBannerStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: `icon` (overrides the default clock icon)
+- Shadow parts: `::part(icon)`, `::part(message)`, `::part(action)`, `::part(close)`
+- CSS custom properties: `--bs-composer-status-banner-radius`,
+  `--bs-composer-status-banner-padding-x`, `--bs-composer-status-banner-padding-top`,
+  `--bs-composer-status-banner-padding-bottom`, `--bs-composer-status-banner-gap`,
+  `--bs-composer-status-banner-icon-gap`, `--bs-composer-status-banner-error-bg`,
+  `--bs-composer-status-banner-error-text`, `--bs-composer-status-banner-error-action-bg`,
+  `--bs-composer-status-banner-error-action-bg-hover`, `--bs-composer-status-banner-info-bg`,
+  `--bs-composer-status-banner-info-text`, `--bs-composer-status-banner-info-action-bg`,
+  `--bs-composer-status-banner-info-action-bg-hover`, `--bs-composer-status-banner-neutral-bg`,
+  `--bs-composer-status-banner-neutral-text`, `--bs-composer-status-banner-neutral-action-bg`,
+  `--bs-composer-status-banner-neutral-action-bg-hover`,
+  `--bs-composer-status-banner-neutral-action-border`, `--bs-composer-status-banner-warning-bg`,
+  `--bs-composer-status-banner-warning-text`, `--bs-composer-status-banner-warning-action-bg`,
+  `--bs-composer-status-banner-warning-action-bg-hover`,
+  `--bs-composer-status-banner-close-hover-bg`
+
+## Events
+
+| Event      | Fires when                    | Payload | Cancelable |
+| ---------- | ------------------------------ | ------- | ---------- |
+| `bsAction` | The action button is clicked   | `void`  | No         |
+| `bsClose`  | The close button is clicked    | `void`  | No         |
+
+## Accessibility
+
+- The close button has a fixed `aria-label="Dismiss"` since it's icon-only with no visible text.
+- The leading icon is `aria-hidden` — it's decorative, the message text itself conveys the status.
+- Both buttons use the standard focus-visible outline (`--bs-border-neutral-focus`), so keyboard
+  users get a visible focus ring regardless of `type`.
+- This component does not remove itself from the DOM on close — the consumer owns visibility
+  (e.g. toggling a prop that controls whether it's rendered at all) in response to `bsClose`.

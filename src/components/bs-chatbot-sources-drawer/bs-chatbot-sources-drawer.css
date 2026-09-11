@@ -1,0 +1,106 @@
+:host {
+  display: block;
+  /* --bs-static-white is deliberately NOT theme-aware (never overridden in [data-theme="dark"]),
+   * so using it here would leave the panel pure white in dark mode while --bs-text-default (used
+   * for the heading below) switches to white -- invisible text on an unchanged white background.
+   * --bs-surface-raised is the theme-aware equivalent already used for bs-modal's own dialog box. */
+  --bs-chatbot-sources-drawer-bg: var(--bs-surface-raised);
+  --bs-chatbot-sources-drawer-header-shadow: var(--bs-shadow-xs);
+  --bs-chatbot-sources-drawer-header-padding-x: var(--bs-spacing-200);
+  --bs-chatbot-sources-drawer-header-padding-top: var(--bs-spacing-150);
+  --bs-chatbot-sources-drawer-header-padding-bottom: var(--bs-spacing-100);
+  --bs-chatbot-sources-drawer-heading-color: var(--bs-text-default);
+  --bs-chatbot-sources-drawer-count-bg: var(--bs-badge-bg-neutral-container);
+  --bs-chatbot-sources-drawer-count-color: var(--bs-badge-text-neutral);
+  --bs-chatbot-sources-drawer-collapse-hover: var(--bs-surface-hover);
+  --bs-chatbot-sources-drawer-section-gap: var(--bs-spacing-200);
+  --bs-chatbot-sources-drawer-list-padding: var(--bs-spacing-200);
+  --bs-chatbot-sources-drawer-list-gap: var(--bs-spacing-50);
+}
+
+.bs-chatbot-sources-drawer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-chatbot-sources-drawer-section-gap);
+  width: 100%;
+  height: 100%;
+  background: var(--bs-chatbot-sources-drawer-bg);
+  font-family: inherit;
+}
+
+.bs-chatbot-sources-drawer__header {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+  padding: var(--bs-chatbot-sources-drawer-header-padding-top) var(--bs-chatbot-sources-drawer-header-padding-x) var(--bs-chatbot-sources-drawer-header-padding-bottom);
+  box-shadow: var(--bs-chatbot-sources-drawer-header-shadow);
+}
+
+.bs-chatbot-sources-drawer__title-group {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-spacing-100);
+}
+
+.bs-chatbot-sources-drawer__heading {
+  margin: 0;
+  color: var(--bs-chatbot-sources-drawer-heading-color);
+  font-size: var(--bs-font-size-2xl);
+  font-weight: var(--bs-font-weight-bold);
+  /* --bs-line-height-heading-h4 is a bare number (32), meant as a px value -- unlike
+   * --bs-line-height-normal/snug/etc, which are true unitless ratios safe to use directly. */
+  line-height: calc(var(--bs-line-height-heading-h4) * 1px);
+}
+
+.bs-chatbot-sources-drawer__count {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 16px;
+  max-width: 34px;
+  padding: var(--bs-spacing-50) var(--bs-spacing-100);
+  background: var(--bs-chatbot-sources-drawer-count-bg);
+  border-radius: var(--bs-border-radius-50);
+  color: var(--bs-chatbot-sources-drawer-count-color);
+  font-size: var(--bs-font-size-xs);
+  line-height: calc(var(--bs-line-height-caption-sm) * 1px);
+}
+
+.bs-chatbot-sources-drawer__collapse {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: var(--bs-border-radius-100);
+  color: var(--bs-icon-default);
+  cursor: pointer;
+}
+
+.bs-chatbot-sources-drawer__collapse:hover {
+  background: var(--bs-chatbot-sources-drawer-collapse-hover);
+}
+
+.bs-chatbot-sources-drawer__collapse:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 1px;
+}
+
+.bs-chatbot-sources-drawer__list {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-chatbot-sources-drawer-list-gap);
+  /* No top padding -- the gap between header and list (--bs-chatbot-sources-drawer-section-gap)
+   * already provides that separation; adding padding here too would double it up. */
+  padding: 0 var(--bs-chatbot-sources-drawer-list-padding) var(--bs-chatbot-sources-drawer-list-padding);
+  overflow-y: auto;
+}

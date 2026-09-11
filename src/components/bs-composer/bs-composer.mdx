@@ -11,6 +11,7 @@ import * as ComposerStories from './bs-composer.stories';
 - [Generating state](#generating-state)
 - [Disabled state](#disabled-state)
 - [Recording state](#recording-state)
+- [With attachments](#with-attachments)
 - [All variants × states](#all-variants--states)
 - [Component API](#component-api)
 - [Events](#events)
@@ -53,6 +54,15 @@ for a stop-recording square and the primary action for a checkmark (confirm).
 
 <Canvas of={ComposerStories.Recording} />
 
+## With attachments
+
+Slot a `bs-attachment-list` into the `attachments` slot to render it *inside* the composer's own
+bordered container, above the text field — not as a separate element floating above it. The row
+only takes up space when something is actually slotted in. The `bsAttach` event is the hook for a
+consuming app to open a file picker and add attachments to that list.
+
+<Canvas of={ComposerStories.WithAttachments} />
+
 ## All variants × states
 
 Every combination of `variant` and `state` side by side, for visual parity with the source design.
@@ -64,7 +74,8 @@ Every combination of `variant` and `state` side by side, for visual parity with 
 <Controls of={ComposerStories.Default} />
 
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
-- Shadow parts: `::part(attach)`, `::part(input)`, `::part(mic)`, `::part(action)`
+- Slots: `attachments`, `actions-end`
+- Shadow parts: `::part(attachments)`, `::part(attach)`, `::part(input)`, `::part(mic)`, `::part(action)`
 - CSS custom properties: `--bs-composer-radius`, `--bs-composer-bg`, `--bs-composer-border`,
   `--bs-composer-border-focus`, `--bs-composer-action-bg`, `--bs-composer-action-bg-hover`,
   `--bs-composer-action-bg-pressed`, `--bs-composer-action-bg-disabled`,

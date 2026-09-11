@@ -52,16 +52,18 @@ shadow root.
 | Slot            | Description                                                                                                                                                                                                                                                                                                                 |
 | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `"actions-end"` | Extra consumer-supplied controls appended after the primary action button in the controls row (e.g. a product-specific "Tools" button). Slotted content is placed inline in the same flex row as attach/mic/action, so a slotted element should size itself to roughly match `--bs-composer-button-size` to align visually. |
+| `"attachments"` | A `bs-attachment-list` (or other content) rendered inside the composer's own bordered container, above the text field -- only takes up space/padding when it has assigned content, so leaving it empty renders identically to not having the slot at all.                                                                   |
 
 
 ## Shadow Parts
 
-| Part       | Description                                                                                     |
-| ---------- | ----------------------------------------------------------------------------------------------- |
-| `"action"` | The primary circular action button (send, stop, or confirm depending on `state`).               |
-| `"attach"` | The "+" attach button.                                                                          |
-| `"input"`  | The native text `<input>`.                                                                      |
-| `"mic"`    | The secondary icon button (microphone, or the stop-recording square while `state="recording"`). |
+| Part            | Description                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------- |
+| `"action"`      | The primary circular action button (send, stop, or confirm depending on `state`).               |
+| `"attach"`      | The "+" attach button.                                                                          |
+| `"attachments"` | The wrapper around the `attachments` slot.                                                      |
+| `"input"`       | The native text `<input>`.                                                                      |
+| `"mic"`         | The secondary icon button (microphone, or the stop-recording square while `state="recording"`). |
 
 
 ----------------------------------------------

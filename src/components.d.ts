@@ -5,21 +5,83 @@
  * It contains typing information for all components that exist in this project.
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
+import { BsAttachmentType } from "./components/bs-attachment/bs-attachment";
 import { BsBadgeVariant } from "./components/bs-badge/bs-badge";
 import { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
 import { BsButtonSize as BsButtonSize1 } from "./components/bs-button/bs-button";
 import { BsCardSurface } from "./components/bs-card/bs-card";
 import { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
+import { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 import { BsModalSize } from "./components/bs-modal/bs-modal";
+export { BsAttachmentType } from "./components/bs-attachment/bs-attachment";
 export { BsBadgeVariant } from "./components/bs-badge/bs-badge";
 export { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
 export { BsButtonSize as BsButtonSize1 } from "./components/bs-button/bs-button";
 export { BsCardSurface } from "./components/bs-card/bs-card";
 export { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
+export { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 export { BsModalSize } from "./components/bs-modal/bs-modal";
 export namespace Components {
+    /**
+     * A centered caption disclaimer for Genie AI surfaces, e.g. "AI can make mistakes. Please verify
+     * important information."
+     * ## When to use
+     * - Below or above `bs-composer` in a Genie AI chat panel, to remind users AI output can be wrong.
+     * ## When not to use
+     * - A general-purpose caption/helper text — use plain text or `bs-input`'s description slot for
+     *   non-AI-related helper copy.
+     * The default slot (rather than a fixed prop) is intentional: Figma only specifies plain text, but
+     * some consuming apps link out to a policy/help page from this copy, and a slot supports that
+     * without inventing an unconfirmed `href`/link prop.
+     * @prop --bs-ai-disclaimer-padding-x - Horizontal padding. Aliased to `--bs-spacing-200`.
+     * @prop --bs-ai-disclaimer-text-color - Text color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-ai-disclaimer-font-size - Text font size. Aliased to `--bs-font-size-sm`.
+     * @prop --bs-ai-disclaimer-line-height - Text line height. Aliased to `--bs-line-height-body-sm`.
+     */
+    interface BsAiDisclaimer {
+    }
+    /**
+     * The centered welcome heading shown at the top of an empty Genie AI chat panel, e.g.
+     * "Hi. I'm Genie, your AI assistant." + "How can I help you with [product] today?"
+     * ## When to use
+     * - The empty/initial state of a Genie AI chat panel, before the user has sent a message.
+     * ## When not to use
+     * - Once a conversation has started -- this is a one-time empty-state greeting, not a persistent
+     *   header (see `bs-chatbot-header` for that).
+     * `productName` is optional: Figma's copy has a `[product_name]` placeholder the consuming app is
+     * expected to fill in, but a component shouldn't force a product name to exist, so leaving it
+     * unset falls back to a product-agnostic "How can I help you today?".
+     * @prop --bs-ai-greeting-gap - Gap between heading and subtext. Aliased to `--bs-spacing-200`.
+     * @prop --bs-ai-greeting-max-width - Max width of the centered content block. Matches Figma's
+     * 490px.
+     * @prop --bs-ai-greeting-heading-color - Heading text color. Aliased to `--bs-text-default`.
+     * @prop --bs-ai-greeting-heading-font-size - Heading font size. Aliased to `--bs-font-size-4xl`.
+     * @prop --bs-ai-greeting-heading-line-height - Heading line height. Figma specifies 28px, which
+     * doesn't match any `--bs-line-height-heading-*` token (h4 is 32) -- aliased directly to
+     * `--bs-line-height-body-lg`, the token that happens to share the same numeric value.
+     * @prop --bs-ai-greeting-heading-weight - Heading font weight. Aliased to `--bs-font-weight-bold`.
+     * @prop --bs-ai-greeting-heading-gap - Gap between the two heading lines. Aliased to
+     * `--bs-spacing-200`.
+     * @prop --bs-ai-greeting-subtext-color - Subtext color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-ai-greeting-subtext-font-size - Subtext font size. Figma specifies 20px, which
+     * doesn't match the semantic `--bs-text-style-body-lg-size` (18px) -- aliased directly to the
+     * raw `--bs-font-size-xl` primitive instead.
+     * @prop --bs-ai-greeting-subtext-line-height - Subtext line height. Aliased to
+     * `--bs-line-height-body-lg`.
+     */
+    interface BsAiGreeting {
+        /**
+          * The assistant's name, used in the heading ("Hi. I'm {assistantName},").
+          * @default 'Genie'
+         */
+        "assistantName": string;
+        /**
+          * The product name mentioned in the subtext. Omit to use a product-agnostic subtext.
+         */
+        "productName"?: string;
+    }
     /**
      * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
      * (e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band
@@ -46,6 +108,93 @@ export namespace Components {
           * @default 'Thinking'
          */
         "label": string;
+    }
+    /**
+     * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
+     * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
+     * a hover/focus-revealed remove button.
+     * ## When to use
+     * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
+     *   typically alongside or inside `bs-composer`.
+     * ## When not to use
+     * - A generic file-upload control -- this is a preview-only presentational component. The
+     *   consuming app owns the actual file picker/upload logic and drives `loading` from that state.
+     * @prop --bs-attachment-size - Width/height of the image thumbnail and of the card. Defaults to 112px.
+     * @prop --bs-attachment-radius - Corner radius of the thumbnail/card. Aliased to
+     * `--bs-border-radius-100`.
+     * @prop --bs-attachment-border-color - Border color of the card / loading image wrap. Aliased to
+     * `--bs-border-default`.
+     * @prop --bs-attachment-card-bg - Card background. Aliased to `--bs-surface-base`.
+     * @prop --bs-attachment-filename-color - Filename text color. Aliased to `--bs-text-default`.
+     * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
+     * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
+     * `--bs-badge-bg-info`.
+     * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
+     * Aliased to `--bs-button-neutral-container`.
+     * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
+     * `--bs-button-neutral-hover`.
+     * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
+     * `--bs-button-neutral-pressed`.
+     * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
+     * `--bs-border-neutral-focus`.
+     */
+    interface BsAttachment {
+        /**
+          * The filename shown on the card. Only used when `type` is "pdf" or "document".
+          * @default 'Attachment'
+         */
+        "fileName": string;
+        /**
+          * Accessible alt text for the image thumbnail. Only used when `type` is "image".
+          * @default ''
+         */
+        "imageAlt": string;
+        /**
+          * The thumbnail image URL. Only used when `type` is "image".
+         */
+        "imageSrc"?: string;
+        /**
+          * Shows an upload-in-progress spinner (blurred + overlaid for images, in the badge for files).
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * Whether the hover/focus-revealed remove button is rendered at all.
+          * @default true
+         */
+        "removable": boolean;
+        /**
+          * Which kind of attachment preview to render.
+          * @default 'image'
+         */
+        "type": BsAttachmentType;
+    }
+    /**
+     * A horizontally-scrolling row wrapper for one or more `bs-attachment` previews, for slotting into
+     * `bs-composer`'s `attachments` slot when a Genie AI chat message has file attachments.
+     * ## When to use
+     * - Wrapping any number of `bs-attachment` elements the user has attached to a message, so they
+     *   lay out in a single row and scroll horizontally instead of wrapping/overflowing once there
+     *   are more than fit the available width.
+     * ## When not to use
+     * - A single attachment on its own — just render `bs-attachment` directly, this wrapper's
+     *   scroll/fade affordance only matters once there's more content than fits.
+     * @prop --bs-attachment-list-gap - Gap between attachments. Matches the 10px Figma spec (not tied
+     * to the `--bs-spacing-*` scale, which only has 8px/12px neighbors).
+     * @prop --bs-attachment-list-padding - Padding around the row. Aliased to `--bs-spacing-150`.
+     * @prop --bs-attachment-list-fade-color - Color the right-edge fade blends into. Aliased to
+     * `--bs-static-white`.
+     * @prop --bs-attachment-list-fade-width - Width of the right-edge fade overlay. Aliased to
+     * `--bs-spacing-800`.
+     * @prop --bs-attachment-list-scrollbar-thumb - Color of the scrollbar thumb that appears on
+     * hover/focus once the row is scrollable. Aliased to `--bs-neutral-300`.
+     */
+    interface BsAttachmentList {
+        /**
+          * Accessible name for the scrollable region.
+          * @default 'Attachments'
+         */
+        "ariaLabel": string | null;
     }
     /**
      * A small status or category pill, usually paired with a label or list item.
@@ -151,6 +300,72 @@ export namespace Components {
         "surface": BsCardSurface;
     }
     /**
+     * A star-rating feedback card shown at the end of a Genie AI chat: a heading/subtitle, a 5-star
+     * rating, an optional comment, and either "Submit feedback" + "Start new chat" (before
+     * submitting) or just "Start new chat" (after).
+     * ## When to use
+     * - Prompting for feedback on a Genie response or chat session, typically after the user ends or
+     *   restarts a conversation.
+     * ## When not to use
+     * - A generic star-rating input elsewhere in the product -- this component's copy and layout are
+     *   purpose-built for the Genie feedback flow, not a reusable rating control.
+     * The heading and subtitle are not freeform props: before submitting, they're always the fixed
+     * "How was your experience..." copy; after submitting, they're determined entirely by `rating`
+     * (1-2 stars reads apologetic, 3 neutral, 4-5 positive), matching the Figma source exactly. Use
+     * `heading`/`subtitle` only if a consuming app genuinely needs to override that copy.
+     * @prop --bs-chatbot-feedback-bg - Card background. Aliased to `--bs-surface-raised`.
+     * @prop --bs-chatbot-feedback-border - Card border color. Aliased to `--bs-border-default`.
+     * @prop --bs-chatbot-feedback-radius - Card corner radius. Aliased to `--bs-border-radius-200`.
+     * @prop --bs-chatbot-feedback-padding-x - Card horizontal padding. Aliased to `--bs-spacing-250`.
+     * @prop --bs-chatbot-feedback-padding-y - Card vertical padding. Aliased to `--bs-spacing-550`.
+     * @prop --bs-chatbot-feedback-max-width - Max width of the card. Matches Figma's 762px.
+     * @prop --bs-chatbot-feedback-gap - Gap between the top content block and the button(s). Aliased
+     * to `--bs-spacing-300`.
+     * @prop --bs-chatbot-feedback-top-gap - Gap between heading/subtitle, stars, and the
+     * textarea/comment within the top block. Aliased to `--bs-spacing-250`.
+     * @prop --bs-chatbot-feedback-heading-color - Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-feedback-subtitle-color - Aliased to `--bs-text-secondary`.
+     * @prop --bs-chatbot-feedback-star-filled - Filled star color. Aliased to `--bs-color-primary-default`.
+     * @prop --bs-chatbot-feedback-star-empty - Empty star color. Aliased to `--bs-border-neutral-container`.
+     * @prop --bs-chatbot-feedback-comment-color - Submitted comment text color. Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-feedback-close-hover - Close button hover background. Aliased to `--bs-surface-hover`.
+     * @prop --bs-chatbot-feedback-primary-bg - "Submit feedback" / post-submit "Start new chat"
+     * background. Aliased to `--bs-button-primary-default`.
+     * @prop --bs-chatbot-feedback-primary-bg-hover - Aliased to `--bs-button-primary-hover`.
+     * @prop --bs-chatbot-feedback-primary-bg-disabled - Aliased to `--bs-button-primary-disabled`.
+     * @prop --bs-chatbot-feedback-outlined-border - Pre-submit "Start new chat" border. Aliased to
+     * `--bs-border-primary`.
+     * @prop --bs-chatbot-feedback-outlined-hover - Pre-submit "Start new chat" hover background.
+     * Aliased to `--bs-color-primary-container-hover`.
+     * @prop --bs-chatbot-feedback-outlined-text - Pre-submit "Start new chat" text/icon color.
+     * Aliased to `--bs-text-action`.
+     */
+    interface BsChatbotFeedback {
+        /**
+          * The comment text.
+          * @default ''
+         */
+        "comment": string;
+        /**
+          * Overrides the computed heading (see the class doc for why this is computed by default).
+         */
+        "heading"?: string;
+        /**
+          * Current star rating, 0-5. 0 means no rating has been given yet.
+          * @default 0
+         */
+        "rating": number;
+        /**
+          * Whether feedback has been submitted. Switches the card from the editable form to the read-only "thanks" view.
+          * @default false
+         */
+        "submitted": boolean;
+        /**
+          * Overrides the computed subtitle.
+         */
+        "subtitle"?: string;
+    }
+    /**
      * The header bar that sits above `bs-composer` in a Genie AI chat panel: the Genie brand mark on
      * the left and four fixed actions (new chat, history, expand, close) on the right.
      * ## When to use
@@ -223,6 +438,45 @@ export namespace Components {
           * Number of sources backing the response. When set to a positive number, renders the "N sources" button (singular "1 source" / plural "N sources"). When unset or `0`, the button is not rendered at all.
          */
         "sourcesCount"?: number;
+    }
+    /**
+     * The "Sources" panel shown alongside a Genie AI chat response -- a header with a title, a count
+     * badge, and a collapse chevron, above a stack of `bs-source-link` citation rows.
+     * ## When to use
+     * - Displaying the documents/sources a Genie response cited, typically opened from a "view
+     *   sources" action on a `bs-chatbot-response-action` bar.
+     * ## When not to use
+     * - A generic list container -- this component's header (title + count + collapse) is
+     *   purpose-built for the sources use case.
+     * @prop --bs-chatbot-sources-drawer-bg - Background of the whole panel. Aliased to `--bs-surface-raised`.
+     * @prop --bs-chatbot-sources-drawer-header-shadow - Drop shadow under the header, separating it
+     * from the scrolled list. Aliased to `--bs-shadow-xs`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-x - Aliased to `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-top - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-bottom - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-sources-drawer-heading-color - Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-sources-drawer-count-bg - Count badge background. Aliased to
+     * `--bs-badge-bg-neutral-container`.
+     * @prop --bs-chatbot-sources-drawer-count-color - Count badge text color. Aliased to
+     * `--bs-badge-text-neutral`.
+     * @prop --bs-chatbot-sources-drawer-collapse-hover - Collapse button background on hover. Aliased
+     * to `--bs-surface-hover`.
+     * @prop --bs-chatbot-sources-drawer-section-gap - Gap between the header and the list. Aliased to
+     * `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-list-padding - Horizontal/bottom padding of the list. Aliased
+     * to `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-list-gap - Gap between rows. Aliased to `--bs-spacing-50`.
+     */
+    interface BsChatbotSourcesDrawer {
+        /**
+          * Overrides the auto-detected count badge. By default the badge reflects the number of slotted `bs-source-link` children, so most consumers don't need to set this.
+         */
+        "count"?: number;
+        /**
+          * The panel title.
+          * @default 'Sources'
+         */
+        "heading": string;
     }
     /**
      * A pill-shaped clickable suggestion chip for a Genie AI chat panel (e.g. "How can I help you?").
@@ -319,6 +573,95 @@ export namespace Components {
           * @default 'ai'
          */
         "variant": BsComposerVariant;
+    }
+    /**
+     * A full-width status banner for use directly above `bs-composer`, surfacing a message about the
+     * composer's current state (e.g. a send failure, an informational notice) with an optional
+     * "Continue"-style action button and an optional close button.
+     * ## When to use
+     * - A message tied to the composer itself (send failed, rate-limited, draft restored, etc.) that
+     *   needs to sit directly above it, not a general-purpose alert -- see `CONVENTIONS.md` if this
+     *   library gains a generic banner/alert component later, and prefer that instead once it exists.
+     * ## When not to use
+     * - A toast/snackbar notification unrelated to the composer -- this component is not
+     *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
+     * @prop --bs-composer-status-banner-radius - Corner radius of the top-left/top-right corners
+     * (bottom corners are square, so this sits flush above `bs-composer`). Aliased to
+     * `--bs-border-radius-150`.
+     * @prop --bs-composer-status-banner-padding-x - Horizontal padding. Aliased to `--bs-spacing-150`.
+     * @prop --bs-composer-status-banner-padding-top - Top padding. Aliased to `--bs-spacing-100`.
+     * @prop --bs-composer-status-banner-padding-bottom - Bottom padding. Aliased to `--bs-spacing-200`.
+     * @prop --bs-composer-status-banner-gap - Gap between the message group and the action/close
+     * controls. Aliased to `--bs-spacing-100`.
+     * @prop --bs-composer-status-banner-icon-gap - Gap between the icon and the message text.
+     * Aliased to `--bs-spacing-75`.
+     * @prop --bs-composer-status-banner-error-bg - Background for `type="error"`. Aliased to
+     * `--bs-color-error-container`.
+     * @prop --bs-composer-status-banner-error-text - Text/icon color for `type="error"`. Aliased to
+     * `--bs-text-error`.
+     * @prop --bs-composer-status-banner-error-action-bg - Action button background for
+     * `type="error"`. Aliased to `--bs-color-error-default`.
+     * @prop --bs-composer-status-banner-error-action-bg-hover - Aliased to `--bs-color-error-hover`.
+     * @prop --bs-composer-status-banner-info-bg - Background for `type="info"`. Aliased to
+     * `--bs-color-info-container`.
+     * @prop --bs-composer-status-banner-info-text - Text/icon color for `type="info"`. Aliased to
+     * `--bs-text-info`.
+     * @prop --bs-composer-status-banner-info-action-bg - Action button background for `type="info"`.
+     * Aliased to `--bs-color-info-default`.
+     * @prop --bs-composer-status-banner-info-action-bg-hover - Aliased to `--bs-color-info-hover`.
+     * @prop --bs-composer-status-banner-neutral-bg - Background for `type="neutral"`. Aliased to
+     * `--bs-color-neutral-container`.
+     * @prop --bs-composer-status-banner-neutral-text - Text/icon color for `type="neutral"`. Aliased
+     * to `--bs-text-default`.
+     * @prop --bs-composer-status-banner-neutral-action-bg - Action button background for
+     * `type="neutral"`. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-composer-status-banner-neutral-action-bg-hover - Aliased to
+     * `--bs-color-neutral-container-hover`.
+     * @prop --bs-composer-status-banner-neutral-action-border - Action button border for
+     * `type="neutral"` (the only variant whose action button is outlined). Aliased to
+     * `--bs-border-neutral-container`.
+     * @prop --bs-composer-status-banner-warning-bg - Background for `type="warning"`. Aliased to
+     * `--bs-color-warning-container`.
+     * @prop --bs-composer-status-banner-warning-text - Text/icon color for `type="warning"`. Aliased
+     * to `--bs-text-warning`.
+     * @prop --bs-composer-status-banner-warning-action-bg - Action button background for
+     * `type="warning"`. Aliased to `--bs-color-warning-default`.
+     * @prop --bs-composer-status-banner-warning-action-bg-hover - Aliased to
+     * `--bs-color-warning-hover`.
+     * @prop --bs-composer-status-banner-close-hover-bg - Close button hover background (same across
+     * every `type`). Aliased to `--bs-color-neutral-container-hover`.
+     */
+    interface BsComposerStatusBanner {
+        /**
+          * Label for the action button, only rendered when `showButton` is true.
+          * @default 'Continue'
+         */
+        "actionLabel": string;
+        /**
+          * Whether the close button is rendered.
+          * @default true
+         */
+        "allowClose": boolean;
+        /**
+          * The message text.
+          * @default 'This is a message'
+         */
+        "message": string;
+        /**
+          * Whether the "Continue"-style action button is rendered.
+          * @default false
+         */
+        "showButton": boolean;
+        /**
+          * Whether the leading icon (default: clock) is rendered.
+          * @default true
+         */
+        "showIcon": boolean;
+        /**
+          * Which severity/style to render. Drives background, text/icon color, and the action button's color.
+          * @default 'error'
+         */
+        "type": BsComposerStatusBannerType;
     }
     /**
      * A sortable, optionally row-selectable table for tabular data.
@@ -446,6 +789,55 @@ export namespace Components {
         "size": BsModalSize;
     }
     /**
+     * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
+     * line, the originating system and version on the second, and a trailing "open" arrow.
+     * ## When to use
+     * - One row per source Genie cited in a response, slotted into `bs-chatbot-sources-drawer`.
+     * ## When not to use
+     * - Outside the sources drawer context -- this is a purpose-built citation row, not a generic
+     *   link/list-item component.
+     * @prop --bs-source-link-radius - Corner radius of the row. Aliased to `--bs-border-radius-150`.
+     * @prop --bs-source-link-padding - Padding around the row. Aliased to `--bs-spacing-150`.
+     * @prop --bs-source-link-gap - Gap between the filename+meta block and the trailing arrow.
+     * Aliased to `--bs-spacing-50`.
+     * @prop --bs-source-link-icon-gap - Gap between the leading icon and the filename text. Aliased
+     * to `--bs-spacing-75`.
+     * @prop --bs-source-link-hover - Row background on hover/focus. Aliased to `--bs-surface-hover`.
+     * @prop --bs-source-link-pressed - Row background while active/pressed. Aliased to
+     * `--bs-surface-pressed`.
+     * @prop --bs-source-link-focus - Focus-visible outline color. Aliased to
+     * `--bs-border-neutral-focus`.
+     * @prop --bs-source-link-filename-color - Filename text color. Aliased to `--bs-text-default`.
+     * @prop --bs-source-link-meta-color - Source/version text color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-source-link-icon-color - File icon and arrow color. Aliased to `--bs-icon-default`.
+     * @prop --bs-source-link-dot-color - Separator dot between source and version. Aliased to
+     * `--bs-text-secondary`.
+     */
+    interface BsSourceLink {
+        /**
+          * The cited document's filename.
+          * @default 'Source'
+         */
+        "fileName": string;
+        /**
+          * If set, renders the row as a link that opens this URL; otherwise as a button that only emits `bsOpen`.
+         */
+        "href"?: string;
+        /**
+          * The system/app the document came from (e.g. "HoltePortalen").
+         */
+        "sourceName"?: string;
+        /**
+          * `target` used when `href` is set.
+          * @default '_blank'
+         */
+        "target": string;
+        /**
+          * The document's version label (e.g. "v3.2"). Omit if the source has no version.
+         */
+        "version"?: string;
+    }
+    /**
      * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
      * next to a trigger element.
      * `bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it does not manage its own
@@ -480,6 +872,14 @@ export namespace Components {
         "placement": 'top';
     }
 }
+export interface BsAttachmentCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsAttachmentElement;
+}
+export interface BsChatbotFeedbackCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsChatbotFeedbackElement;
+}
 export interface BsChatbotHeaderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsChatbotHeaderElement;
@@ -488,6 +888,10 @@ export interface BsChatbotResponseActionCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsChatbotResponseActionElement;
 }
+export interface BsChatbotSourcesDrawerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsChatbotSourcesDrawerElement;
+}
 export interface BsChatbotSuggestionButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsChatbotSuggestionButtonElement;
@@ -495,6 +899,10 @@ export interface BsChatbotSuggestionButtonCustomEvent<T> extends CustomEvent<T> 
 export interface BsComposerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsComposerElement;
+}
+export interface BsComposerStatusBannerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsComposerStatusBannerElement;
 }
 export interface BsDataTableCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -512,7 +920,68 @@ export interface BsModalCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsModalElement;
 }
+export interface BsSourceLinkCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsSourceLinkElement;
+}
 declare global {
+    /**
+     * A centered caption disclaimer for Genie AI surfaces, e.g. "AI can make mistakes. Please verify
+     * important information."
+     * ## When to use
+     * - Below or above `bs-composer` in a Genie AI chat panel, to remind users AI output can be wrong.
+     * ## When not to use
+     * - A general-purpose caption/helper text — use plain text or `bs-input`'s description slot for
+     *   non-AI-related helper copy.
+     * The default slot (rather than a fixed prop) is intentional: Figma only specifies plain text, but
+     * some consuming apps link out to a policy/help page from this copy, and a slot supports that
+     * without inventing an unconfirmed `href`/link prop.
+     * @prop --bs-ai-disclaimer-padding-x - Horizontal padding. Aliased to `--bs-spacing-200`.
+     * @prop --bs-ai-disclaimer-text-color - Text color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-ai-disclaimer-font-size - Text font size. Aliased to `--bs-font-size-sm`.
+     * @prop --bs-ai-disclaimer-line-height - Text line height. Aliased to `--bs-line-height-body-sm`.
+     */
+    interface HTMLBsAiDisclaimerElement extends Components.BsAiDisclaimer, HTMLStencilElement {
+    }
+    var HTMLBsAiDisclaimerElement: {
+        prototype: HTMLBsAiDisclaimerElement;
+        new (): HTMLBsAiDisclaimerElement;
+    };
+    /**
+     * The centered welcome heading shown at the top of an empty Genie AI chat panel, e.g.
+     * "Hi. I'm Genie, your AI assistant." + "How can I help you with [product] today?"
+     * ## When to use
+     * - The empty/initial state of a Genie AI chat panel, before the user has sent a message.
+     * ## When not to use
+     * - Once a conversation has started -- this is a one-time empty-state greeting, not a persistent
+     *   header (see `bs-chatbot-header` for that).
+     * `productName` is optional: Figma's copy has a `[product_name]` placeholder the consuming app is
+     * expected to fill in, but a component shouldn't force a product name to exist, so leaving it
+     * unset falls back to a product-agnostic "How can I help you today?".
+     * @prop --bs-ai-greeting-gap - Gap between heading and subtext. Aliased to `--bs-spacing-200`.
+     * @prop --bs-ai-greeting-max-width - Max width of the centered content block. Matches Figma's
+     * 490px.
+     * @prop --bs-ai-greeting-heading-color - Heading text color. Aliased to `--bs-text-default`.
+     * @prop --bs-ai-greeting-heading-font-size - Heading font size. Aliased to `--bs-font-size-4xl`.
+     * @prop --bs-ai-greeting-heading-line-height - Heading line height. Figma specifies 28px, which
+     * doesn't match any `--bs-line-height-heading-*` token (h4 is 32) -- aliased directly to
+     * `--bs-line-height-body-lg`, the token that happens to share the same numeric value.
+     * @prop --bs-ai-greeting-heading-weight - Heading font weight. Aliased to `--bs-font-weight-bold`.
+     * @prop --bs-ai-greeting-heading-gap - Gap between the two heading lines. Aliased to
+     * `--bs-spacing-200`.
+     * @prop --bs-ai-greeting-subtext-color - Subtext color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-ai-greeting-subtext-font-size - Subtext font size. Figma specifies 20px, which
+     * doesn't match the semantic `--bs-text-style-body-lg-size` (18px) -- aliased directly to the
+     * raw `--bs-font-size-xl` primitive instead.
+     * @prop --bs-ai-greeting-subtext-line-height - Subtext line height. Aliased to
+     * `--bs-line-height-body-lg`.
+     */
+    interface HTMLBsAiGreetingElement extends Components.BsAiGreeting, HTMLStencilElement {
+    }
+    var HTMLBsAiGreetingElement: {
+        prototype: HTMLBsAiGreetingElement;
+        new (): HTMLBsAiGreetingElement;
+    };
     /**
      * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
      * (e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band
@@ -538,6 +1007,78 @@ declare global {
     var HTMLBsAiThinkingElement: {
         prototype: HTMLBsAiThinkingElement;
         new (): HTMLBsAiThinkingElement;
+    };
+    interface HTMLBsAttachmentElementEventMap {
+        "bsRemove": void;
+    }
+    /**
+     * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
+     * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
+     * a hover/focus-revealed remove button.
+     * ## When to use
+     * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
+     *   typically alongside or inside `bs-composer`.
+     * ## When not to use
+     * - A generic file-upload control -- this is a preview-only presentational component. The
+     *   consuming app owns the actual file picker/upload logic and drives `loading` from that state.
+     * @prop --bs-attachment-size - Width/height of the image thumbnail and of the card. Defaults to 112px.
+     * @prop --bs-attachment-radius - Corner radius of the thumbnail/card. Aliased to
+     * `--bs-border-radius-100`.
+     * @prop --bs-attachment-border-color - Border color of the card / loading image wrap. Aliased to
+     * `--bs-border-default`.
+     * @prop --bs-attachment-card-bg - Card background. Aliased to `--bs-surface-base`.
+     * @prop --bs-attachment-filename-color - Filename text color. Aliased to `--bs-text-default`.
+     * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
+     * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
+     * `--bs-badge-bg-info`.
+     * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
+     * Aliased to `--bs-button-neutral-container`.
+     * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
+     * `--bs-button-neutral-hover`.
+     * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
+     * `--bs-button-neutral-pressed`.
+     * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
+     * `--bs-border-neutral-focus`.
+     */
+    interface HTMLBsAttachmentElement extends Components.BsAttachment, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsAttachmentElementEventMap>(type: K, listener: (this: HTMLBsAttachmentElement, ev: BsAttachmentCustomEvent<HTMLBsAttachmentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsAttachmentElementEventMap>(type: K, listener: (this: HTMLBsAttachmentElement, ev: BsAttachmentCustomEvent<HTMLBsAttachmentElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsAttachmentElement: {
+        prototype: HTMLBsAttachmentElement;
+        new (): HTMLBsAttachmentElement;
+    };
+    /**
+     * A horizontally-scrolling row wrapper for one or more `bs-attachment` previews, for slotting into
+     * `bs-composer`'s `attachments` slot when a Genie AI chat message has file attachments.
+     * ## When to use
+     * - Wrapping any number of `bs-attachment` elements the user has attached to a message, so they
+     *   lay out in a single row and scroll horizontally instead of wrapping/overflowing once there
+     *   are more than fit the available width.
+     * ## When not to use
+     * - A single attachment on its own — just render `bs-attachment` directly, this wrapper's
+     *   scroll/fade affordance only matters once there's more content than fits.
+     * @prop --bs-attachment-list-gap - Gap between attachments. Matches the 10px Figma spec (not tied
+     * to the `--bs-spacing-*` scale, which only has 8px/12px neighbors).
+     * @prop --bs-attachment-list-padding - Padding around the row. Aliased to `--bs-spacing-150`.
+     * @prop --bs-attachment-list-fade-color - Color the right-edge fade blends into. Aliased to
+     * `--bs-static-white`.
+     * @prop --bs-attachment-list-fade-width - Width of the right-edge fade overlay. Aliased to
+     * `--bs-spacing-800`.
+     * @prop --bs-attachment-list-scrollbar-thumb - Color of the scrollbar thumb that appears on
+     * hover/focus once the row is scrollable. Aliased to `--bs-neutral-300`.
+     */
+    interface HTMLBsAttachmentListElement extends Components.BsAttachmentList, HTMLStencilElement {
+    }
+    var HTMLBsAttachmentListElement: {
+        prototype: HTMLBsAttachmentListElement;
+        new (): HTMLBsAttachmentListElement;
     };
     /**
      * A small status or category pill, usually paired with a label or list item.
@@ -617,6 +1158,68 @@ declare global {
     var HTMLBsCardElement: {
         prototype: HTMLBsCardElement;
         new (): HTMLBsCardElement;
+    };
+    interface HTMLBsChatbotFeedbackElementEventMap {
+        "bsRatingChange": number;
+        "bsCommentInput": string;
+        "bsSubmit": { rating: number; comment: string };
+        "bsNewChat": void;
+        "bsClose": void;
+    }
+    /**
+     * A star-rating feedback card shown at the end of a Genie AI chat: a heading/subtitle, a 5-star
+     * rating, an optional comment, and either "Submit feedback" + "Start new chat" (before
+     * submitting) or just "Start new chat" (after).
+     * ## When to use
+     * - Prompting for feedback on a Genie response or chat session, typically after the user ends or
+     *   restarts a conversation.
+     * ## When not to use
+     * - A generic star-rating input elsewhere in the product -- this component's copy and layout are
+     *   purpose-built for the Genie feedback flow, not a reusable rating control.
+     * The heading and subtitle are not freeform props: before submitting, they're always the fixed
+     * "How was your experience..." copy; after submitting, they're determined entirely by `rating`
+     * (1-2 stars reads apologetic, 3 neutral, 4-5 positive), matching the Figma source exactly. Use
+     * `heading`/`subtitle` only if a consuming app genuinely needs to override that copy.
+     * @prop --bs-chatbot-feedback-bg - Card background. Aliased to `--bs-surface-raised`.
+     * @prop --bs-chatbot-feedback-border - Card border color. Aliased to `--bs-border-default`.
+     * @prop --bs-chatbot-feedback-radius - Card corner radius. Aliased to `--bs-border-radius-200`.
+     * @prop --bs-chatbot-feedback-padding-x - Card horizontal padding. Aliased to `--bs-spacing-250`.
+     * @prop --bs-chatbot-feedback-padding-y - Card vertical padding. Aliased to `--bs-spacing-550`.
+     * @prop --bs-chatbot-feedback-max-width - Max width of the card. Matches Figma's 762px.
+     * @prop --bs-chatbot-feedback-gap - Gap between the top content block and the button(s). Aliased
+     * to `--bs-spacing-300`.
+     * @prop --bs-chatbot-feedback-top-gap - Gap between heading/subtitle, stars, and the
+     * textarea/comment within the top block. Aliased to `--bs-spacing-250`.
+     * @prop --bs-chatbot-feedback-heading-color - Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-feedback-subtitle-color - Aliased to `--bs-text-secondary`.
+     * @prop --bs-chatbot-feedback-star-filled - Filled star color. Aliased to `--bs-color-primary-default`.
+     * @prop --bs-chatbot-feedback-star-empty - Empty star color. Aliased to `--bs-border-neutral-container`.
+     * @prop --bs-chatbot-feedback-comment-color - Submitted comment text color. Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-feedback-close-hover - Close button hover background. Aliased to `--bs-surface-hover`.
+     * @prop --bs-chatbot-feedback-primary-bg - "Submit feedback" / post-submit "Start new chat"
+     * background. Aliased to `--bs-button-primary-default`.
+     * @prop --bs-chatbot-feedback-primary-bg-hover - Aliased to `--bs-button-primary-hover`.
+     * @prop --bs-chatbot-feedback-primary-bg-disabled - Aliased to `--bs-button-primary-disabled`.
+     * @prop --bs-chatbot-feedback-outlined-border - Pre-submit "Start new chat" border. Aliased to
+     * `--bs-border-primary`.
+     * @prop --bs-chatbot-feedback-outlined-hover - Pre-submit "Start new chat" hover background.
+     * Aliased to `--bs-color-primary-container-hover`.
+     * @prop --bs-chatbot-feedback-outlined-text - Pre-submit "Start new chat" text/icon color.
+     * Aliased to `--bs-text-action`.
+     */
+    interface HTMLBsChatbotFeedbackElement extends Components.BsChatbotFeedback, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsChatbotFeedbackElementEventMap>(type: K, listener: (this: HTMLBsChatbotFeedbackElement, ev: BsChatbotFeedbackCustomEvent<HTMLBsChatbotFeedbackElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsChatbotFeedbackElementEventMap>(type: K, listener: (this: HTMLBsChatbotFeedbackElement, ev: BsChatbotFeedbackCustomEvent<HTMLBsChatbotFeedbackElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsChatbotFeedbackElement: {
+        prototype: HTMLBsChatbotFeedbackElement;
+        new (): HTMLBsChatbotFeedbackElement;
     };
     interface HTMLBsChatbotHeaderElementEventMap {
         "bsNewChat": void;
@@ -710,6 +1313,51 @@ declare global {
     var HTMLBsChatbotResponseActionElement: {
         prototype: HTMLBsChatbotResponseActionElement;
         new (): HTMLBsChatbotResponseActionElement;
+    };
+    interface HTMLBsChatbotSourcesDrawerElementEventMap {
+        "bsCollapse": void;
+    }
+    /**
+     * The "Sources" panel shown alongside a Genie AI chat response -- a header with a title, a count
+     * badge, and a collapse chevron, above a stack of `bs-source-link` citation rows.
+     * ## When to use
+     * - Displaying the documents/sources a Genie response cited, typically opened from a "view
+     *   sources" action on a `bs-chatbot-response-action` bar.
+     * ## When not to use
+     * - A generic list container -- this component's header (title + count + collapse) is
+     *   purpose-built for the sources use case.
+     * @prop --bs-chatbot-sources-drawer-bg - Background of the whole panel. Aliased to `--bs-surface-raised`.
+     * @prop --bs-chatbot-sources-drawer-header-shadow - Drop shadow under the header, separating it
+     * from the scrolled list. Aliased to `--bs-shadow-xs`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-x - Aliased to `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-top - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-bottom - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-sources-drawer-heading-color - Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-sources-drawer-count-bg - Count badge background. Aliased to
+     * `--bs-badge-bg-neutral-container`.
+     * @prop --bs-chatbot-sources-drawer-count-color - Count badge text color. Aliased to
+     * `--bs-badge-text-neutral`.
+     * @prop --bs-chatbot-sources-drawer-collapse-hover - Collapse button background on hover. Aliased
+     * to `--bs-surface-hover`.
+     * @prop --bs-chatbot-sources-drawer-section-gap - Gap between the header and the list. Aliased to
+     * `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-list-padding - Horizontal/bottom padding of the list. Aliased
+     * to `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-list-gap - Gap between rows. Aliased to `--bs-spacing-50`.
+     */
+    interface HTMLBsChatbotSourcesDrawerElement extends Components.BsChatbotSourcesDrawer, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsChatbotSourcesDrawerElementEventMap>(type: K, listener: (this: HTMLBsChatbotSourcesDrawerElement, ev: BsChatbotSourcesDrawerCustomEvent<HTMLBsChatbotSourcesDrawerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsChatbotSourcesDrawerElementEventMap>(type: K, listener: (this: HTMLBsChatbotSourcesDrawerElement, ev: BsChatbotSourcesDrawerCustomEvent<HTMLBsChatbotSourcesDrawerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsChatbotSourcesDrawerElement: {
+        prototype: HTMLBsChatbotSourcesDrawerElement;
+        new (): HTMLBsChatbotSourcesDrawerElement;
     };
     interface HTMLBsChatbotSuggestionButtonElementEventMap {
         "bsSelect": void;
@@ -812,6 +1460,81 @@ declare global {
     var HTMLBsComposerElement: {
         prototype: HTMLBsComposerElement;
         new (): HTMLBsComposerElement;
+    };
+    interface HTMLBsComposerStatusBannerElementEventMap {
+        "bsAction": void;
+        "bsClose": void;
+    }
+    /**
+     * A full-width status banner for use directly above `bs-composer`, surfacing a message about the
+     * composer's current state (e.g. a send failure, an informational notice) with an optional
+     * "Continue"-style action button and an optional close button.
+     * ## When to use
+     * - A message tied to the composer itself (send failed, rate-limited, draft restored, etc.) that
+     *   needs to sit directly above it, not a general-purpose alert -- see `CONVENTIONS.md` if this
+     *   library gains a generic banner/alert component later, and prefer that instead once it exists.
+     * ## When not to use
+     * - A toast/snackbar notification unrelated to the composer -- this component is not
+     *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
+     * @prop --bs-composer-status-banner-radius - Corner radius of the top-left/top-right corners
+     * (bottom corners are square, so this sits flush above `bs-composer`). Aliased to
+     * `--bs-border-radius-150`.
+     * @prop --bs-composer-status-banner-padding-x - Horizontal padding. Aliased to `--bs-spacing-150`.
+     * @prop --bs-composer-status-banner-padding-top - Top padding. Aliased to `--bs-spacing-100`.
+     * @prop --bs-composer-status-banner-padding-bottom - Bottom padding. Aliased to `--bs-spacing-200`.
+     * @prop --bs-composer-status-banner-gap - Gap between the message group and the action/close
+     * controls. Aliased to `--bs-spacing-100`.
+     * @prop --bs-composer-status-banner-icon-gap - Gap between the icon and the message text.
+     * Aliased to `--bs-spacing-75`.
+     * @prop --bs-composer-status-banner-error-bg - Background for `type="error"`. Aliased to
+     * `--bs-color-error-container`.
+     * @prop --bs-composer-status-banner-error-text - Text/icon color for `type="error"`. Aliased to
+     * `--bs-text-error`.
+     * @prop --bs-composer-status-banner-error-action-bg - Action button background for
+     * `type="error"`. Aliased to `--bs-color-error-default`.
+     * @prop --bs-composer-status-banner-error-action-bg-hover - Aliased to `--bs-color-error-hover`.
+     * @prop --bs-composer-status-banner-info-bg - Background for `type="info"`. Aliased to
+     * `--bs-color-info-container`.
+     * @prop --bs-composer-status-banner-info-text - Text/icon color for `type="info"`. Aliased to
+     * `--bs-text-info`.
+     * @prop --bs-composer-status-banner-info-action-bg - Action button background for `type="info"`.
+     * Aliased to `--bs-color-info-default`.
+     * @prop --bs-composer-status-banner-info-action-bg-hover - Aliased to `--bs-color-info-hover`.
+     * @prop --bs-composer-status-banner-neutral-bg - Background for `type="neutral"`. Aliased to
+     * `--bs-color-neutral-container`.
+     * @prop --bs-composer-status-banner-neutral-text - Text/icon color for `type="neutral"`. Aliased
+     * to `--bs-text-default`.
+     * @prop --bs-composer-status-banner-neutral-action-bg - Action button background for
+     * `type="neutral"`. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-composer-status-banner-neutral-action-bg-hover - Aliased to
+     * `--bs-color-neutral-container-hover`.
+     * @prop --bs-composer-status-banner-neutral-action-border - Action button border for
+     * `type="neutral"` (the only variant whose action button is outlined). Aliased to
+     * `--bs-border-neutral-container`.
+     * @prop --bs-composer-status-banner-warning-bg - Background for `type="warning"`. Aliased to
+     * `--bs-color-warning-container`.
+     * @prop --bs-composer-status-banner-warning-text - Text/icon color for `type="warning"`. Aliased
+     * to `--bs-text-warning`.
+     * @prop --bs-composer-status-banner-warning-action-bg - Action button background for
+     * `type="warning"`. Aliased to `--bs-color-warning-default`.
+     * @prop --bs-composer-status-banner-warning-action-bg-hover - Aliased to
+     * `--bs-color-warning-hover`.
+     * @prop --bs-composer-status-banner-close-hover-bg - Close button hover background (same across
+     * every `type`). Aliased to `--bs-color-neutral-container-hover`.
+     */
+    interface HTMLBsComposerStatusBannerElement extends Components.BsComposerStatusBanner, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsComposerStatusBannerElementEventMap>(type: K, listener: (this: HTMLBsComposerStatusBannerElement, ev: BsComposerStatusBannerCustomEvent<HTMLBsComposerStatusBannerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsComposerStatusBannerElementEventMap>(type: K, listener: (this: HTMLBsComposerStatusBannerElement, ev: BsComposerStatusBannerCustomEvent<HTMLBsComposerStatusBannerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsComposerStatusBannerElement: {
+        prototype: HTMLBsComposerStatusBannerElement;
+        new (): HTMLBsComposerStatusBannerElement;
     };
     interface HTMLBsDataTableElementEventMap {
         "bsSort": { column: string; direction: 'asc' | 'desc' };
@@ -954,6 +1677,48 @@ declare global {
         prototype: HTMLBsModalElement;
         new (): HTMLBsModalElement;
     };
+    interface HTMLBsSourceLinkElementEventMap {
+        "bsOpen": void;
+    }
+    /**
+     * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
+     * line, the originating system and version on the second, and a trailing "open" arrow.
+     * ## When to use
+     * - One row per source Genie cited in a response, slotted into `bs-chatbot-sources-drawer`.
+     * ## When not to use
+     * - Outside the sources drawer context -- this is a purpose-built citation row, not a generic
+     *   link/list-item component.
+     * @prop --bs-source-link-radius - Corner radius of the row. Aliased to `--bs-border-radius-150`.
+     * @prop --bs-source-link-padding - Padding around the row. Aliased to `--bs-spacing-150`.
+     * @prop --bs-source-link-gap - Gap between the filename+meta block and the trailing arrow.
+     * Aliased to `--bs-spacing-50`.
+     * @prop --bs-source-link-icon-gap - Gap between the leading icon and the filename text. Aliased
+     * to `--bs-spacing-75`.
+     * @prop --bs-source-link-hover - Row background on hover/focus. Aliased to `--bs-surface-hover`.
+     * @prop --bs-source-link-pressed - Row background while active/pressed. Aliased to
+     * `--bs-surface-pressed`.
+     * @prop --bs-source-link-focus - Focus-visible outline color. Aliased to
+     * `--bs-border-neutral-focus`.
+     * @prop --bs-source-link-filename-color - Filename text color. Aliased to `--bs-text-default`.
+     * @prop --bs-source-link-meta-color - Source/version text color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-source-link-icon-color - File icon and arrow color. Aliased to `--bs-icon-default`.
+     * @prop --bs-source-link-dot-color - Separator dot between source and version. Aliased to
+     * `--bs-text-secondary`.
+     */
+    interface HTMLBsSourceLinkElement extends Components.BsSourceLink, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsSourceLinkElementEventMap>(type: K, listener: (this: HTMLBsSourceLinkElement, ev: BsSourceLinkCustomEvent<HTMLBsSourceLinkElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsSourceLinkElementEventMap>(type: K, listener: (this: HTMLBsSourceLinkElement, ev: BsSourceLinkCustomEvent<HTMLBsSourceLinkElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsSourceLinkElement: {
+        prototype: HTMLBsSourceLinkElement;
+        new (): HTMLBsSourceLinkElement;
+    };
     /**
      * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
      * next to a trigger element.
@@ -988,24 +1753,90 @@ declare global {
         new (): HTMLBsTooltipElement;
     };
     interface HTMLElementTagNameMap {
+        "bs-ai-disclaimer": HTMLBsAiDisclaimerElement;
+        "bs-ai-greeting": HTMLBsAiGreetingElement;
         "bs-ai-thinking": HTMLBsAiThinkingElement;
+        "bs-attachment": HTMLBsAttachmentElement;
+        "bs-attachment-list": HTMLBsAttachmentListElement;
         "bs-badge": HTMLBsBadgeElement;
         "bs-button": HTMLBsButtonElement;
         "bs-button-skeleton": HTMLBsButtonSkeletonElement;
         "bs-card": HTMLBsCardElement;
+        "bs-chatbot-feedback": HTMLBsChatbotFeedbackElement;
         "bs-chatbot-header": HTMLBsChatbotHeaderElement;
         "bs-chatbot-response-action": HTMLBsChatbotResponseActionElement;
+        "bs-chatbot-sources-drawer": HTMLBsChatbotSourcesDrawerElement;
         "bs-chatbot-suggestion-button": HTMLBsChatbotSuggestionButtonElement;
         "bs-composer": HTMLBsComposerElement;
+        "bs-composer-status-banner": HTMLBsComposerStatusBannerElement;
         "bs-data-table": HTMLBsDataTableElement;
         "bs-input": HTMLBsInputElement;
         "bs-menu": HTMLBsMenuElement;
         "bs-menu-item": HTMLBsMenuItemElement;
         "bs-modal": HTMLBsModalElement;
+        "bs-source-link": HTMLBsSourceLinkElement;
         "bs-tooltip": HTMLBsTooltipElement;
     }
 }
 declare namespace LocalJSX {
+    /**
+     * A centered caption disclaimer for Genie AI surfaces, e.g. "AI can make mistakes. Please verify
+     * important information."
+     * ## When to use
+     * - Below or above `bs-composer` in a Genie AI chat panel, to remind users AI output can be wrong.
+     * ## When not to use
+     * - A general-purpose caption/helper text — use plain text or `bs-input`'s description slot for
+     *   non-AI-related helper copy.
+     * The default slot (rather than a fixed prop) is intentional: Figma only specifies plain text, but
+     * some consuming apps link out to a policy/help page from this copy, and a slot supports that
+     * without inventing an unconfirmed `href`/link prop.
+     * @prop --bs-ai-disclaimer-padding-x - Horizontal padding. Aliased to `--bs-spacing-200`.
+     * @prop --bs-ai-disclaimer-text-color - Text color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-ai-disclaimer-font-size - Text font size. Aliased to `--bs-font-size-sm`.
+     * @prop --bs-ai-disclaimer-line-height - Text line height. Aliased to `--bs-line-height-body-sm`.
+     */
+    interface BsAiDisclaimer {
+    }
+    /**
+     * The centered welcome heading shown at the top of an empty Genie AI chat panel, e.g.
+     * "Hi. I'm Genie, your AI assistant." + "How can I help you with [product] today?"
+     * ## When to use
+     * - The empty/initial state of a Genie AI chat panel, before the user has sent a message.
+     * ## When not to use
+     * - Once a conversation has started -- this is a one-time empty-state greeting, not a persistent
+     *   header (see `bs-chatbot-header` for that).
+     * `productName` is optional: Figma's copy has a `[product_name]` placeholder the consuming app is
+     * expected to fill in, but a component shouldn't force a product name to exist, so leaving it
+     * unset falls back to a product-agnostic "How can I help you today?".
+     * @prop --bs-ai-greeting-gap - Gap between heading and subtext. Aliased to `--bs-spacing-200`.
+     * @prop --bs-ai-greeting-max-width - Max width of the centered content block. Matches Figma's
+     * 490px.
+     * @prop --bs-ai-greeting-heading-color - Heading text color. Aliased to `--bs-text-default`.
+     * @prop --bs-ai-greeting-heading-font-size - Heading font size. Aliased to `--bs-font-size-4xl`.
+     * @prop --bs-ai-greeting-heading-line-height - Heading line height. Figma specifies 28px, which
+     * doesn't match any `--bs-line-height-heading-*` token (h4 is 32) -- aliased directly to
+     * `--bs-line-height-body-lg`, the token that happens to share the same numeric value.
+     * @prop --bs-ai-greeting-heading-weight - Heading font weight. Aliased to `--bs-font-weight-bold`.
+     * @prop --bs-ai-greeting-heading-gap - Gap between the two heading lines. Aliased to
+     * `--bs-spacing-200`.
+     * @prop --bs-ai-greeting-subtext-color - Subtext color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-ai-greeting-subtext-font-size - Subtext font size. Figma specifies 20px, which
+     * doesn't match the semantic `--bs-text-style-body-lg-size` (18px) -- aliased directly to the
+     * raw `--bs-font-size-xl` primitive instead.
+     * @prop --bs-ai-greeting-subtext-line-height - Subtext line height. Aliased to
+     * `--bs-line-height-body-lg`.
+     */
+    interface BsAiGreeting {
+        /**
+          * The assistant's name, used in the heading ("Hi. I'm {assistantName},").
+          * @default 'Genie'
+         */
+        "assistantName"?: string;
+        /**
+          * The product name mentioned in the subtext. Omit to use a product-agnostic subtext.
+         */
+        "productName"?: string;
+    }
     /**
      * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
      * (e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band
@@ -1032,6 +1863,97 @@ declare namespace LocalJSX {
           * @default 'Thinking'
          */
         "label"?: string;
+    }
+    /**
+     * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
+     * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
+     * a hover/focus-revealed remove button.
+     * ## When to use
+     * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
+     *   typically alongside or inside `bs-composer`.
+     * ## When not to use
+     * - A generic file-upload control -- this is a preview-only presentational component. The
+     *   consuming app owns the actual file picker/upload logic and drives `loading` from that state.
+     * @prop --bs-attachment-size - Width/height of the image thumbnail and of the card. Defaults to 112px.
+     * @prop --bs-attachment-radius - Corner radius of the thumbnail/card. Aliased to
+     * `--bs-border-radius-100`.
+     * @prop --bs-attachment-border-color - Border color of the card / loading image wrap. Aliased to
+     * `--bs-border-default`.
+     * @prop --bs-attachment-card-bg - Card background. Aliased to `--bs-surface-base`.
+     * @prop --bs-attachment-filename-color - Filename text color. Aliased to `--bs-text-default`.
+     * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
+     * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
+     * `--bs-badge-bg-info`.
+     * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
+     * Aliased to `--bs-button-neutral-container`.
+     * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
+     * `--bs-button-neutral-hover`.
+     * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
+     * `--bs-button-neutral-pressed`.
+     * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
+     * `--bs-border-neutral-focus`.
+     */
+    interface BsAttachment {
+        /**
+          * The filename shown on the card. Only used when `type` is "pdf" or "document".
+          * @default 'Attachment'
+         */
+        "fileName"?: string;
+        /**
+          * Accessible alt text for the image thumbnail. Only used when `type` is "image".
+          * @default ''
+         */
+        "imageAlt"?: string;
+        /**
+          * The thumbnail image URL. Only used when `type` is "image".
+         */
+        "imageSrc"?: string;
+        /**
+          * Shows an upload-in-progress spinner (blurred + overlaid for images, in the badge for files).
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * Fires when the remove button is clicked.
+         */
+        "onBsRemove"?: (event: BsAttachmentCustomEvent<void>) => void;
+        /**
+          * Whether the hover/focus-revealed remove button is rendered at all.
+          * @default true
+         */
+        "removable"?: boolean;
+        /**
+          * Which kind of attachment preview to render.
+          * @default 'image'
+         */
+        "type"?: BsAttachmentType;
+    }
+    /**
+     * A horizontally-scrolling row wrapper for one or more `bs-attachment` previews, for slotting into
+     * `bs-composer`'s `attachments` slot when a Genie AI chat message has file attachments.
+     * ## When to use
+     * - Wrapping any number of `bs-attachment` elements the user has attached to a message, so they
+     *   lay out in a single row and scroll horizontally instead of wrapping/overflowing once there
+     *   are more than fit the available width.
+     * ## When not to use
+     * - A single attachment on its own — just render `bs-attachment` directly, this wrapper's
+     *   scroll/fade affordance only matters once there's more content than fits.
+     * @prop --bs-attachment-list-gap - Gap between attachments. Matches the 10px Figma spec (not tied
+     * to the `--bs-spacing-*` scale, which only has 8px/12px neighbors).
+     * @prop --bs-attachment-list-padding - Padding around the row. Aliased to `--bs-spacing-150`.
+     * @prop --bs-attachment-list-fade-color - Color the right-edge fade blends into. Aliased to
+     * `--bs-static-white`.
+     * @prop --bs-attachment-list-fade-width - Width of the right-edge fade overlay. Aliased to
+     * `--bs-spacing-800`.
+     * @prop --bs-attachment-list-scrollbar-thumb - Color of the scrollbar thumb that appears on
+     * hover/focus once the row is scrollable. Aliased to `--bs-neutral-300`.
+     */
+    interface BsAttachmentList {
+        /**
+          * Accessible name for the scrollable region.
+          * @default 'Attachments'
+         */
+        "ariaLabel"?: string | null;
     }
     /**
      * A small status or category pill, usually paired with a label or list item.
@@ -1135,6 +2057,92 @@ declare namespace LocalJSX {
           * @default 'raised'
          */
         "surface"?: BsCardSurface;
+    }
+    /**
+     * A star-rating feedback card shown at the end of a Genie AI chat: a heading/subtitle, a 5-star
+     * rating, an optional comment, and either "Submit feedback" + "Start new chat" (before
+     * submitting) or just "Start new chat" (after).
+     * ## When to use
+     * - Prompting for feedback on a Genie response or chat session, typically after the user ends or
+     *   restarts a conversation.
+     * ## When not to use
+     * - A generic star-rating input elsewhere in the product -- this component's copy and layout are
+     *   purpose-built for the Genie feedback flow, not a reusable rating control.
+     * The heading and subtitle are not freeform props: before submitting, they're always the fixed
+     * "How was your experience..." copy; after submitting, they're determined entirely by `rating`
+     * (1-2 stars reads apologetic, 3 neutral, 4-5 positive), matching the Figma source exactly. Use
+     * `heading`/`subtitle` only if a consuming app genuinely needs to override that copy.
+     * @prop --bs-chatbot-feedback-bg - Card background. Aliased to `--bs-surface-raised`.
+     * @prop --bs-chatbot-feedback-border - Card border color. Aliased to `--bs-border-default`.
+     * @prop --bs-chatbot-feedback-radius - Card corner radius. Aliased to `--bs-border-radius-200`.
+     * @prop --bs-chatbot-feedback-padding-x - Card horizontal padding. Aliased to `--bs-spacing-250`.
+     * @prop --bs-chatbot-feedback-padding-y - Card vertical padding. Aliased to `--bs-spacing-550`.
+     * @prop --bs-chatbot-feedback-max-width - Max width of the card. Matches Figma's 762px.
+     * @prop --bs-chatbot-feedback-gap - Gap between the top content block and the button(s). Aliased
+     * to `--bs-spacing-300`.
+     * @prop --bs-chatbot-feedback-top-gap - Gap between heading/subtitle, stars, and the
+     * textarea/comment within the top block. Aliased to `--bs-spacing-250`.
+     * @prop --bs-chatbot-feedback-heading-color - Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-feedback-subtitle-color - Aliased to `--bs-text-secondary`.
+     * @prop --bs-chatbot-feedback-star-filled - Filled star color. Aliased to `--bs-color-primary-default`.
+     * @prop --bs-chatbot-feedback-star-empty - Empty star color. Aliased to `--bs-border-neutral-container`.
+     * @prop --bs-chatbot-feedback-comment-color - Submitted comment text color. Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-feedback-close-hover - Close button hover background. Aliased to `--bs-surface-hover`.
+     * @prop --bs-chatbot-feedback-primary-bg - "Submit feedback" / post-submit "Start new chat"
+     * background. Aliased to `--bs-button-primary-default`.
+     * @prop --bs-chatbot-feedback-primary-bg-hover - Aliased to `--bs-button-primary-hover`.
+     * @prop --bs-chatbot-feedback-primary-bg-disabled - Aliased to `--bs-button-primary-disabled`.
+     * @prop --bs-chatbot-feedback-outlined-border - Pre-submit "Start new chat" border. Aliased to
+     * `--bs-border-primary`.
+     * @prop --bs-chatbot-feedback-outlined-hover - Pre-submit "Start new chat" hover background.
+     * Aliased to `--bs-color-primary-container-hover`.
+     * @prop --bs-chatbot-feedback-outlined-text - Pre-submit "Start new chat" text/icon color.
+     * Aliased to `--bs-text-action`.
+     */
+    interface BsChatbotFeedback {
+        /**
+          * The comment text.
+          * @default ''
+         */
+        "comment"?: string;
+        /**
+          * Overrides the computed heading (see the class doc for why this is computed by default).
+         */
+        "heading"?: string;
+        /**
+          * Fires when the close button is clicked. The consuming app owns actually hiding the card.
+         */
+        "onBsClose"?: (event: BsChatbotFeedbackCustomEvent<void>) => void;
+        /**
+          * Fires on every keystroke in the comment textarea, with the current value.
+         */
+        "onBsCommentInput"?: (event: BsChatbotFeedbackCustomEvent<string>) => void;
+        /**
+          * Fires when "Start new chat" is clicked. The consuming app owns actually starting a new chat.
+         */
+        "onBsNewChat"?: (event: BsChatbotFeedbackCustomEvent<void>) => void;
+        /**
+          * Fires when a star is clicked, with the new rating.
+         */
+        "onBsRatingChange"?: (event: BsChatbotFeedbackCustomEvent<number>) => void;
+        /**
+          * Fires when "Submit feedback" is clicked, with the current rating and comment. Also sets `submitted` to true.
+         */
+        "onBsSubmit"?: (event: BsChatbotFeedbackCustomEvent<{ rating: number; comment: string }>) => void;
+        /**
+          * Current star rating, 0-5. 0 means no rating has been given yet.
+          * @default 0
+         */
+        "rating"?: number;
+        /**
+          * Whether feedback has been submitted. Switches the card from the editable form to the read-only "thanks" view.
+          * @default false
+         */
+        "submitted"?: boolean;
+        /**
+          * Overrides the computed subtitle.
+         */
+        "subtitle"?: string;
     }
     /**
      * The header bar that sits above `bs-composer` in a Genie AI chat panel: the Genie brand mark on
@@ -1249,6 +2257,49 @@ declare namespace LocalJSX {
           * Number of sources backing the response. When set to a positive number, renders the "N sources" button (singular "1 source" / plural "N sources"). When unset or `0`, the button is not rendered at all.
          */
         "sourcesCount"?: number;
+    }
+    /**
+     * The "Sources" panel shown alongside a Genie AI chat response -- a header with a title, a count
+     * badge, and a collapse chevron, above a stack of `bs-source-link` citation rows.
+     * ## When to use
+     * - Displaying the documents/sources a Genie response cited, typically opened from a "view
+     *   sources" action on a `bs-chatbot-response-action` bar.
+     * ## When not to use
+     * - A generic list container -- this component's header (title + count + collapse) is
+     *   purpose-built for the sources use case.
+     * @prop --bs-chatbot-sources-drawer-bg - Background of the whole panel. Aliased to `--bs-surface-raised`.
+     * @prop --bs-chatbot-sources-drawer-header-shadow - Drop shadow under the header, separating it
+     * from the scrolled list. Aliased to `--bs-shadow-xs`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-x - Aliased to `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-top - Aliased to `--bs-spacing-150`.
+     * @prop --bs-chatbot-sources-drawer-header-padding-bottom - Aliased to `--bs-spacing-100`.
+     * @prop --bs-chatbot-sources-drawer-heading-color - Aliased to `--bs-text-default`.
+     * @prop --bs-chatbot-sources-drawer-count-bg - Count badge background. Aliased to
+     * `--bs-badge-bg-neutral-container`.
+     * @prop --bs-chatbot-sources-drawer-count-color - Count badge text color. Aliased to
+     * `--bs-badge-text-neutral`.
+     * @prop --bs-chatbot-sources-drawer-collapse-hover - Collapse button background on hover. Aliased
+     * to `--bs-surface-hover`.
+     * @prop --bs-chatbot-sources-drawer-section-gap - Gap between the header and the list. Aliased to
+     * `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-list-padding - Horizontal/bottom padding of the list. Aliased
+     * to `--bs-spacing-200`.
+     * @prop --bs-chatbot-sources-drawer-list-gap - Gap between rows. Aliased to `--bs-spacing-50`.
+     */
+    interface BsChatbotSourcesDrawer {
+        /**
+          * Overrides the auto-detected count badge. By default the badge reflects the number of slotted `bs-source-link` children, so most consumers don't need to set this.
+         */
+        "count"?: number;
+        /**
+          * The panel title.
+          * @default 'Sources'
+         */
+        "heading"?: string;
+        /**
+          * Fires when the collapse chevron is clicked. The consuming app owns actually hiding the panel.
+         */
+        "onBsCollapse"?: (event: BsChatbotSourcesDrawerCustomEvent<void>) => void;
     }
     /**
      * A pill-shaped clickable suggestion chip for a Genie AI chat panel (e.g. "How can I help you?").
@@ -1373,6 +2424,103 @@ declare namespace LocalJSX {
           * @default 'ai'
          */
         "variant"?: BsComposerVariant;
+    }
+    /**
+     * A full-width status banner for use directly above `bs-composer`, surfacing a message about the
+     * composer's current state (e.g. a send failure, an informational notice) with an optional
+     * "Continue"-style action button and an optional close button.
+     * ## When to use
+     * - A message tied to the composer itself (send failed, rate-limited, draft restored, etc.) that
+     *   needs to sit directly above it, not a general-purpose alert -- see `CONVENTIONS.md` if this
+     *   library gains a generic banner/alert component later, and prefer that instead once it exists.
+     * ## When not to use
+     * - A toast/snackbar notification unrelated to the composer -- this component is not
+     *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
+     * @prop --bs-composer-status-banner-radius - Corner radius of the top-left/top-right corners
+     * (bottom corners are square, so this sits flush above `bs-composer`). Aliased to
+     * `--bs-border-radius-150`.
+     * @prop --bs-composer-status-banner-padding-x - Horizontal padding. Aliased to `--bs-spacing-150`.
+     * @prop --bs-composer-status-banner-padding-top - Top padding. Aliased to `--bs-spacing-100`.
+     * @prop --bs-composer-status-banner-padding-bottom - Bottom padding. Aliased to `--bs-spacing-200`.
+     * @prop --bs-composer-status-banner-gap - Gap between the message group and the action/close
+     * controls. Aliased to `--bs-spacing-100`.
+     * @prop --bs-composer-status-banner-icon-gap - Gap between the icon and the message text.
+     * Aliased to `--bs-spacing-75`.
+     * @prop --bs-composer-status-banner-error-bg - Background for `type="error"`. Aliased to
+     * `--bs-color-error-container`.
+     * @prop --bs-composer-status-banner-error-text - Text/icon color for `type="error"`. Aliased to
+     * `--bs-text-error`.
+     * @prop --bs-composer-status-banner-error-action-bg - Action button background for
+     * `type="error"`. Aliased to `--bs-color-error-default`.
+     * @prop --bs-composer-status-banner-error-action-bg-hover - Aliased to `--bs-color-error-hover`.
+     * @prop --bs-composer-status-banner-info-bg - Background for `type="info"`. Aliased to
+     * `--bs-color-info-container`.
+     * @prop --bs-composer-status-banner-info-text - Text/icon color for `type="info"`. Aliased to
+     * `--bs-text-info`.
+     * @prop --bs-composer-status-banner-info-action-bg - Action button background for `type="info"`.
+     * Aliased to `--bs-color-info-default`.
+     * @prop --bs-composer-status-banner-info-action-bg-hover - Aliased to `--bs-color-info-hover`.
+     * @prop --bs-composer-status-banner-neutral-bg - Background for `type="neutral"`. Aliased to
+     * `--bs-color-neutral-container`.
+     * @prop --bs-composer-status-banner-neutral-text - Text/icon color for `type="neutral"`. Aliased
+     * to `--bs-text-default`.
+     * @prop --bs-composer-status-banner-neutral-action-bg - Action button background for
+     * `type="neutral"`. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-composer-status-banner-neutral-action-bg-hover - Aliased to
+     * `--bs-color-neutral-container-hover`.
+     * @prop --bs-composer-status-banner-neutral-action-border - Action button border for
+     * `type="neutral"` (the only variant whose action button is outlined). Aliased to
+     * `--bs-border-neutral-container`.
+     * @prop --bs-composer-status-banner-warning-bg - Background for `type="warning"`. Aliased to
+     * `--bs-color-warning-container`.
+     * @prop --bs-composer-status-banner-warning-text - Text/icon color for `type="warning"`. Aliased
+     * to `--bs-text-warning`.
+     * @prop --bs-composer-status-banner-warning-action-bg - Action button background for
+     * `type="warning"`. Aliased to `--bs-color-warning-default`.
+     * @prop --bs-composer-status-banner-warning-action-bg-hover - Aliased to
+     * `--bs-color-warning-hover`.
+     * @prop --bs-composer-status-banner-close-hover-bg - Close button hover background (same across
+     * every `type`). Aliased to `--bs-color-neutral-container-hover`.
+     */
+    interface BsComposerStatusBanner {
+        /**
+          * Label for the action button, only rendered when `showButton` is true.
+          * @default 'Continue'
+         */
+        "actionLabel"?: string;
+        /**
+          * Whether the close button is rendered.
+          * @default true
+         */
+        "allowClose"?: boolean;
+        /**
+          * The message text.
+          * @default 'This is a message'
+         */
+        "message"?: string;
+        /**
+          * Fires when the action button is clicked. Only relevant when `showButton` is true.
+         */
+        "onBsAction"?: (event: BsComposerStatusBannerCustomEvent<void>) => void;
+        /**
+          * Fires when the close button is clicked. Only relevant when `allowClose` is true.
+         */
+        "onBsClose"?: (event: BsComposerStatusBannerCustomEvent<void>) => void;
+        /**
+          * Whether the "Continue"-style action button is rendered.
+          * @default false
+         */
+        "showButton"?: boolean;
+        /**
+          * Whether the leading icon (default: clock) is rendered.
+          * @default true
+         */
+        "showIcon"?: boolean;
+        /**
+          * Which severity/style to render. Drives background, text/icon color, and the action button's color.
+          * @default 'error'
+         */
+        "type"?: BsComposerStatusBannerType;
     }
     /**
      * A sortable, optionally row-selectable table for tabular data.
@@ -1509,6 +2657,59 @@ declare namespace LocalJSX {
         "size"?: BsModalSize;
     }
     /**
+     * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
+     * line, the originating system and version on the second, and a trailing "open" arrow.
+     * ## When to use
+     * - One row per source Genie cited in a response, slotted into `bs-chatbot-sources-drawer`.
+     * ## When not to use
+     * - Outside the sources drawer context -- this is a purpose-built citation row, not a generic
+     *   link/list-item component.
+     * @prop --bs-source-link-radius - Corner radius of the row. Aliased to `--bs-border-radius-150`.
+     * @prop --bs-source-link-padding - Padding around the row. Aliased to `--bs-spacing-150`.
+     * @prop --bs-source-link-gap - Gap between the filename+meta block and the trailing arrow.
+     * Aliased to `--bs-spacing-50`.
+     * @prop --bs-source-link-icon-gap - Gap between the leading icon and the filename text. Aliased
+     * to `--bs-spacing-75`.
+     * @prop --bs-source-link-hover - Row background on hover/focus. Aliased to `--bs-surface-hover`.
+     * @prop --bs-source-link-pressed - Row background while active/pressed. Aliased to
+     * `--bs-surface-pressed`.
+     * @prop --bs-source-link-focus - Focus-visible outline color. Aliased to
+     * `--bs-border-neutral-focus`.
+     * @prop --bs-source-link-filename-color - Filename text color. Aliased to `--bs-text-default`.
+     * @prop --bs-source-link-meta-color - Source/version text color. Aliased to `--bs-text-secondary`.
+     * @prop --bs-source-link-icon-color - File icon and arrow color. Aliased to `--bs-icon-default`.
+     * @prop --bs-source-link-dot-color - Separator dot between source and version. Aliased to
+     * `--bs-text-secondary`.
+     */
+    interface BsSourceLink {
+        /**
+          * The cited document's filename.
+          * @default 'Source'
+         */
+        "fileName"?: string;
+        /**
+          * If set, renders the row as a link that opens this URL; otherwise as a button that only emits `bsOpen`.
+         */
+        "href"?: string;
+        /**
+          * Fires on click/activation, whether or not `href` is set -- lets the consuming app log or handle the open.
+         */
+        "onBsOpen"?: (event: BsSourceLinkCustomEvent<void>) => void;
+        /**
+          * The system/app the document came from (e.g. "HoltePortalen").
+         */
+        "sourceName"?: string;
+        /**
+          * `target` used when `href` is set.
+          * @default '_blank'
+         */
+        "target"?: string;
+        /**
+          * The document's version label (e.g. "v3.2"). Omit if the source has no version.
+         */
+        "version"?: string;
+    }
+    /**
      * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
      * next to a trigger element.
      * `bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it does not manage its own
@@ -1543,8 +2744,23 @@ declare namespace LocalJSX {
         "placement"?: 'top';
     }
 
+    interface BsAiGreetingAttributes {
+        "assistantName": string;
+        "productName": string;
+    }
     interface BsAiThinkingAttributes {
         "label": string;
+    }
+    interface BsAttachmentAttributes {
+        "type": BsAttachmentType;
+        "fileName": string;
+        "imageSrc": string;
+        "imageAlt": string;
+        "loading": boolean;
+        "removable": boolean;
+    }
+    interface BsAttachmentListAttributes {
+        "ariaLabel": string | null;
     }
     interface BsBadgeAttributes {
         "variant": BsBadgeVariant;
@@ -1562,6 +2778,13 @@ declare namespace LocalJSX {
     interface BsCardAttributes {
         "surface": BsCardSurface;
     }
+    interface BsChatbotFeedbackAttributes {
+        "rating": number;
+        "submitted": boolean;
+        "comment": string;
+        "heading": string;
+        "subtitle": string;
+    }
     interface BsChatbotHeaderAttributes {
         "heading": string;
         "expanded": boolean;
@@ -1569,6 +2792,10 @@ declare namespace LocalJSX {
     interface BsChatbotResponseActionAttributes {
         "sourcesCount": number;
         "menuOpen": boolean;
+    }
+    interface BsChatbotSourcesDrawerAttributes {
+        "heading": string;
+        "count": number;
     }
     interface BsChatbotSuggestionButtonAttributes {
         "disabled": boolean;
@@ -1579,6 +2806,14 @@ declare namespace LocalJSX {
         "value": string;
         "state": BsComposerState;
         "ariaLabel": string | null;
+    }
+    interface BsComposerStatusBannerAttributes {
+        "type": BsComposerStatusBannerType;
+        "message": string;
+        "showIcon": boolean;
+        "showButton": boolean;
+        "actionLabel": string;
+        "allowClose": boolean;
     }
     interface BsDataTableAttributes {
         "sortColumn": string;
@@ -1599,25 +2834,40 @@ declare namespace LocalJSX {
         "heading": string;
         "size": BsModalSize;
     }
+    interface BsSourceLinkAttributes {
+        "fileName": string;
+        "sourceName": string;
+        "version": string;
+        "href": string;
+        "target": string;
+    }
     interface BsTooltipAttributes {
         "placement": 'top';
     }
 
     interface IntrinsicElements {
+        "bs-ai-disclaimer": BsAiDisclaimer;
+        "bs-ai-greeting": Omit<BsAiGreeting, keyof BsAiGreetingAttributes> & { [K in keyof BsAiGreeting & keyof BsAiGreetingAttributes]?: BsAiGreeting[K] } & { [K in keyof BsAiGreeting & keyof BsAiGreetingAttributes as `attr:${K}`]?: BsAiGreetingAttributes[K] } & { [K in keyof BsAiGreeting & keyof BsAiGreetingAttributes as `prop:${K}`]?: BsAiGreeting[K] };
         "bs-ai-thinking": Omit<BsAiThinking, keyof BsAiThinkingAttributes> & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes]?: BsAiThinking[K] } & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes as `attr:${K}`]?: BsAiThinkingAttributes[K] } & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes as `prop:${K}`]?: BsAiThinking[K] };
+        "bs-attachment": Omit<BsAttachment, keyof BsAttachmentAttributes> & { [K in keyof BsAttachment & keyof BsAttachmentAttributes]?: BsAttachment[K] } & { [K in keyof BsAttachment & keyof BsAttachmentAttributes as `attr:${K}`]?: BsAttachmentAttributes[K] } & { [K in keyof BsAttachment & keyof BsAttachmentAttributes as `prop:${K}`]?: BsAttachment[K] };
+        "bs-attachment-list": Omit<BsAttachmentList, keyof BsAttachmentListAttributes> & { [K in keyof BsAttachmentList & keyof BsAttachmentListAttributes]?: BsAttachmentList[K] } & { [K in keyof BsAttachmentList & keyof BsAttachmentListAttributes as `attr:${K}`]?: BsAttachmentListAttributes[K] } & { [K in keyof BsAttachmentList & keyof BsAttachmentListAttributes as `prop:${K}`]?: BsAttachmentList[K] };
         "bs-badge": Omit<BsBadge, keyof BsBadgeAttributes> & { [K in keyof BsBadge & keyof BsBadgeAttributes]?: BsBadge[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `attr:${K}`]?: BsBadgeAttributes[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `prop:${K}`]?: BsBadge[K] };
         "bs-button": Omit<BsButton, keyof BsButtonAttributes> & { [K in keyof BsButton & keyof BsButtonAttributes]?: BsButton[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `attr:${K}`]?: BsButtonAttributes[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `prop:${K}`]?: BsButton[K] };
         "bs-button-skeleton": Omit<BsButtonSkeleton, keyof BsButtonSkeletonAttributes> & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes]?: BsButtonSkeleton[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `attr:${K}`]?: BsButtonSkeletonAttributes[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `prop:${K}`]?: BsButtonSkeleton[K] };
         "bs-card": Omit<BsCard, keyof BsCardAttributes> & { [K in keyof BsCard & keyof BsCardAttributes]?: BsCard[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `attr:${K}`]?: BsCardAttributes[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `prop:${K}`]?: BsCard[K] };
+        "bs-chatbot-feedback": Omit<BsChatbotFeedback, keyof BsChatbotFeedbackAttributes> & { [K in keyof BsChatbotFeedback & keyof BsChatbotFeedbackAttributes]?: BsChatbotFeedback[K] } & { [K in keyof BsChatbotFeedback & keyof BsChatbotFeedbackAttributes as `attr:${K}`]?: BsChatbotFeedbackAttributes[K] } & { [K in keyof BsChatbotFeedback & keyof BsChatbotFeedbackAttributes as `prop:${K}`]?: BsChatbotFeedback[K] };
         "bs-chatbot-header": Omit<BsChatbotHeader, keyof BsChatbotHeaderAttributes> & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes]?: BsChatbotHeader[K] } & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes as `attr:${K}`]?: BsChatbotHeaderAttributes[K] } & { [K in keyof BsChatbotHeader & keyof BsChatbotHeaderAttributes as `prop:${K}`]?: BsChatbotHeader[K] };
         "bs-chatbot-response-action": Omit<BsChatbotResponseAction, keyof BsChatbotResponseActionAttributes> & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes]?: BsChatbotResponseAction[K] } & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes as `attr:${K}`]?: BsChatbotResponseActionAttributes[K] } & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes as `prop:${K}`]?: BsChatbotResponseAction[K] };
+        "bs-chatbot-sources-drawer": Omit<BsChatbotSourcesDrawer, keyof BsChatbotSourcesDrawerAttributes> & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes]?: BsChatbotSourcesDrawer[K] } & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes as `attr:${K}`]?: BsChatbotSourcesDrawerAttributes[K] } & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes as `prop:${K}`]?: BsChatbotSourcesDrawer[K] };
         "bs-chatbot-suggestion-button": Omit<BsChatbotSuggestionButton, keyof BsChatbotSuggestionButtonAttributes> & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes]?: BsChatbotSuggestionButton[K] } & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes as `attr:${K}`]?: BsChatbotSuggestionButtonAttributes[K] } & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes as `prop:${K}`]?: BsChatbotSuggestionButton[K] };
         "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
+        "bs-composer-status-banner": Omit<BsComposerStatusBanner, keyof BsComposerStatusBannerAttributes> & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes]?: BsComposerStatusBanner[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `attr:${K}`]?: BsComposerStatusBannerAttributes[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `prop:${K}`]?: BsComposerStatusBanner[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
         "bs-menu": BsMenu;
         "bs-menu-item": BsMenuItem;
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
+        "bs-source-link": Omit<BsSourceLink, keyof BsSourceLinkAttributes> & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes]?: BsSourceLink[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `attr:${K}`]?: BsSourceLinkAttributes[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `prop:${K}`]?: BsSourceLink[K] };
         "bs-tooltip": Omit<BsTooltip, keyof BsTooltipAttributes> & { [K in keyof BsTooltip & keyof BsTooltipAttributes]?: BsTooltip[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `attr:${K}`]?: BsTooltipAttributes[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `prop:${K}`]?: BsTooltip[K] };
     }
 }
@@ -1625,6 +2875,53 @@ export { LocalJSX as JSX };
 declare module "@stencil/core" {
     export namespace JSX {
         interface IntrinsicElements {
+            /**
+             * A centered caption disclaimer for Genie AI surfaces, e.g. "AI can make mistakes. Please verify
+             * important information."
+             * ## When to use
+             * - Below or above `bs-composer` in a Genie AI chat panel, to remind users AI output can be wrong.
+             * ## When not to use
+             * - A general-purpose caption/helper text — use plain text or `bs-input`'s description slot for
+             *   non-AI-related helper copy.
+             * The default slot (rather than a fixed prop) is intentional: Figma only specifies plain text, but
+             * some consuming apps link out to a policy/help page from this copy, and a slot supports that
+             * without inventing an unconfirmed `href`/link prop.
+             * @prop --bs-ai-disclaimer-padding-x - Horizontal padding. Aliased to `--bs-spacing-200`.
+             * @prop --bs-ai-disclaimer-text-color - Text color. Aliased to `--bs-text-secondary`.
+             * @prop --bs-ai-disclaimer-font-size - Text font size. Aliased to `--bs-font-size-sm`.
+             * @prop --bs-ai-disclaimer-line-height - Text line height. Aliased to `--bs-line-height-body-sm`.
+             */
+            "bs-ai-disclaimer": LocalJSX.IntrinsicElements["bs-ai-disclaimer"] & JSXBase.HTMLAttributes<HTMLBsAiDisclaimerElement>;
+            /**
+             * The centered welcome heading shown at the top of an empty Genie AI chat panel, e.g.
+             * "Hi. I'm Genie, your AI assistant." + "How can I help you with [product] today?"
+             * ## When to use
+             * - The empty/initial state of a Genie AI chat panel, before the user has sent a message.
+             * ## When not to use
+             * - Once a conversation has started -- this is a one-time empty-state greeting, not a persistent
+             *   header (see `bs-chatbot-header` for that).
+             * `productName` is optional: Figma's copy has a `[product_name]` placeholder the consuming app is
+             * expected to fill in, but a component shouldn't force a product name to exist, so leaving it
+             * unset falls back to a product-agnostic "How can I help you today?".
+             * @prop --bs-ai-greeting-gap - Gap between heading and subtext. Aliased to `--bs-spacing-200`.
+             * @prop --bs-ai-greeting-max-width - Max width of the centered content block. Matches Figma's
+             * 490px.
+             * @prop --bs-ai-greeting-heading-color - Heading text color. Aliased to `--bs-text-default`.
+             * @prop --bs-ai-greeting-heading-font-size - Heading font size. Aliased to `--bs-font-size-4xl`.
+             * @prop --bs-ai-greeting-heading-line-height - Heading line height. Figma specifies 28px, which
+             * doesn't match any `--bs-line-height-heading-*` token (h4 is 32) -- aliased directly to
+             * `--bs-line-height-body-lg`, the token that happens to share the same numeric value.
+             * @prop --bs-ai-greeting-heading-weight - Heading font weight. Aliased to `--bs-font-weight-bold`.
+             * @prop --bs-ai-greeting-heading-gap - Gap between the two heading lines. Aliased to
+             * `--bs-spacing-200`.
+             * @prop --bs-ai-greeting-subtext-color - Subtext color. Aliased to `--bs-text-secondary`.
+             * @prop --bs-ai-greeting-subtext-font-size - Subtext font size. Figma specifies 20px, which
+             * doesn't match the semantic `--bs-text-style-body-lg-size` (18px) -- aliased directly to the
+             * raw `--bs-font-size-xl` primitive instead.
+             * @prop --bs-ai-greeting-subtext-line-height - Subtext line height. Aliased to
+             * `--bs-line-height-body-lg`.
+             */
+            "bs-ai-greeting": LocalJSX.IntrinsicElements["bs-ai-greeting"] & JSXBase.HTMLAttributes<HTMLBsAiGreetingElement>;
             /**
              * A small inline status indicator for Genie AI surfaces: the colorful Genie mark next to a label
              * (e.g. "Retrieving", "Thinking", "Searching") whose text shimmers with a moving highlight band
@@ -1646,6 +2943,57 @@ declare module "@stencil/core" {
              * `--bs-duration-slower` is 500ms), so this is aliased directly to the literal value.
              */
             "bs-ai-thinking": LocalJSX.IntrinsicElements["bs-ai-thinking"] & JSXBase.HTMLAttributes<HTMLBsAiThinkingElement>;
+            /**
+             * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
+             * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
+             * a hover/focus-revealed remove button.
+             * ## When to use
+             * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
+             *   typically alongside or inside `bs-composer`.
+             * ## When not to use
+             * - A generic file-upload control -- this is a preview-only presentational component. The
+             *   consuming app owns the actual file picker/upload logic and drives `loading` from that state.
+             * @prop --bs-attachment-size - Width/height of the image thumbnail and of the card. Defaults to 112px.
+             * @prop --bs-attachment-radius - Corner radius of the thumbnail/card. Aliased to
+             * `--bs-border-radius-100`.
+             * @prop --bs-attachment-border-color - Border color of the card / loading image wrap. Aliased to
+             * `--bs-border-default`.
+             * @prop --bs-attachment-card-bg - Card background. Aliased to `--bs-surface-base`.
+             * @prop --bs-attachment-filename-color - Filename text color. Aliased to `--bs-text-default`.
+             * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
+             * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
+             * `--bs-badge-bg-info`.
+             * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
+             * Aliased to `--bs-button-neutral-container`.
+             * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
+             * `--bs-button-neutral-hover`.
+             * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
+             * `--bs-button-neutral-pressed`.
+             * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
+             * `--bs-border-neutral-focus`.
+             */
+            "bs-attachment": LocalJSX.IntrinsicElements["bs-attachment"] & JSXBase.HTMLAttributes<HTMLBsAttachmentElement>;
+            /**
+             * A horizontally-scrolling row wrapper for one or more `bs-attachment` previews, for slotting into
+             * `bs-composer`'s `attachments` slot when a Genie AI chat message has file attachments.
+             * ## When to use
+             * - Wrapping any number of `bs-attachment` elements the user has attached to a message, so they
+             *   lay out in a single row and scroll horizontally instead of wrapping/overflowing once there
+             *   are more than fit the available width.
+             * ## When not to use
+             * - A single attachment on its own — just render `bs-attachment` directly, this wrapper's
+             *   scroll/fade affordance only matters once there's more content than fits.
+             * @prop --bs-attachment-list-gap - Gap between attachments. Matches the 10px Figma spec (not tied
+             * to the `--bs-spacing-*` scale, which only has 8px/12px neighbors).
+             * @prop --bs-attachment-list-padding - Padding around the row. Aliased to `--bs-spacing-150`.
+             * @prop --bs-attachment-list-fade-color - Color the right-edge fade blends into. Aliased to
+             * `--bs-static-white`.
+             * @prop --bs-attachment-list-fade-width - Width of the right-edge fade overlay. Aliased to
+             * `--bs-spacing-800`.
+             * @prop --bs-attachment-list-scrollbar-thumb - Color of the scrollbar thumb that appears on
+             * hover/focus once the row is scrollable. Aliased to `--bs-neutral-300`.
+             */
+            "bs-attachment-list": LocalJSX.IntrinsicElements["bs-attachment-list"] & JSXBase.HTMLAttributes<HTMLBsAttachmentListElement>;
             /**
              * A small status or category pill, usually paired with a label or list item.
              * ## When to use
@@ -1706,6 +3054,48 @@ declare module "@stencil/core" {
              */
             "bs-card": LocalJSX.IntrinsicElements["bs-card"] & JSXBase.HTMLAttributes<HTMLBsCardElement>;
             /**
+             * A star-rating feedback card shown at the end of a Genie AI chat: a heading/subtitle, a 5-star
+             * rating, an optional comment, and either "Submit feedback" + "Start new chat" (before
+             * submitting) or just "Start new chat" (after).
+             * ## When to use
+             * - Prompting for feedback on a Genie response or chat session, typically after the user ends or
+             *   restarts a conversation.
+             * ## When not to use
+             * - A generic star-rating input elsewhere in the product -- this component's copy and layout are
+             *   purpose-built for the Genie feedback flow, not a reusable rating control.
+             * The heading and subtitle are not freeform props: before submitting, they're always the fixed
+             * "How was your experience..." copy; after submitting, they're determined entirely by `rating`
+             * (1-2 stars reads apologetic, 3 neutral, 4-5 positive), matching the Figma source exactly. Use
+             * `heading`/`subtitle` only if a consuming app genuinely needs to override that copy.
+             * @prop --bs-chatbot-feedback-bg - Card background. Aliased to `--bs-surface-raised`.
+             * @prop --bs-chatbot-feedback-border - Card border color. Aliased to `--bs-border-default`.
+             * @prop --bs-chatbot-feedback-radius - Card corner radius. Aliased to `--bs-border-radius-200`.
+             * @prop --bs-chatbot-feedback-padding-x - Card horizontal padding. Aliased to `--bs-spacing-250`.
+             * @prop --bs-chatbot-feedback-padding-y - Card vertical padding. Aliased to `--bs-spacing-550`.
+             * @prop --bs-chatbot-feedback-max-width - Max width of the card. Matches Figma's 762px.
+             * @prop --bs-chatbot-feedback-gap - Gap between the top content block and the button(s). Aliased
+             * to `--bs-spacing-300`.
+             * @prop --bs-chatbot-feedback-top-gap - Gap between heading/subtitle, stars, and the
+             * textarea/comment within the top block. Aliased to `--bs-spacing-250`.
+             * @prop --bs-chatbot-feedback-heading-color - Aliased to `--bs-text-default`.
+             * @prop --bs-chatbot-feedback-subtitle-color - Aliased to `--bs-text-secondary`.
+             * @prop --bs-chatbot-feedback-star-filled - Filled star color. Aliased to `--bs-color-primary-default`.
+             * @prop --bs-chatbot-feedback-star-empty - Empty star color. Aliased to `--bs-border-neutral-container`.
+             * @prop --bs-chatbot-feedback-comment-color - Submitted comment text color. Aliased to `--bs-text-default`.
+             * @prop --bs-chatbot-feedback-close-hover - Close button hover background. Aliased to `--bs-surface-hover`.
+             * @prop --bs-chatbot-feedback-primary-bg - "Submit feedback" / post-submit "Start new chat"
+             * background. Aliased to `--bs-button-primary-default`.
+             * @prop --bs-chatbot-feedback-primary-bg-hover - Aliased to `--bs-button-primary-hover`.
+             * @prop --bs-chatbot-feedback-primary-bg-disabled - Aliased to `--bs-button-primary-disabled`.
+             * @prop --bs-chatbot-feedback-outlined-border - Pre-submit "Start new chat" border. Aliased to
+             * `--bs-border-primary`.
+             * @prop --bs-chatbot-feedback-outlined-hover - Pre-submit "Start new chat" hover background.
+             * Aliased to `--bs-color-primary-container-hover`.
+             * @prop --bs-chatbot-feedback-outlined-text - Pre-submit "Start new chat" text/icon color.
+             * Aliased to `--bs-text-action`.
+             */
+            "bs-chatbot-feedback": LocalJSX.IntrinsicElements["bs-chatbot-feedback"] & JSXBase.HTMLAttributes<HTMLBsChatbotFeedbackElement>;
+            /**
              * The header bar that sits above `bs-composer` in a Genie AI chat panel: the Genie brand mark on
              * the left and four fixed actions (new chat, history, expand, close) on the right.
              * ## When to use
@@ -1758,6 +3148,35 @@ declare module "@stencil/core" {
              * @prop --bs-chatbot-response-action-sources-line-height - Aliased to `--bs-line-height-body-sm`.
              */
             "bs-chatbot-response-action": LocalJSX.IntrinsicElements["bs-chatbot-response-action"] & JSXBase.HTMLAttributes<HTMLBsChatbotResponseActionElement>;
+            /**
+             * The "Sources" panel shown alongside a Genie AI chat response -- a header with a title, a count
+             * badge, and a collapse chevron, above a stack of `bs-source-link` citation rows.
+             * ## When to use
+             * - Displaying the documents/sources a Genie response cited, typically opened from a "view
+             *   sources" action on a `bs-chatbot-response-action` bar.
+             * ## When not to use
+             * - A generic list container -- this component's header (title + count + collapse) is
+             *   purpose-built for the sources use case.
+             * @prop --bs-chatbot-sources-drawer-bg - Background of the whole panel. Aliased to `--bs-surface-raised`.
+             * @prop --bs-chatbot-sources-drawer-header-shadow - Drop shadow under the header, separating it
+             * from the scrolled list. Aliased to `--bs-shadow-xs`.
+             * @prop --bs-chatbot-sources-drawer-header-padding-x - Aliased to `--bs-spacing-200`.
+             * @prop --bs-chatbot-sources-drawer-header-padding-top - Aliased to `--bs-spacing-150`.
+             * @prop --bs-chatbot-sources-drawer-header-padding-bottom - Aliased to `--bs-spacing-100`.
+             * @prop --bs-chatbot-sources-drawer-heading-color - Aliased to `--bs-text-default`.
+             * @prop --bs-chatbot-sources-drawer-count-bg - Count badge background. Aliased to
+             * `--bs-badge-bg-neutral-container`.
+             * @prop --bs-chatbot-sources-drawer-count-color - Count badge text color. Aliased to
+             * `--bs-badge-text-neutral`.
+             * @prop --bs-chatbot-sources-drawer-collapse-hover - Collapse button background on hover. Aliased
+             * to `--bs-surface-hover`.
+             * @prop --bs-chatbot-sources-drawer-section-gap - Gap between the header and the list. Aliased to
+             * `--bs-spacing-200`.
+             * @prop --bs-chatbot-sources-drawer-list-padding - Horizontal/bottom padding of the list. Aliased
+             * to `--bs-spacing-200`.
+             * @prop --bs-chatbot-sources-drawer-list-gap - Gap between rows. Aliased to `--bs-spacing-50`.
+             */
+            "bs-chatbot-sources-drawer": LocalJSX.IntrinsicElements["bs-chatbot-sources-drawer"] & JSXBase.HTMLAttributes<HTMLBsChatbotSourcesDrawerElement>;
             /**
              * A pill-shaped clickable suggestion chip for a Genie AI chat panel (e.g. "How can I help you?").
              * One instance renders one chip -- to show several suggestion prompts side by side, render
@@ -1823,6 +3242,64 @@ declare module "@stencil/core" {
              * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
              */
             "bs-composer": LocalJSX.IntrinsicElements["bs-composer"] & JSXBase.HTMLAttributes<HTMLBsComposerElement>;
+            /**
+             * A full-width status banner for use directly above `bs-composer`, surfacing a message about the
+             * composer's current state (e.g. a send failure, an informational notice) with an optional
+             * "Continue"-style action button and an optional close button.
+             * ## When to use
+             * - A message tied to the composer itself (send failed, rate-limited, draft restored, etc.) that
+             *   needs to sit directly above it, not a general-purpose alert -- see `CONVENTIONS.md` if this
+             *   library gains a generic banner/alert component later, and prefer that instead once it exists.
+             * ## When not to use
+             * - A toast/snackbar notification unrelated to the composer -- this component is not
+             *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
+             * @prop --bs-composer-status-banner-radius - Corner radius of the top-left/top-right corners
+             * (bottom corners are square, so this sits flush above `bs-composer`). Aliased to
+             * `--bs-border-radius-150`.
+             * @prop --bs-composer-status-banner-padding-x - Horizontal padding. Aliased to `--bs-spacing-150`.
+             * @prop --bs-composer-status-banner-padding-top - Top padding. Aliased to `--bs-spacing-100`.
+             * @prop --bs-composer-status-banner-padding-bottom - Bottom padding. Aliased to `--bs-spacing-200`.
+             * @prop --bs-composer-status-banner-gap - Gap between the message group and the action/close
+             * controls. Aliased to `--bs-spacing-100`.
+             * @prop --bs-composer-status-banner-icon-gap - Gap between the icon and the message text.
+             * Aliased to `--bs-spacing-75`.
+             * @prop --bs-composer-status-banner-error-bg - Background for `type="error"`. Aliased to
+             * `--bs-color-error-container`.
+             * @prop --bs-composer-status-banner-error-text - Text/icon color for `type="error"`. Aliased to
+             * `--bs-text-error`.
+             * @prop --bs-composer-status-banner-error-action-bg - Action button background for
+             * `type="error"`. Aliased to `--bs-color-error-default`.
+             * @prop --bs-composer-status-banner-error-action-bg-hover - Aliased to `--bs-color-error-hover`.
+             * @prop --bs-composer-status-banner-info-bg - Background for `type="info"`. Aliased to
+             * `--bs-color-info-container`.
+             * @prop --bs-composer-status-banner-info-text - Text/icon color for `type="info"`. Aliased to
+             * `--bs-text-info`.
+             * @prop --bs-composer-status-banner-info-action-bg - Action button background for `type="info"`.
+             * Aliased to `--bs-color-info-default`.
+             * @prop --bs-composer-status-banner-info-action-bg-hover - Aliased to `--bs-color-info-hover`.
+             * @prop --bs-composer-status-banner-neutral-bg - Background for `type="neutral"`. Aliased to
+             * `--bs-color-neutral-container`.
+             * @prop --bs-composer-status-banner-neutral-text - Text/icon color for `type="neutral"`. Aliased
+             * to `--bs-text-default`.
+             * @prop --bs-composer-status-banner-neutral-action-bg - Action button background for
+             * `type="neutral"`. Aliased to `--bs-color-neutral-container`.
+             * @prop --bs-composer-status-banner-neutral-action-bg-hover - Aliased to
+             * `--bs-color-neutral-container-hover`.
+             * @prop --bs-composer-status-banner-neutral-action-border - Action button border for
+             * `type="neutral"` (the only variant whose action button is outlined). Aliased to
+             * `--bs-border-neutral-container`.
+             * @prop --bs-composer-status-banner-warning-bg - Background for `type="warning"`. Aliased to
+             * `--bs-color-warning-container`.
+             * @prop --bs-composer-status-banner-warning-text - Text/icon color for `type="warning"`. Aliased
+             * to `--bs-text-warning`.
+             * @prop --bs-composer-status-banner-warning-action-bg - Action button background for
+             * `type="warning"`. Aliased to `--bs-color-warning-default`.
+             * @prop --bs-composer-status-banner-warning-action-bg-hover - Aliased to
+             * `--bs-color-warning-hover`.
+             * @prop --bs-composer-status-banner-close-hover-bg - Close button hover background (same across
+             * every `type`). Aliased to `--bs-color-neutral-container-hover`.
+             */
+            "bs-composer-status-banner": LocalJSX.IntrinsicElements["bs-composer-status-banner"] & JSXBase.HTMLAttributes<HTMLBsComposerStatusBannerElement>;
             /**
              * A sortable, optionally row-selectable table for tabular data.
              * `columns`, `rows`, and `cellRenderer` are JS-property-only — HTML attributes can only carry
@@ -1893,6 +3370,32 @@ declare module "@stencil/core" {
              *   modal that just gets taller and taller.
              */
             "bs-modal": LocalJSX.IntrinsicElements["bs-modal"] & JSXBase.HTMLAttributes<HTMLBsModalElement>;
+            /**
+             * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
+             * line, the originating system and version on the second, and a trailing "open" arrow.
+             * ## When to use
+             * - One row per source Genie cited in a response, slotted into `bs-chatbot-sources-drawer`.
+             * ## When not to use
+             * - Outside the sources drawer context -- this is a purpose-built citation row, not a generic
+             *   link/list-item component.
+             * @prop --bs-source-link-radius - Corner radius of the row. Aliased to `--bs-border-radius-150`.
+             * @prop --bs-source-link-padding - Padding around the row. Aliased to `--bs-spacing-150`.
+             * @prop --bs-source-link-gap - Gap between the filename+meta block and the trailing arrow.
+             * Aliased to `--bs-spacing-50`.
+             * @prop --bs-source-link-icon-gap - Gap between the leading icon and the filename text. Aliased
+             * to `--bs-spacing-75`.
+             * @prop --bs-source-link-hover - Row background on hover/focus. Aliased to `--bs-surface-hover`.
+             * @prop --bs-source-link-pressed - Row background while active/pressed. Aliased to
+             * `--bs-surface-pressed`.
+             * @prop --bs-source-link-focus - Focus-visible outline color. Aliased to
+             * `--bs-border-neutral-focus`.
+             * @prop --bs-source-link-filename-color - Filename text color. Aliased to `--bs-text-default`.
+             * @prop --bs-source-link-meta-color - Source/version text color. Aliased to `--bs-text-secondary`.
+             * @prop --bs-source-link-icon-color - File icon and arrow color. Aliased to `--bs-icon-default`.
+             * @prop --bs-source-link-dot-color - Separator dot between source and version. Aliased to
+             * `--bs-text-secondary`.
+             */
+            "bs-source-link": LocalJSX.IntrinsicElements["bs-source-link"] & JSXBase.HTMLAttributes<HTMLBsSourceLinkElement>;
             /**
              * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
              * next to a trigger element.

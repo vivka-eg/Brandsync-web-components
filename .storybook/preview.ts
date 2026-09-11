@@ -20,20 +20,28 @@ import '../src/global/index.css';
 // bundle correctly in both dev and static-build modes.
 //
 // Keep this list in sync with src/components/*/ -- add a line here for every new component.
+import '../dist/components/bs-ai-disclaimer.js';
+import '../dist/components/bs-ai-greeting.js';
 import '../dist/components/bs-ai-thinking.js';
+import '../dist/components/bs-attachment.js';
+import '../dist/components/bs-attachment-list.js';
 import '../dist/components/bs-badge.js';
 import '../dist/components/bs-button.js';
 import '../dist/components/bs-button-skeleton.js';
 import '../dist/components/bs-card.js';
+import '../dist/components/bs-chatbot-feedback.js';
 import '../dist/components/bs-chatbot-header.js';
 import '../dist/components/bs-chatbot-response-action.js';
+import '../dist/components/bs-chatbot-sources-drawer.js';
 import '../dist/components/bs-chatbot-suggestion-button.js';
 import '../dist/components/bs-composer.js';
+import '../dist/components/bs-composer-status-banner.js';
 import '../dist/components/bs-data-table.js';
 import '../dist/components/bs-input.js';
 import '../dist/components/bs-menu.js';
 import '../dist/components/bs-menu-item.js';
 import '../dist/components/bs-modal.js';
+import '../dist/components/bs-source-link.js';
 import '../dist/components/bs-tooltip.js';
 
 // Drives the auto-generated props/slots/parts tables on each component's Docs page from the

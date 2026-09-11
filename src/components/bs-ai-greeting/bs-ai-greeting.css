@@ -1,0 +1,53 @@
+:host {
+  display: block;
+  --bs-ai-greeting-gap: var(--bs-spacing-200);
+  --bs-ai-greeting-max-width: 490px;
+  --bs-ai-greeting-heading-color: var(--bs-text-default);
+  --bs-ai-greeting-heading-font-size: var(--bs-font-size-4xl);
+  /* Figma specifies a 28px line-height for this heading, which doesn't match any
+   * --bs-line-height-heading-* token (h4 is 32) -- aliased directly to --bs-line-height-body-lg,
+   * the token that happens to carry the same numeric value. */
+  --bs-ai-greeting-heading-line-height: var(--bs-line-height-body-lg);
+  --bs-ai-greeting-heading-weight: var(--bs-font-weight-bold);
+  --bs-ai-greeting-heading-gap: var(--bs-spacing-200);
+  --bs-ai-greeting-subtext-color: var(--bs-text-secondary);
+  /* Figma specifies 20px, which doesn't match the semantic --bs-text-style-body-lg-size (18px) --
+   * aliased directly to the raw --bs-font-size-xl primitive instead. */
+  --bs-ai-greeting-subtext-font-size: var(--bs-font-size-xl);
+  --bs-ai-greeting-subtext-line-height: var(--bs-line-height-body-lg);
+}
+
+.bs-ai-greeting {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--bs-ai-greeting-gap);
+  max-width: var(--bs-ai-greeting-max-width);
+  margin: 0 auto;
+  text-align: center;
+  font-family: inherit;
+}
+
+.bs-ai-greeting__heading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-ai-greeting-heading-gap);
+  color: var(--bs-ai-greeting-heading-color);
+  font-size: var(--bs-ai-greeting-heading-font-size);
+  font-weight: var(--bs-ai-greeting-heading-weight);
+  line-height: calc(var(--bs-ai-greeting-heading-line-height) * 1px);
+}
+
+.bs-ai-greeting__heading-line {
+  margin: 0;
+}
+
+.bs-ai-greeting__subtext {
+  margin: 0;
+  color: var(--bs-ai-greeting-subtext-color);
+  font-size: var(--bs-ai-greeting-subtext-font-size);
+  font-weight: var(--bs-font-weight-regular);
+  line-height: calc(var(--bs-ai-greeting-subtext-line-height) * 1px);
+}

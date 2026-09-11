@@ -1,0 +1,68 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SourceLinkStories from './bs-source-link.stories';
+
+<Meta of={SourceLinkStories} />
+
+# Source Link
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Without version](#without-version)
+- [Without source or version](#without-source-or-version)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A single citation row inside `bs-chatbot-sources-drawer` — a file icon + filename on the first
+line, the originating system and version on the second, and a trailing "open" arrow.
+
+**When to use**
+- One row per source Genie cited in a response, slotted into `bs-chatbot-sources-drawer`.
+
+**When not to use**
+- Outside the sources drawer context — this is a purpose-built citation row, not a generic
+  link/list-item component.
+
+<Canvas of={SourceLinkStories.Default} />
+
+## Without version
+
+<Canvas of={SourceLinkStories.WithoutVersion} />
+
+## Without source or version
+
+<Canvas of={SourceLinkStories.WithoutSourceOrVersion} />
+
+## Component API
+
+Every story above renders with no `href` by default — the row is a `<button>` rather than an `<a>`
+so it doesn't navigate away when clicked in Storybook; the consuming app handles the open behavior
+itself via `bsOpen`. Set `href` via the control below to see the `<a>` rendering instead.
+
+<Controls of={SourceLinkStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: `icon` (overrides the default file icon)
+- Shadow parts: `::part(icon)`, `::part(filename)`, `::part(source)`, `::part(version)`,
+  `::part(arrow)`
+- CSS custom properties: `--bs-source-link-radius`, `--bs-source-link-padding`,
+  `--bs-source-link-gap`, `--bs-source-link-icon-gap`, `--bs-source-link-hover`,
+  `--bs-source-link-pressed`, `--bs-source-link-focus`, `--bs-source-link-filename-color`,
+  `--bs-source-link-meta-color`, `--bs-source-link-icon-color`, `--bs-source-link-dot-color`
+
+## Events
+
+| Event    | Fires when                          | Payload | Cancelable |
+| -------- | ------------------------------------ | ------- | ---------- |
+| `bsOpen` | The row is clicked/activated         | `void`  | No         |
+
+## Accessibility
+
+- Renders as a real `<a>` (when `href` is set) or `<button>` (otherwise) — native keyboard
+  activation and focus behavior, not a `<div>` with a click handler.
+- A link opens with `rel="noopener noreferrer"` by default, regardless of `target`.
+- The separator dot between source name and version is a plain decorative `<span>` with no
+  announced role — the two text values are read in sequence by assistive tech.

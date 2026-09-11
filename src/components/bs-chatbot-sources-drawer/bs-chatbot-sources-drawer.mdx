@@ -1,0 +1,75 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SourcesDrawerStories from './bs-chatbot-sources-drawer.stories';
+
+<Meta of={SourcesDrawerStories} />
+
+# Chatbot Sources Drawer
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Empty](#empty)
+- [Many sources (scrollable)](#many-sources-scrollable)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+The "Sources" panel shown alongside a Genie AI chat response — a header with a title, a count
+badge, and a collapse chevron, above a stack of `bs-source-link` citation rows.
+
+**When to use**
+- Displaying the documents/sources a Genie response cited, typically opened from a "view sources"
+  action on a `bs-chatbot-response-action` bar.
+
+**When not to use**
+- A generic list container — this component's header (title + count + collapse) is purpose-built
+  for the sources use case.
+
+<Canvas of={SourcesDrawerStories.Default} />
+
+## Empty
+
+The count badge only renders once there's at least one source (auto-detected from slotted
+`bs-source-link` children, or overridden via `count`).
+
+<Canvas of={SourcesDrawerStories.Empty} />
+
+## Many sources (scrollable)
+
+The row list scrolls independently of the header, which stays pinned with a drop shadow to
+separate it from the scrolled content.
+
+<Canvas of={SourcesDrawerStories.ManySources} />
+
+## Component API
+
+<Controls of={SourcesDrawerStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (one or more `bs-source-link` rows), `collapse-icon` (overrides the default
+  chevron)
+- Shadow parts: `::part(heading)`, `::part(count)`, `::part(collapse)`, `::part(list)`
+- CSS custom properties: `--bs-chatbot-sources-drawer-bg`,
+  `--bs-chatbot-sources-drawer-header-shadow`, `--bs-chatbot-sources-drawer-header-padding-x`,
+  `--bs-chatbot-sources-drawer-header-padding-top`,
+  `--bs-chatbot-sources-drawer-header-padding-bottom`,
+  `--bs-chatbot-sources-drawer-heading-color`, `--bs-chatbot-sources-drawer-count-bg`,
+  `--bs-chatbot-sources-drawer-count-color`, `--bs-chatbot-sources-drawer-collapse-hover`,
+  `--bs-chatbot-sources-drawer-section-gap`, `--bs-chatbot-sources-drawer-list-padding`,
+  `--bs-chatbot-sources-drawer-list-gap`
+
+## Events
+
+| Event        | Fires when                     | Payload | Cancelable |
+| ------------ | ------------------------------- | ------- | ---------- |
+| `bsCollapse` | The collapse chevron is clicked | `void`  | No         |
+
+## Accessibility
+
+- The panel has `role="region"` with `aria-label` set to the current `heading`, so it's announced
+  as a distinct landmark.
+- The collapse button has a fixed `aria-label="Collapse sources"` since it's icon-only.
+- This component does not hide/collapse itself on `bsCollapse` — the consuming app owns whether
+  the panel stays mounted or is removed/hidden in response to the event.

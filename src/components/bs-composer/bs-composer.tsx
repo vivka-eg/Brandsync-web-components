@@ -1,4 +1,4 @@
-import { Component, Prop, Event, EventEmitter, h } from '@stencil/core';
+import { Component, Element, State, Prop, Event, EventEmitter, h } from '@stencil/core';
 
 export type BsComposerVariant = 'ai' | 'human';
 export type BsComposerState = 'idle' | 'generating' | 'disabled' | 'recording';
@@ -34,10 +34,14 @@ const WAVEFORM_BAR_HEIGHTS = [
  * useful for e.g. focusing the composer after a parent view mounts, without reaching into its
  * shadow root.
  *
+ * @slot attachments - A `bs-attachment-list` (or other content) rendered inside the composer's own
+ *   bordered container, above the text field -- only takes up space/padding when it has assigned
+ *   content, so leaving it empty renders identically to not having the slot at all.
  * @slot actions-end - Extra consumer-supplied controls appended after the primary action button
  *   in the controls row (e.g. a product-specific "Tools" button). Slotted content is placed
  *   inline in the same flex row as attach/mic/action, so a slotted element should size itself to
  *   roughly match `--bs-composer-button-size` to align visually.
+ * @part attachments - The wrapper around the `attachments` slot.
  * @part attach - The "+" attach button.
  * @part input - The native text `<input>`.
  * @part mic - The secondary icon button (microphone, or the stop-recording square while `state="recording"`).
@@ -68,6 +72,8 @@ const WAVEFORM_BAR_HEIGHTS = [
   shadow: { delegatesFocus: true },
 })
 export class BsComposer {
+  @Element() el: HTMLElement;
+
   /**
    * Which flavor of composer this is: changes the *default* placeholder text (set `placeholder`
    * directly to override it) and, per the Figma design, renders the container border dashed
@@ -97,6 +103,11 @@ export class BsComposer {
    */
   @Prop() ariaLabel: string | null = null;
 
+  /** Tracks whether the `attachments` slot has assigned content, so the row above the text field
+   * (padding, border) only takes up space when a consumer has actually put something there --
+   * same reasoning/pattern as `hasIcon`/`hasLabel` in `bs-attachment`. */
+  @State() hasAttachments = false;
+
   /** Fires on every keystroke in the text field, with the current value. */
   @Event() bsInput: EventEmitter<string>;
 
@@ -115,6 +126,17 @@ export class BsComposer {
   /** Fires when the mic/stop-recording button is clicked. The consumer decides what that means
    * (e.g. start recording when idle/generating, or stop recording when `state="recording"`). */
   @Event() bsMicToggle: EventEmitter<void>;
+
+  /** Computes the initial `hasAttachments` state directly from the host's light DOM children,
+   * before first render -- same reasoning as `bs-attachment`'s `componentWillLoad`: `slotchange`
+   * alone never fires for a slot that starts out empty and stays that way. */
+  componentWillLoad() {
+    this.hasAttachments = Array.from(this.el.childNodes).some(node => node.nodeType === Node.ELEMENT_NODE && (node as Element).getAttribute('slot') === 'attachments');
+  }
+
+  private onAttachmentsSlotchange = (ev: Event) => {
+    this.hasAttachments = (ev.target as HTMLSlotElement).assignedNodes().length > 0;
+  };
 
   private onInput = (ev: InputEvent) => {
     const value = (ev.target as HTMLInputElement).value;
@@ -158,6 +180,9 @@ export class BsComposer {
 
     return (
       <div class={`bs-composer bs-composer--${this.state} bs-composer--${this.variant}`}>
+        <div part="attachments" class={`bs-composer__attachments-row ${this.hasAttachments ? 'bs-composer__attachments-row--visible' : ''}`}>
+          <slot name="attachments" onSlotchange={this.onAttachmentsSlotchange}></slot>
+        </div>
         <div class="bs-composer__text-row">
           <input
             part="input"

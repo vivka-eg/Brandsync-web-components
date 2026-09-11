@@ -1,0 +1,82 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AttachmentStories from './bs-attachment.stories';
+
+<Meta of={AttachmentStories} />
+
+# Attachment
+
+## Table of Contents
+
+- [Overview](#overview)
+- [PDF / Document](#pdf--document)
+- [Loading](#loading)
+- [Gallery](#gallery)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A single file attachment preview for `bs-composer`: an image thumbnail, or a filename card with a
+colored file-type badge, with an optional upload-in-progress spinner and a hover/focus-revealed
+remove button.
+
+**When to use**
+- Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
+  typically alongside or inside `bs-composer`.
+
+**When not to use**
+- A generic file-upload control — this is a preview-only presentational component. The consuming
+  app owns the actual file picker/upload logic and drives `loading` from that state.
+
+<Canvas of={AttachmentStories.Default} />
+
+## PDF / Document
+
+<Canvas of={AttachmentStories.Pdf} />
+<Canvas of={AttachmentStories.Document} />
+
+## Loading
+
+Set `loading` while the file is still uploading. Images blur with a centered spinner overlay;
+PDF/Document cards swap the file-type icon for a spinner inside the same colored badge.
+
+<Canvas of={AttachmentStories.ImageLoading} />
+<Canvas of={AttachmentStories.PdfLoading} />
+
+## Gallery
+
+For a fixed, wrapping layout, a consumer can lay out several attachments with a plain `<div>` using
+`flex-wrap: wrap`, as shown here. For a horizontally-scrolling row (e.g. inside `bs-composer`'s
+`attachments` slot), use `bs-attachment-list` instead.
+
+<Canvas of={AttachmentStories.Gallery} />
+
+## Component API
+
+<Controls of={AttachmentStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: none
+- Shadow parts: `::part(thumbnail)`, `::part(card)`, `::part(filename)`, `::part(badge)`,
+  `::part(remove)`
+- CSS custom properties: `--bs-attachment-size`, `--bs-attachment-radius`,
+  `--bs-attachment-border-color`, `--bs-attachment-card-bg`, `--bs-attachment-filename-color`,
+  `--bs-attachment-badge-bg-pdf`, `--bs-attachment-badge-bg-document`,
+  `--bs-attachment-remove-bg`, `--bs-attachment-remove-hover`, `--bs-attachment-remove-pressed`,
+  `--bs-attachment-remove-focus`
+
+## Events
+
+| Event      | Fires when                    | Payload | Cancelable |
+| ---------- | ------------------------------ | ------- | ---------- |
+| `bsRemove` | The remove button is clicked   | `void`  | No         |
+
+## Accessibility
+
+- The remove button is a real `<button>` with `aria-label="Remove attachment"` — keyboard
+  focusable and reachable via Tab even though it's visually hidden until hover/focus (opacity, not
+  `display: none`), so keyboard users can always reach it.
+- The host has `aria-busy="true"` while `loading` is set.
+- The spinner has `role="status"` with `aria-label="Uploading"`, and its rotation is disabled under
+  `prefers-reduced-motion: reduce`.
