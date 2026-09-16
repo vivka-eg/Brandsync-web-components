@@ -9,6 +9,7 @@ import * as MenuItemStories from './bs-menu-item.stories';
 
 - [Overview](#overview)
 - [With an icon](#with-an-icon)
+- [Disabled](#disabled)
 - [In a bs-menu](#in-a-bs-menu)
 - [Component API](#component-api)
 - [Events](#events)
@@ -36,6 +37,15 @@ its own. When nothing is slotted, no icon space is reserved.
 
 <Canvas of={MenuItemStories.WithIcon} />
 
+## Disabled
+
+The item has no background fill of its own by default (the "Enabled" state is fully transparent) --
+`hover`/`active`/`disabled` each apply their own distinct fill on top of that. `disabled` renders a
+native `disabled` `<button>` (removed from tab order, no click), with muted text/icon color and a
+faded background.
+
+<Canvas of={MenuItemStories.Disabled} />
+
 ## In a bs-menu
 
 `bs-menu-item` is designed to be used as a child of `bs-menu`, which supplies the rounded,
@@ -52,8 +62,9 @@ elevated, padded list box around a stack of items.
 - Shadow parts: `::part(item)`, `::part(icon)`, `::part(label)`
 - CSS custom properties: `--bs-menu-item-radius`, `--bs-menu-item-padding-y`,
   `--bs-menu-item-padding-x`, `--bs-menu-item-gap`, `--bs-menu-item-hover`,
-  `--bs-menu-item-pressed`, `--bs-menu-item-color`, `--bs-menu-item-font-size`,
-  `--bs-menu-item-line-height`
+  `--bs-menu-item-pressed`, `--bs-menu-item-disabled-bg`, `--bs-menu-item-icon-color`,
+  `--bs-menu-item-icon-color-disabled`, `--bs-menu-item-color`, `--bs-menu-item-color-disabled`,
+  `--bs-menu-item-font-size`, `--bs-menu-item-line-height`
 
 ## Events
 
@@ -70,3 +81,5 @@ elevated, padded list box around a stack of items.
   content, so a consumer slotting in a meaningful icon should add that themselves.
 - No arrow-key roving focus between sibling items is implemented -- users move between items with
   <kbd>Tab</kbd>, same as any list of buttons.
+- Setting `disabled` sets the native `disabled` attribute (removed from tab order, unclickable) and
+  `aria-disabled="true"`.

@@ -32,6 +32,10 @@ export const WithIcon: Story = {
   `,
 };
 
+export const Disabled: Story = {
+  render: () => html` <bs-menu-item style="width: 210px;" disabled>Read aloud</bs-menu-item> `,
+};
+
 export const InAMenu: Story = {
   name: 'In a bs-menu',
   render: () => html`

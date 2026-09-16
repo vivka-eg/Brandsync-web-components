@@ -1,4 +1,4 @@
-import { Component, State, Event, EventEmitter, h } from '@stencil/core';
+import { Component, Prop, State, Event, EventEmitter, h } from '@stencil/core';
 
 /**
  * A single selectable row inside a `bs-menu`: an optional icon plus a text label, rendered as a
@@ -20,10 +20,13 @@ import { Component, State, Event, EventEmitter, h } from '@stencil/core';
  * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
  * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
  * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
- * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+ * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container-hover`.
  * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+ * @prop --bs-menu-item-disabled-bg - Background when `disabled` is set. Aliased to `--bs-surface-action-disabled`.
  * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+ * @prop --bs-menu-item-icon-color-disabled - Icon color when `disabled` is set. Aliased to `--bs-icon-disabled`.
  * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+ * @prop --bs-menu-item-color-disabled - Label text color when `disabled` is set. Aliased to `--bs-text-on-disabled`.
  * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
  * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
  */
@@ -33,6 +36,10 @@ import { Component, State, Event, EventEmitter, h } from '@stencil/core';
   shadow: true,
 })
 export class BsMenuItem {
+  /** Disables the item: no hover/pressed/focus styling, no pointer cursor, not reachable by
+   * keyboard tabbing, and clicking it does not emit `bsSelect`. */
+  @Prop() disabled = false;
+
   /** Tracks whether the `icon` slot has assigned content, so the icon wrapper (and its gap) only
    * renders when there's actually an icon to show. */
   @State() hasIcon = false;
@@ -45,12 +52,21 @@ export class BsMenuItem {
   };
 
   private onClick = () => {
+    if (this.disabled) return;
     this.bsSelect.emit();
   };
 
   render() {
     return (
-      <button type="button" part="item" role="menuitem" class="bs-menu-item" onClick={this.onClick}>
+      <button
+        type="button"
+        part="item"
+        role="menuitem"
+        class={`bs-menu-item ${this.disabled ? 'bs-menu-item--disabled' : ''}`}
+        disabled={this.disabled}
+        aria-disabled={this.disabled ? 'true' : undefined}
+        onClick={this.onClick}
+      >
         <span part="icon" class={`bs-menu-item__icon ${this.hasIcon ? 'bs-menu-item__icon--has-content' : ''}`}>
           <slot name="icon" onSlotchange={this.onIconSlotchange}></slot>
         </span>

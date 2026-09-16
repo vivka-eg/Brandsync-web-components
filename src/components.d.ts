@@ -838,14 +838,22 @@ export namespace Components {
      * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
      * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
      * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
-     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container-hover`.
      * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-menu-item-disabled-bg - Background when `disabled` is set. Aliased to `--bs-surface-action-disabled`.
      * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+     * @prop --bs-menu-item-icon-color-disabled - Icon color when `disabled` is set. Aliased to `--bs-icon-disabled`.
      * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+     * @prop --bs-menu-item-color-disabled - Label text color when `disabled` is set. Aliased to `--bs-text-on-disabled`.
      * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
      * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
      */
     interface BsMenuItem {
+        /**
+          * Disables the item: no hover/pressed/focus styling, no pointer cursor, not reachable by keyboard tabbing, and clicking it does not emit `bsSelect`.
+          * @default false
+         */
+        "disabled": boolean;
     }
     /**
      * An overlay dialog that interrupts the current flow for a focused task or confirmation.
@@ -1722,10 +1730,13 @@ declare global {
      * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
      * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
      * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
-     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container-hover`.
      * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-menu-item-disabled-bg - Background when `disabled` is set. Aliased to `--bs-surface-action-disabled`.
      * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+     * @prop --bs-menu-item-icon-color-disabled - Icon color when `disabled` is set. Aliased to `--bs-icon-disabled`.
      * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+     * @prop --bs-menu-item-color-disabled - Label text color when `disabled` is set. Aliased to `--bs-text-on-disabled`.
      * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
      * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
      */
@@ -2815,14 +2826,22 @@ declare namespace LocalJSX {
      * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
      * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
      * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
-     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+     * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container-hover`.
      * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-menu-item-disabled-bg - Background when `disabled` is set. Aliased to `--bs-surface-action-disabled`.
      * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+     * @prop --bs-menu-item-icon-color-disabled - Icon color when `disabled` is set. Aliased to `--bs-icon-disabled`.
      * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+     * @prop --bs-menu-item-color-disabled - Label text color when `disabled` is set. Aliased to `--bs-text-on-disabled`.
      * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
      * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
      */
     interface BsMenuItem {
+        /**
+          * Disables the item: no hover/pressed/focus styling, no pointer cursor, not reachable by keyboard tabbing, and clicking it does not emit `bsSelect`.
+          * @default false
+         */
+        "disabled"?: boolean;
         /**
           * Fires when the item is clicked.
          */
@@ -3046,6 +3065,9 @@ declare namespace LocalJSX {
         "length": number;
         "open": boolean;
     }
+    interface BsMenuItemAttributes {
+        "disabled": boolean;
+    }
     interface BsModalAttributes {
         "open": boolean;
         "heading": string;
@@ -3082,7 +3104,7 @@ declare namespace LocalJSX {
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
         "bs-menu": BsMenu;
-        "bs-menu-item": BsMenuItem;
+        "bs-menu-item": Omit<BsMenuItem, keyof BsMenuItemAttributes> & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes]?: BsMenuItem[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `attr:${K}`]?: BsMenuItemAttributes[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `prop:${K}`]?: BsMenuItem[K] };
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
         "bs-source-link": Omit<BsSourceLink, keyof BsSourceLinkAttributes> & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes]?: BsSourceLink[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `attr:${K}`]?: BsSourceLinkAttributes[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `prop:${K}`]?: BsSourceLink[K] };
         "bs-tooltip": Omit<BsTooltip, keyof BsTooltipAttributes> & { [K in keyof BsTooltip & keyof BsTooltipAttributes]?: BsTooltip[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `attr:${K}`]?: BsTooltipAttributes[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `prop:${K}`]?: BsTooltip[K] };
@@ -3574,10 +3596,13 @@ declare module "@stencil/core" {
              * @prop --bs-menu-item-padding-y - Top/bottom padding. Aliased to `--bs-spacing-100`.
              * @prop --bs-menu-item-padding-x - Left/right padding. Aliased to `--bs-spacing-150`.
              * @prop --bs-menu-item-gap - Gap between icon and label. Aliased to `--bs-spacing-100`.
-             * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container`.
+             * @prop --bs-menu-item-hover - Background on hover. Aliased to `--bs-color-neutral-container-hover`.
              * @prop --bs-menu-item-pressed - Background when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+             * @prop --bs-menu-item-disabled-bg - Background when `disabled` is set. Aliased to `--bs-surface-action-disabled`.
              * @prop --bs-menu-item-icon-color - Icon color. Aliased to `--bs-icon-default`.
+             * @prop --bs-menu-item-icon-color-disabled - Icon color when `disabled` is set. Aliased to `--bs-icon-disabled`.
              * @prop --bs-menu-item-color - Label text color. Aliased to `--bs-text-muted`.
+             * @prop --bs-menu-item-color-disabled - Label text color when `disabled` is set. Aliased to `--bs-text-on-disabled`.
              * @prop --bs-menu-item-font-size - Aliased to `--bs-font-size-md`.
              * @prop --bs-menu-item-line-height - Aliased to `--bs-line-height-body-md`.
              */

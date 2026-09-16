@@ -17,6 +17,13 @@ real `<button>` for correct keyboard/click semantics.
 - Outside of `bs-menu` -- this component's sizing/hover treatment is designed to sit inside the
   menu's rounded, padded list box.
 
+## Properties
+
+| Property   | Attribute  | Description                                                                                                                                        | Type      | Default |
+| ---------- | ---------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | --------- | ------- |
+| `disabled` | `disabled` | Disables the item: no hover/pressed/focus styling, no pointer cursor, not reachable by keyboard tabbing, and clicking it does not emit `bsSelect`. | `boolean` | `false` |
+
+
 ## Events
 
 | Event      | Description                     | Type                |

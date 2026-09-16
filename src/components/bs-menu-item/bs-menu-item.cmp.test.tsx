@@ -40,4 +40,25 @@ describe('bs-menu-item', () => {
     (root.shadowRoot.querySelector('[part="item"]') as HTMLButtonElement).click();
     expect(selectSpy).toHaveReceivedEventTimes(1);
   });
+
+  it('has no background by default (enabled state has no fill of its own)', async () => {
+    const { root } = await render(<bs-menu-item>Read aloud</bs-menu-item>);
+    const button = root.shadowRoot.querySelector('[part="item"]') as HTMLElement;
+    expect(getComputedStyle(button).backgroundColor).toBe('rgba(0, 0, 0, 0)');
+  });
+
+  it('applies disabled styling, sets the native disabled attribute and aria-disabled, when disabled is set', async () => {
+    const { root } = await render(<bs-menu-item disabled>Read aloud</bs-menu-item>);
+    const button = root.shadowRoot.querySelector('[part="item"]') as HTMLButtonElement;
+    expect(button).toHaveClass('bs-menu-item--disabled');
+    expect(button).toHaveAttribute('disabled');
+    expect(button).toEqualAttribute('aria-disabled', 'true');
+  });
+
+  it('does not emit bsSelect when clicked while disabled', async () => {
+    const { root, spyOnEvent } = await render(<bs-menu-item disabled>Read aloud</bs-menu-item>);
+    const selectSpy = spyOnEvent('bsSelect');
+    (root.shadowRoot.querySelector('[part="item"]') as HTMLButtonElement).click();
+    expect(selectSpy).toHaveReceivedEventTimes(0);
+  });
 });
