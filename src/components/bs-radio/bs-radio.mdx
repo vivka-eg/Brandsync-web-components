@@ -1,0 +1,86 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as RadioStories from './bs-radio.stories';
+
+<Meta of={RadioStories} />
+
+# Radio
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Checked](#checked)
+- [Disabled](#disabled)
+- [Radio group](#radio-group)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A single radio button with its label, for one mutually-exclusive choice within a group.
+
+**When to use**
+- One option within a set of mutually-exclusive choices, where all options should stay visible (a
+  radio group).
+
+**When not to use**
+- An independent, non-exclusive binary choice, or one item in a set of independent choices -- use
+  `bs-checkbox` instead.
+- An on/off setting that takes effect immediately (no explicit form submission) -- use `bs-switch`.
+
+<Canvas of={RadioStories.Default} />
+
+## Checked
+
+<Canvas of={RadioStories.Checked} />
+
+## Disabled
+
+<Canvas of={RadioStories.Disabled} />
+<Canvas of={RadioStories.DisabledChecked} />
+
+## Radio group
+
+Radio buttons only make sense in a mutually-exclusive group sharing a `name`. **Known gap:** because
+each `bs-radio` renders its own shadow root, native `<input type="radio">` grouping -- which the
+HTML spec scopes to a single DOM tree -- does not extend across separate `bs-radio` instances, even
+when they share a `name`. Checking one will not natively uncheck another, and there's no built-in
+arrow-key navigation between separate instances. Until a `bs-radio-group` wrapper exists, a consumer
+building a group must listen for `bsChange` and set `checked = false` on the other instances itself,
+as the story below demonstrates.
+
+<Canvas of={RadioStories.Group} />
+
+## Component API
+
+<Controls of={RadioStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- CSS Custom Properties: `--bs-radio-size`, `--bs-radio-border-width`, `--bs-radio-state-layer-size`,
+  `--bs-radio-hit-area-size`, `--bs-radio-gap`. The ring/state-layer colors themselves come directly
+  from this library's global `--bs-radio-*` semantic tokens (defined in `src/global/tokens.css`),
+  not component-scoped aliases -- override those globally to restyle color across every `bs-radio`.
+- Slots: default slot (the label text)
+- Shadow parts: `::part(circle)`, `::part(dot)`, `::part(label)`
+
+## Events
+
+| Event      | Fires when                                       | Payload  | Cancelable |
+| ---------- | ------------------------------------------------- | -------- | ---------- |
+| `bsChange` | The radio becomes checked via user interaction    | `string` | No         |
+
+## Accessibility
+
+- Renders a real `<input type="radio">`, visually hidden (`opacity: 0`, not `display: none`) so it
+  stays focusable and keyboard-operable (native radio-group arrow-key navigation works automatically
+  when multiple `bs-radio`s share a `name`).
+- The native input is wrapped in a `<label>` together with the visual ring and label text, so
+  clicking anywhere in the component checks it -- no separate `for`/`id` wiring needed.
+- `disabled` sets the native `disabled` attribute, which removes the control from the tab order and
+  is announced by assistive technology automatically -- no separate `aria-disabled` is added.
+- **Known gap:** this component does not coordinate group state itself (e.g. there's no
+  `bs-radio-group` wrapper), and native same-`name` mutual exclusion/arrow-key navigation does not
+  extend across separate `bs-radio` instances, because each renders its own shadow root and the HTML
+  spec scopes "radio button group" to a single DOM tree. A consumer building a group must listen for
+  `bsChange` and set `checked = false` on sibling instances itself; within a single instance the
+  native input still behaves like a normal radio input.

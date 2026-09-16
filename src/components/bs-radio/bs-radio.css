@@ -1,0 +1,164 @@
+/**
+ * @prop --bs-radio-size: Diameter of the visual radio ring. Aliased to --bs-spacing-300.
+ * @prop --bs-radio-border-width: Width of the ring border.
+ * @prop --bs-radio-state-layer-size: Diameter of the hover/focus/pressed halo behind the ring.
+ * @prop --bs-radio-hit-area-size: Diameter of the layout box the state layer is centered in.
+ * @prop --bs-radio-gap: Gap between the ring and the label text. Aliased to --bs-spacing-100.
+ */
+:host {
+  display: inline-block;
+
+  --bs-radio-size: var(--bs-spacing-300);
+  --bs-radio-border-width: 2px;
+  --bs-radio-state-layer-size: 40px;
+  --bs-radio-hit-area-size: 48px;
+  --bs-radio-gap: var(--bs-spacing-100);
+}
+
+.bs-radio {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bs-radio-gap);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.bs-radio--disabled {
+  cursor: not-allowed;
+}
+
+/* The native input is visually hidden but stays in the layout/focus/keyboard chain -- opacity: 0
+   (not display: none) so it can still receive and show focus. Covers the whole label (same
+   pattern as bs-checkbox) so clicking anywhere -- ring or label text -- toggles it. */
+.bs-radio__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.bs-radio__input:disabled {
+  cursor: not-allowed;
+}
+
+/* Outer clickable-area layout box -- just sizes/centers the state layer, carries no styling of
+   its own (the real hit target is the absolutely-positioned input above, covering the whole
+   label). */
+.bs-radio__hit-area {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--bs-radio-hit-area-size);
+  height: var(--bs-radio-hit-area-size);
+}
+
+/* State layer -- the soft hover/focus/pressed background wash, distinct from the ring's own
+   border color. */
+.bs-radio__state-layer {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bs-radio-state-layer-size);
+  height: var(--bs-radio-state-layer-size);
+  border-radius: 50%;
+  background: var(--bs-radio-bg-default);
+}
+
+.bs-radio__circle {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--bs-radio-size);
+  height: var(--bs-radio-size);
+  border: var(--bs-radio-border-width) solid var(--bs-radio-enabled-border-default);
+  border-radius: 50%;
+  background: transparent;
+}
+
+.bs-radio__circle--selected {
+  border-color: var(--bs-radio-selected-border-default);
+}
+
+.bs-radio__dot {
+  width: 50%;
+  height: 50%;
+  border-radius: 50%;
+  background: var(--bs-radio-icon-checked);
+}
+
+/* Hover/focus/pressed -- keyed off the hidden native input's pseudo-classes, since it sits on top
+   of and covers the whole label, so it always reflects the user's actual pointer/keyboard target. */
+.bs-radio__input:hover:not(:disabled) ~ .bs-radio__hit-area .bs-radio__state-layer {
+  background: var(--bs-radio-bg-hover);
+}
+
+.bs-radio__input:hover:not(:disabled) ~ .bs-radio__hit-area .bs-radio__circle {
+  border-color: var(--bs-radio-enabled-border-hover);
+}
+
+.bs-radio__input:hover:not(:disabled) ~ .bs-radio__hit-area .bs-radio__circle--selected {
+  border-color: var(--bs-radio-selected-border-hover);
+}
+
+.bs-radio__input:hover:not(:disabled) ~ .bs-radio__hit-area .bs-radio__circle--selected .bs-radio__dot {
+  background: var(--bs-radio-icon-hover);
+}
+
+.bs-radio__input:focus-visible ~ .bs-radio__hit-area .bs-radio__state-layer {
+  background: var(--bs-radio-bg-focus);
+  outline: 2px solid var(--bs-radio-focus-ring);
+  outline-offset: 2px;
+}
+
+.bs-radio__input:focus-visible ~ .bs-radio__hit-area .bs-radio__circle {
+  border-color: var(--bs-radio-enabled-border-focus);
+}
+
+.bs-radio__input:focus-visible ~ .bs-radio__hit-area .bs-radio__circle--selected {
+  border-color: var(--bs-radio-selected-border-focus);
+}
+
+.bs-radio__input:active:not(:disabled) ~ .bs-radio__hit-area .bs-radio__state-layer {
+  background: var(--bs-radio-bg-pressed);
+}
+
+.bs-radio__input:active:not(:disabled) ~ .bs-radio__hit-area .bs-radio__circle {
+  border-color: var(--bs-radio-enabled-border-pressed);
+}
+
+.bs-radio__input:active:not(:disabled) ~ .bs-radio__hit-area .bs-radio__circle--selected {
+  border-color: var(--bs-radio-selected-border-pressed);
+}
+
+.bs-radio__input:disabled ~ .bs-radio__hit-area .bs-radio__state-layer {
+  background: var(--bs-radio-bg-disabled);
+}
+
+.bs-radio__input:disabled ~ .bs-radio__hit-area .bs-radio__circle {
+  border-color: var(--bs-radio-border-disabled);
+}
+
+.bs-radio__input:disabled ~ .bs-radio__hit-area .bs-radio__circle--selected .bs-radio__dot {
+  background: var(--bs-radio-icon-disabled);
+}
+
+.bs-radio__label {
+  font-size: var(--bs-font-size-md);
+  color: var(--bs-radio-label-default);
+}
+
+.bs-radio--disabled .bs-radio__label {
+  color: var(--bs-radio-label-disabled);
+}

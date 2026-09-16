@@ -180,8 +180,14 @@
 }
 
 .bs-checkbox__label {
-  font-size: var(--bs-font-size-sm);
+  font-size: var(--bs-font-size-md);
   color: var(--bs-checkbox-label-color);
+}
+
+/* Figma specs the label at fontsize/body/sm (14px) only for size="sm" -- size="md"/"lg" both use
+   fontsize/body/md (16px), which is the default set above. */
+.bs-checkbox__box--sm ~ .bs-checkbox__label {
+  font-size: var(--bs-font-size-sm);
 }
 
 .bs-checkbox--disabled .bs-checkbox__label {
