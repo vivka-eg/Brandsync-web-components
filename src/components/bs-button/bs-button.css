@@ -44,7 +44,9 @@
   border: none;
   border-radius: var(--bs-button-radius);
   font-family: inherit;
-  font-weight: var(--bs-font-weight-semibold);
+  /* Figma's button label text style is body/*-medium (font-weight 500), not semibold -- verified
+     against node 2842:50344 in the BrandSync UI Kit file. */
+  font-weight: var(--bs-font-weight-medium);
   cursor: pointer;
   transition: background-color var(--bs-duration-fast, 120ms) var(--bs-easing-standard, ease);
 }
@@ -66,7 +68,11 @@
 
 .bs-button--md {
   height: var(--bs-button-height-md);
-  padding: 0 var(--bs-spacing-400);
+  /* Verified against Figma node 2842:50344 (71px-wide frame, 39px-wide "Label" text): horizontal
+     padding is spacing/200 (16px) each side, not spacing-400 (32px) -- the previous value was
+     roughly double what the redline specifies. sm/lg padding-x weren't independently re-verified
+     against their own redlines in this pass. */
+  padding: 0 var(--bs-spacing-200);
   font-size: var(--bs-font-size-md);
 }
 
@@ -220,12 +226,14 @@
   outline-color: var(--bs-button-outlined-focus);
 }
 
+/* Gap between icon and label: spacing/xs (4px) per Figma node 2842:50344's state-layer gap, not
+   spacing-100 (8px). */
 .bs-button__icon--visible {
-  margin-right: var(--bs-spacing-100);
+  margin-right: var(--bs-spacing-50);
 }
 
 .bs-button__end-icon--visible {
-  margin-left: var(--bs-spacing-100);
+  margin-left: var(--bs-spacing-50);
 }
 
 .bs-button__icon ::slotted(*),
