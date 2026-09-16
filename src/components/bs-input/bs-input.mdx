@@ -11,20 +11,42 @@ import * as InputStories from './bs-input.stories';
 - [With description](#with-description)
 - [With error](#with-error)
 - [Disabled state](#disabled-state)
+- [With icon](#with-icon)
+- [With end icon](#with-end-icon)
+- [Required](#required)
+- [Search](#search)
+- [Number](#number)
+- [Password](#password)
+- [Date](#date)
+- [Dropdown](#dropdown)
+- [Select](#select)
+- [Text area](#text-area)
+- [Chip](#chip)
+- [Initials](#initials)
+- [Country](#country)
+- [Pin](#pin)
 - [Component API](#component-api)
+- [Events](#events)
 - [Accessibility](#accessibility)
 
 ## Overview
 
-A single-line text field with an optional label, description, and error state.
+A single-line text field with an optional label, description, and error state. Also covers a range
+of related "field" shapes (number stepper, password reveal, date, dropdown trigger, select,
+textarea, chip input, initials, country, and pin) via the `type` prop, since they all share the
+same label/description/error/icon-slot chrome.
 
 **When to use**
 - Collecting a single line of free-text, email, password, or numeric input.
+- Any of the other supported `type`s (search, date, dropdown, select, textarea, chip, initials,
+  country, pin) that share this component's label/description/error chrome.
 - Pair with `error` for inline validation feedback tied to that specific field.
 
 **When not to use**
-- Multi-line text — this component has no `textarea` mode.
-- A fixed set of choices — use a select/radio/checkbox component instead of free text.
+- A fixed set of choices best served by a dedicated radio/checkbox group rather than a single field.
+  `type="select"` (native `<select>`) and `type="dropdown"` (a `bs-menu` of `bs-menu-item`s from
+  `options`) cover the field-shaped cases; `type="chip"` has no options list at all (freeform chip
+  entry).
 
 <Canvas of={InputStories.Default} />
 
@@ -45,18 +67,155 @@ the field (see Accessibility below).
 
 <Canvas of={InputStories.Disabled} />
 
+## With icon
+
+A leading icon, slotted via `icon`, rendered inside the bordered field ahead of the native input.
+
+<Canvas of={InputStories.WithIcon} />
+
+## With end icon
+
+A trailing icon, slotted via `end-icon`, rendered inside the bordered field after the native input.
+
+<Canvas of={InputStories.WithEndIcon} />
+
+## Required
+
+Setting `required` renders a red `*` immediately after the label and sets `aria-required="true"` on
+the control -- this applies regardless of `type`.
+
+<Canvas of={InputStories.Required} />
+
+## Search
+
+`type="search"` is a native `<input type="search">` with a default magnifying-glass icon rendered
+in the leading `icon` position; slot your own `icon` content to override it.
+
+<Canvas of={InputStories.Search} />
+
+## Number
+
+`type="number"` adds increment/decrement stepper buttons in the end-icon position (overriding any
+slotted `end-icon`), driven by the `step`/`min`/`max` props. Clicking a stepper button updates
+`value` and emits `bsChange`.
+
+<Canvas of={InputStories.NumberInput} />
+
+## Password
+
+`type="password"` adds a built-in show/hide toggle button in the end-icon position (overriding any
+slotted `end-icon`). Toggling it only changes the *rendered* native input's type between
+`password`/`text` -- the `type` prop itself always stays `'password'`.
+
+<Canvas of={InputStories.Password} />
+
+## Date
+
+`type="date"` is a native `<input type="date">`. When no `end-icon` is slotted, a default calendar
+icon is rendered in that position; a slotted `end-icon` takes precedence over it.
+
+<Canvas of={InputStories.DateInput} />
+
+## Dropdown
+
+`type="dropdown"` renders a read-only trigger: the control is `readonly` (not `disabled`), a chevron
+is rendered in the end-icon position, and clicking the field (or pressing Enter/Space while focused)
+toggles the `open` prop and emits `bsOpen`. When `options` is set, a `bs-menu` of `bs-menu-item`s is
+rendered below the field while `open`; selecting one sets `value`, closes the menu, and emits
+`bsChange`. The menu also closes on Escape or when focus leaves the component. If `options` is
+empty, this is just the trigger shell with no menu.
+
+<Canvas of={InputStories.Dropdown} />
+
+## Select
+
+`type="select"` renders a native `<select>` instead of `<input>`, populated from the `options`
+prop (`{ label, value }[]`). `options` must be set as a JS property, not an HTML attribute -- see
+CONVENTIONS.md's non-string props rule.
+
+<Canvas of={InputStories.Select} />
+
+## Text area
+
+`type="textarea"` renders a native `<textarea>` instead of `<input>`, sized via the `rows` prop.
+
+<Canvas of={InputStories.TextArea} />
+
+## Chip
+
+`type="chip"` renders each entry in the `chips` prop (`string[]`, JS-property-only) as a removable
+pill, followed by a text input for typing a new chip. Pressing Enter in that input commits the
+current text as a new chip (`bsChipAdd`) and clears it; clicking a chip's `×` removes it
+(`bsChipRemove`).
+
+<Canvas of={InputStories.Chip} />
+
+## Initials
+
+`type="initials"` renders a small title `<select>` (from the `titleOptions` prop, `string[]`,
+JS-property-only) immediately followed by a text input, sharing the one label. The select's value
+is tracked via `initialsTitle` and changes emit `bsTitleChange`; the trailing text input still uses
+`value`/`bsInput`/`bsChange` like a standard field.
+
+<Canvas of={InputStories.Initials} />
+
+## Country
+
+`type="country"` is the same composite shape as Initials, but for a country selector: a `<select>`
+built from `countryOptions` (`{ code, label, flagIcon? }[]`, JS-property-only) followed by a text
+input for the local number. The select's value is tracked via `country` and changes emit
+`bsCountryChange`.
+
+<Canvas of={InputStories.Country} />
+
+## Pin
+
+`type="pin"` renders `length` individual single-character cells instead of one input. Typing a
+digit auto-advances focus to the next cell; Backspace in an empty cell moves focus back to the
+previous cell. `bsChange` fires with the concatenated value across all cells on every keystroke.
+
+<Canvas of={InputStories.Pin} />
+
 ## Component API
 
 <Controls of={InputStories.Default} />
 
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
-- Shadow parts: `::part(label)`, `::part(control)`, `::part(description)`, `::part(error)`
+- CSS Custom Properties: `--bs-input-radius`, `--bs-input-height`, `--bs-input-padding-x`,
+  `--bs-input-padding-y`, `--bs-input-gap`, `--bs-input-icon-size`, `--bs-input-icon-color`,
+  `--bs-input-icon-color-error`, `--bs-input-icon-color-disabled`, `--bs-input-field-bg`,
+  `--bs-input-field-bg-disabled`, `--bs-input-field-border`, `--bs-input-field-border-hover`,
+  `--bs-input-field-border-focus`, `--bs-input-field-border-error`, `--bs-input-field-text`,
+  `--bs-input-field-placeholder`, `--bs-input-label-color`, `--bs-input-description-color`,
+  `--bs-input-error-color`, `--bs-input-error-icon-size`, `--bs-input-chip-bg`, `--bs-input-chip-text`
+- Slots: `icon` (leading), `end-icon` (trailing -- ignored for `number`/`password`/`dropdown`,
+  which always render their own trailing control; used as a fallback for `date` when nothing else
+  is slotted there)
+- Shadow parts: `::part(field)`, `::part(menu)` (`type="dropdown"` only, while open), `::part(label)`,
+  `::part(required)`, `::part(icon)`, `::part(control)` (present on more than one element for the
+  `initials`/`country` composite types), `::part(end-icon)`, `::part(chip)`, `::part(description)`,
+  `::part(error)`, `::part(error-icon)`
+
+## Events
+
+| Event            | Fires when                                                              | Payload           | Cancelable |
+| ---------------- | ------------------------------------------------------------------------ | ----------------- | ---------- |
+| `bsInput`        | The native control's `input` event fires                                 | `string`          | No         |
+| `bsChange`       | The native control's `change` event fires, a number stepper button is clicked, or a pin cell is typed into | `string` | No |
+| `bsOpen`         | `type="dropdown"`'s field is clicked or toggled via keyboard              | `boolean`         | No         |
+| `bsChipAdd`      | `type="chip"`'s draft input commits a chip (Enter)                       | `string`          | No         |
+| `bsChipRemove`   | `type="chip"`'s chip remove button is clicked                            | `string`          | No         |
+| `bsTitleChange`  | `type="initials"`'s title `<select>` changes                             | `string`          | No         |
+| `bsCountryChange`| `type="country"`'s country `<select>` changes                            | `string`          | No         |
 
 ## Accessibility
 
-- The `<label>` is programmatically associated with the `<input>` via `for`/`id` (scoped to this
-  instance's own Shadow DOM, so it's always unique) — a screen reader announces the label when the
-  field receives focus.
-- `description`/`error` text is linked to the input via `aria-describedby`, so it's announced
-  alongside the label, not just visually placed nearby.
-- Setting `error` also sets `aria-invalid="true"` on the input.
+- The `<label>` is programmatically associated with the primary control via `for`/`id` (scoped to
+  this instance's own Shadow DOM, so it's always unique) — a screen reader announces the label when
+  the field receives focus. For the `pin` type, the label is only associated with the first cell.
+- `description`/`error` text is linked to the input via `aria-describedby` on the standard/select/
+  textarea/chip controls, so it's announced alongside the label, not just visually placed nearby.
+  This is not currently wired up for the `initials`/`country`/`pin` composite types.
+- Setting `error` also sets `aria-invalid="true"` on the standard/select/textarea controls.
+- Setting `required` sets `aria-required="true"` on every control it applies to.
+- The `dropdown` type's field has `aria-haspopup="listbox"` and `aria-expanded` reflecting `open`.

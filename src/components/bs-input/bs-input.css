@@ -1,64 +1,374 @@
+/**
+ * @prop --bs-input-radius: Corner radius of the field. Aliased to --bs-border-radius-100.
+ * @prop --bs-input-height: Height of the field. Aliased to --bs-spacing-600.
+ * @prop --bs-input-padding-x: Horizontal padding inside the field. Aliased to --bs-spacing-150.
+ * @prop --bs-input-padding-y: Vertical padding inside the field. Aliased to --bs-spacing-100.
+ * @prop --bs-input-gap: Gap between the icon(s) and the native input. Aliased to --bs-spacing-200.
+ * @prop --bs-input-icon-size: Width/height of the leading/trailing icon. Aliased to --bs-spacing-300.
+ * @prop --bs-input-stack-gap: Vertical gap between the label, field, and description/error. Aliased to --bs-spacing-50.
+ * @prop --bs-input-error-icon-size: Width/height of the warning icon shown before the error message. Aliased to --bs-spacing-250.
+ * @prop --bs-input-icon-color: Icon color in the default state. Aliased to --bs-icon-muted.
+ * @prop --bs-input-icon-color-error: Icon color when error is set. Aliased to --bs-input-icon-error.
+ * @prop --bs-input-icon-color-disabled: Icon color when disabled is set. Aliased to --bs-input-icon-disabled.
+ * @prop --bs-input-field-bg: Field background. Aliased to --bs-input-bg-default.
+ * @prop --bs-input-field-bg-disabled: Field background when disabled is set. Aliased to --bs-input-bg-disabled.
+ * @prop --bs-input-field-border: Field border color. Aliased to --bs-input-border-default.
+ * @prop --bs-input-field-border-hover: Field border color on hover. Aliased to --bs-input-border-hover.
+ * @prop --bs-input-field-border-focus: Field border color when focused. Aliased to --bs-input-border-focus.
+ * @prop --bs-input-field-border-error: Field border color when error is set. Aliased to --bs-input-border-error.
+ * @prop --bs-input-field-text: Input text color. Aliased to --bs-input-text.
+ * @prop --bs-input-field-placeholder: Placeholder text color. Aliased to --bs-input-placeholder.
+ * @prop --bs-input-label-color: Label text color. Aliased to --bs-input-label.
+ * @prop --bs-input-description-color: Description text color. Aliased to --bs-input-description.
+ * @prop --bs-input-error-color: Error message text color. Aliased to --bs-input-error.
+ * @prop --bs-input-chip-bg: Chip pill background for type="chip". Aliased to --bs-input-bg-disabled.
+ * @prop --bs-input-chip-text: Chip pill text color for type="chip". Aliased to --bs-input-text.
+ */
 :host {
   display: block;
+
+  --bs-input-radius: var(--bs-border-radius-100);
+  --bs-input-height: var(--bs-spacing-600);
+  --bs-input-padding-x: var(--bs-spacing-150);
+  --bs-input-padding-y: var(--bs-spacing-100);
+  --bs-input-gap: var(--bs-spacing-200);
+  --bs-input-icon-size: var(--bs-spacing-300);
+  --bs-input-stack-gap: var(--bs-spacing-50);
+  --bs-input-error-icon-size: var(--bs-spacing-250);
+
+  --bs-input-field-bg: var(--bs-input-bg-default);
+  --bs-input-field-bg-disabled: var(--bs-input-bg-disabled);
+  --bs-input-field-border: var(--bs-input-border-default);
+  --bs-input-field-border-hover: var(--bs-input-border-hover);
+  --bs-input-field-border-focus: var(--bs-input-border-focus);
+  --bs-input-field-border-error: var(--bs-input-border-error);
+  --bs-input-field-text: var(--bs-input-text);
+  --bs-input-field-placeholder: var(--bs-input-placeholder);
+  --bs-input-label-color: var(--bs-input-label);
+  --bs-input-description-color: var(--bs-input-description);
+  --bs-input-error-color: var(--bs-input-error);
+
+  /* --bs-input-icon carries a malformed value in the vendored tokens.css (see CLAUDE.md's "Known
+     harmless noise" note) -- --bs-icon-muted is aliased directly here instead. */
+  --bs-input-icon-color: var(--bs-icon-muted);
+  --bs-input-icon-color-error: var(--bs-input-icon-error);
+  --bs-input-icon-color-disabled: var(--bs-input-icon-disabled);
+
+  --bs-input-chip-bg: var(--bs-input-bg-disabled);
+  --bs-input-chip-text: var(--bs-input-text);
 }
 
 .bs-input {
   display: flex;
   flex-direction: column;
-  gap: var(--bs-spacing-100);
+  gap: var(--bs-input-stack-gap);
   font-family: inherit;
 }
 
 .bs-input__label {
   font-size: var(--bs-font-size-sm);
   font-weight: var(--bs-font-weight-medium);
-  color: var(--bs-input-label);
+  color: var(--bs-input-label-color);
+}
+
+.bs-input__required {
+  color: var(--bs-input-error-color);
+  margin-left: 2px;
+}
+
+.bs-input__field {
+  /* border-box so padding-y/padding-x from the Figma redline sits inside the fixed height,
+     instead of adding to it. */
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--bs-input-gap);
+  height: var(--bs-input-height);
+  padding: var(--bs-input-padding-y) var(--bs-input-padding-x);
+  border: 1px solid var(--bs-input-field-border);
+  border-radius: var(--bs-input-radius);
+  background: var(--bs-input-field-bg);
+}
+
+.bs-input__field:hover:not(.bs-input__field--disabled) {
+  border-color: var(--bs-input-field-border-hover);
+}
+
+.bs-input__field:focus-within {
+  border-color: var(--bs-input-field-border-focus);
+}
+
+.bs-input__field--error {
+  border-color: var(--bs-input-field-border-error);
+}
+
+.bs-input__field--disabled {
+  background: var(--bs-input-field-bg-disabled);
+  cursor: not-allowed;
 }
 
 .bs-input__control {
-  height: var(--bs-spacing-600);
-  padding: 0 var(--bs-spacing-300);
-  border: 1px solid var(--bs-input-border-default);
-  border-radius: var(--bs-border-radius-100);
-  background: var(--bs-input-bg-default);
-  color: var(--bs-input-text);
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  color: var(--bs-input-field-text);
   font-size: var(--bs-font-size-md);
   font-family: inherit;
 }
 
 .bs-input__control::placeholder {
-  color: var(--bs-input-placeholder);
-}
-
-.bs-input__control:hover:not(:disabled) {
-  border-color: var(--bs-input-border-hover);
-}
-
-.bs-input__control:focus-visible {
-  outline: none;
-  border-color: var(--bs-input-border-focus);
+  color: var(--bs-input-field-placeholder);
 }
 
 .bs-input__control:disabled {
-  background: var(--bs-input-bg-disabled);
   color: var(--bs-input-text-disabled);
   cursor: not-allowed;
 }
 
-.bs-input--error .bs-input__control {
-  border-color: var(--bs-input-border-error);
+/* Suppress the browser's own password-field decorations (Safari/Chrome's "suggest strong
+   password" key icon, Edge's reveal/clear buttons) -- type="password" renders its own
+   show/hide toggle via .bs-input__password-toggle, so the native one just collides with it. */
+.bs-input__control::-webkit-strong-password-auto-fill-button,
+.bs-input__control::-webkit-credentials-auto-fill-button {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+  position: absolute;
+  right: 0;
+}
+
+.bs-input__control::-webkit-textfield-decoration-container {
+  visibility: hidden;
+}
+
+.bs-input__control::-ms-reveal,
+.bs-input__control::-ms-clear {
+  display: none;
 }
 
 .bs-input--error .bs-input__label {
-  color: var(--bs-input-label);
+  color: var(--bs-input-label-color);
+}
+
+.bs-input__icon,
+.bs-input__end-icon {
+  display: none;
+  align-items: center;
+  flex-shrink: 0;
+  color: var(--bs-input-icon-color);
+}
+
+.bs-input__icon--visible,
+.bs-input__end-icon--visible {
+  display: flex;
+}
+
+.bs-input__icon ::slotted(*),
+.bs-input__end-icon ::slotted(*) {
+  display: block;
+  /* Fixed 24px artboard, independent of the field's font size -- not 1em. */
+  width: var(--bs-input-icon-size);
+  height: var(--bs-input-icon-size);
+}
+
+.bs-input__field--error .bs-input__icon,
+.bs-input__field--error .bs-input__end-icon {
+  color: var(--bs-input-icon-color-error);
+}
+
+.bs-input__field--disabled .bs-input__icon,
+.bs-input__field--disabled .bs-input__end-icon {
+  color: var(--bs-input-icon-color-disabled);
 }
 
 .bs-input__description {
   font-size: var(--bs-font-size-xs);
-  color: var(--bs-input-description);
+  color: var(--bs-input-description-color);
 }
 
 .bs-input__error {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-input-stack-gap);
   font-size: var(--bs-font-size-xs);
-  color: var(--bs-input-error);
+  color: var(--bs-input-error-color);
+}
+
+.bs-input__error-icon {
+  flex-shrink: 0;
+  width: var(--bs-input-error-icon-size);
+  height: var(--bs-input-error-icon-size);
+}
+
+/* Textarea (type="textarea"): the field grows to fit rows, instead of a fixed single-line height. */
+.bs-input__field--textarea {
+  height: auto;
+  align-items: flex-start;
+}
+
+.bs-input__control--textarea {
+  resize: vertical;
+}
+
+/* Number stepper (type="number") */
+.bs-input__stepper {
+  display: flex;
+  flex-direction: column;
+}
+
+.bs-input__stepper-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.bs-input__stepper-btn:disabled {
+  cursor: not-allowed;
+}
+
+/* Password toggle (type="password") */
+.bs-input__password-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+  width: var(--bs-input-icon-size);
+  height: var(--bs-input-icon-size);
+}
+
+.bs-input__password-toggle:disabled {
+  cursor: not-allowed;
+}
+
+.bs-input__password-toggle svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Dropdown (type="dropdown") */
+.bs-input__chevron {
+  width: var(--bs-input-icon-size);
+  height: var(--bs-input-icon-size);
+}
+
+.bs-input__field-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.bs-input__dropdown-menu {
+  position: absolute;
+  top: calc(100% + var(--bs-input-stack-gap));
+  left: 0;
+  right: 0;
+  z-index: 1;
+}
+
+/* Date (type="date") default calendar icon */
+.bs-input__calendar {
+  width: var(--bs-input-icon-size);
+  height: var(--bs-input-icon-size);
+}
+
+/* Search (type="search") default magnifying-glass icon */
+.bs-input__search-icon {
+  width: var(--bs-input-icon-size);
+  height: var(--bs-input-icon-size);
+}
+
+/* Chip input (type="chip") */
+.bs-input__field--chip {
+  flex-wrap: wrap;
+  height: auto;
+  min-height: var(--bs-input-height);
+}
+
+.bs-input__chips {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--bs-spacing-100);
+  flex: 1;
+  min-width: 0;
+}
+
+.bs-input__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--bs-input-chip-bg);
+  color: var(--bs-input-chip-text);
+  border-radius: var(--bs-input-radius);
+  padding: 2px 6px;
+  font-size: var(--bs-font-size-sm);
+}
+
+.bs-input__chip-remove {
+  border: none;
+  background: transparent;
+  color: inherit;
+  cursor: pointer;
+  padding: 0;
+  line-height: 1;
+}
+
+.bs-input__chip-input {
+  flex: 1;
+  min-width: 60px;
+}
+
+/* Initials/Country composite selects (type="initials"/"country") */
+.bs-input__title-select,
+.bs-input__country-select {
+  flex-shrink: 0;
+  width: auto;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--bs-input-field-text);
+  font-size: var(--bs-font-size-md);
+  font-family: inherit;
+}
+
+/* Pin input (type="pin") */
+.bs-input__field--pin {
+  border: none;
+  padding: 0;
+  background: transparent;
+  gap: var(--bs-input-gap);
+}
+
+.bs-input__pin-cell {
+  box-sizing: border-box;
+  width: var(--bs-input-height);
+  height: var(--bs-input-height);
+  text-align: center;
+  border: 1px solid var(--bs-input-field-border);
+  border-radius: var(--bs-input-radius);
+  background: var(--bs-input-field-bg);
+  color: var(--bs-input-field-text);
+  font-size: var(--bs-font-size-md);
+  font-family: inherit;
+  outline: none;
+}
+
+.bs-input__pin-cell:focus {
+  border-color: var(--bs-input-field-border-focus);
+}
+
+.bs-input__field--pin.bs-input__field--disabled .bs-input__pin-cell {
+  background: var(--bs-input-field-bg-disabled);
+  cursor: not-allowed;
 }

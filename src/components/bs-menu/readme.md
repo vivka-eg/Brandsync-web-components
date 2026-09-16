@@ -32,6 +32,19 @@ A generic dropdown/popup menu container: a rounded, elevated list of items (typi
 | `"list"` | The rounded, elevated box wrapping the slotted items. |
 
 
+## Dependencies
+
+### Used by
+
+ - [bs-input](../bs-input)
+
+### Graph
+```mermaid
+graph TD;
+  bs-input --> bs-menu
+  style bs-menu fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

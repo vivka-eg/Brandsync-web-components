@@ -41,6 +41,19 @@ real `<button>` for correct keyboard/click semantics.
 | `"label"` | The label wrapper.  |
 
 
+## Dependencies
+
+### Used by
+
+ - [bs-input](../bs-input)
+
+### Graph
+```mermaid
+graph TD;
+  bs-input --> bs-menu-item
+  style bs-menu-item fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

@@ -700,29 +700,111 @@ export namespace Components {
         "sortDirection": 'asc' | 'desc';
     }
     /**
-     * A single-line text field with an optional label, description, and error state.
+     * A single-line text field with an optional label, description, and error state. Also covers a
+     * range of related "field" shapes (number stepper, password reveal, date, dropdown trigger,
+     * select, textarea, chip input, initials, country, and pin) via the `type` prop, since they all
+     * share the same label/description/error/icon-slot chrome.
      * ## When to use
      * - Collecting a single line of free-text, email, password, or numeric input.
+     * - Any of the other supported `type`s (search, date, dropdown, select, textarea, chip, initials,
+     *   country, pin) that share this component's label/description/error chrome.
      * - Pair with `error` for inline validation feedback tied to that specific field.
      * ## When not to use
-     * - Multi-line text — this component has no `textarea` mode.
-     * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
+     * - A fixed set of choices best served by a dedicated radio/checkbox group rather than a single
+     *   field. `type="select"` (native `<select>`) and `type="dropdown"` (a `bs-menu` of
+     *   `bs-menu-item`s from the `options` prop) cover the field-shaped cases; `type="chip"` has no
+     *   options list at all (freeform chip entry).
      */
     interface BsInput {
+        /**
+          * Current chips for `type="chip"`. Must be set as a JS property, not an HTML attribute -- see CONVENTIONS.md's non-string props rule.
+          * @default []
+         */
+        "chips": string[];
+        /**
+          * Current selected country code for `type="country"`.
+          * @default ''
+         */
+        "country": string;
+        /**
+          * Country select options for `type="country"`. Must be set as a JS property, not an HTML attribute -- see CONVENTIONS.md's non-string props rule.
+          * @default []
+         */
+        "countryOptions": { code: string; label: string; flagIcon?: string }[];
         "description"?: string;
         /**
           * @default false
          */
         "disabled": boolean;
         "error"?: string;
+        /**
+          * Current selected title for `type="initials"`. Named `initialsTitle` rather than `title` -- `title` is a reserved standard HTML attribute (tooltip text) inherited by every element, and Stencil warns against shadowing it with a component `@Prop`.
+          * @default ''
+         */
+        "initialsTitle": string;
         "label"?: string;
+        /**
+          * Number of cells for `type="pin"`.
+          * @default 4
+         */
+        "length": number;
+        /**
+          * Maximum value for `type="number"`'s stepper buttons.
+         */
+        "max"?: number;
+        /**
+          * Minimum value for `type="number"`'s stepper buttons.
+         */
+        "min"?: number;
+        /**
+          * Whether the `type="dropdown"` trigger is open. Reflects to an attribute so consumers can style an open state via CSS. When `options` is non-empty, this also controls whether the `bs-menu` of `bs-menu-item`s is rendered below the field.
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * Options for `type="select"` (rendered as native `<option>`s) and `type="dropdown"` (rendered as a `bs-menu` of `bs-menu-item`s when `open`). Must be set as a JS property, not an HTML attribute -- see CONVENTIONS.md's non-string props rule.
+          * @default []
+         */
+        "options": { label: string; value: string }[];
         "placeholder"?: string;
+        /**
+          * Marks the field as required: renders a red `*` after the label and sets `aria-required="true"` on the control. Applies regardless of `type`.
+          * @default false
+         */
+        "required": boolean;
+        /**
+          * Number of visible rows for `type="textarea"`.
+          * @default 3
+         */
+        "rows": number;
+        /**
+          * Step size for `type="number"`'s increment/decrement stepper buttons.
+          * @default 1
+         */
+        "step": number;
+        /**
+          * Title select options for `type="initials"` (e.g. `['Mrs.', 'Mr.', 'Dr.']`). Must be set as a JS property, not an HTML attribute -- see CONVENTIONS.md's non-string props rule.
+          * @default []
+         */
+        "titleOptions": string[];
         /**
           * @default 'text'
          */
-        "type": 'text' | 'email' | 'password' | 'number';
+        "type": | 'text'
+    | 'email'
+    | 'password'
+    | 'number'
+    | 'search'
+    | 'date'
+    | 'dropdown'
+    | 'select'
+    | 'textarea'
+    | 'chip'
+    | 'initials'
+    | 'country'
+    | 'pin';
         /**
-          * Current value. Native `input`/`change` events don't cross the Shadow DOM boundary, so this component re-dispatches them as `bsInput`/`bsChange` custom events instead.
+          * Current value. Native `input`/`change` events don't cross the Shadow DOM boundary, so this component re-dispatches them as `bsInput`/`bsChange` custom events instead. Mutable so the `number` type's stepper buttons can update it directly.
           * @default ''
          */
         "value": string;
@@ -1568,15 +1650,27 @@ declare global {
     interface HTMLBsInputElementEventMap {
         "bsInput": string;
         "bsChange": string;
+        "bsOpen": boolean;
+        "bsChipAdd": string;
+        "bsChipRemove": string;
+        "bsTitleChange": string;
+        "bsCountryChange": string;
     }
     /**
-     * A single-line text field with an optional label, description, and error state.
+     * A single-line text field with an optional label, description, and error state. Also covers a
+     * range of related "field" shapes (number stepper, password reveal, date, dropdown trigger,
+     * select, textarea, chip input, initials, country, and pin) via the `type` prop, since they all
+     * share the same label/description/error/icon-slot chrome.
      * ## When to use
      * - Collecting a single line of free-text, email, password, or numeric input.
+     * - Any of the other supported `type`s (search, date, dropdown, select, textarea, chip, initials,
+     *   country, pin) that share this component's label/description/error chrome.
      * - Pair with `error` for inline validation feedback tied to that specific field.
      * ## When not to use
-     * - Multi-line text — this component has no `textarea` mode.
-     * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
+     * - A fixed set of choices best served by a dedicated radio/checkbox group rather than a single
+     *   field. `type="select"` (native `<select>`) and `type="dropdown"` (a `bs-menu` of
+     *   `bs-menu-item`s from the `options` prop) cover the field-shaped cases; `type="chip"` has no
+     *   options list at all (freeform chip entry).
      */
     interface HTMLBsInputElement extends Components.BsInput, HTMLStencilElement {
         addEventListener<K extends keyof HTMLBsInputElementEventMap>(type: K, listener: (this: HTMLBsInputElement, ev: BsInputCustomEvent<HTMLBsInputElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2561,31 +2655,133 @@ declare namespace LocalJSX {
         "sortDirection"?: 'asc' | 'desc';
     }
     /**
-     * A single-line text field with an optional label, description, and error state.
+     * A single-line text field with an optional label, description, and error state. Also covers a
+     * range of related "field" shapes (number stepper, password reveal, date, dropdown trigger,
+     * select, textarea, chip input, initials, country, and pin) via the `type` prop, since they all
+     * share the same label/description/error/icon-slot chrome.
      * ## When to use
      * - Collecting a single line of free-text, email, password, or numeric input.
+     * - Any of the other supported `type`s (search, date, dropdown, select, textarea, chip, initials,
+     *   country, pin) that share this component's label/description/error chrome.
      * - Pair with `error` for inline validation feedback tied to that specific field.
      * ## When not to use
-     * - Multi-line text — this component has no `textarea` mode.
-     * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
+     * - A fixed set of choices best served by a dedicated radio/checkbox group rather than a single
+     *   field. `type="select"` (native `<select>`) and `type="dropdown"` (a `bs-menu` of
+     *   `bs-menu-item`s from the `options` prop) cover the field-shaped cases; `type="chip"` has no
+     *   options list at all (freeform chip entry).
      */
     interface BsInput {
+        /**
+          * Current chips for `type="chip"`. Must be set as a JS property, not an HTML attribute -- see CONVENTIONS.md's non-string props rule.
+          * @default []
+         */
+        "chips"?: string[];
+        /**
+          * Current selected country code for `type="country"`.
+          * @default ''
+         */
+        "country"?: string;
+        /**
+          * Country select options for `type="country"`. Must be set as a JS property, not an HTML attribute -- see CONVENTIONS.md's non-string props rule.
+          * @default []
+         */
+        "countryOptions"?: { code: string; label: string; flagIcon?: string }[];
         "description"?: string;
         /**
           * @default false
          */
         "disabled"?: boolean;
         "error"?: string;
+        /**
+          * Current selected title for `type="initials"`. Named `initialsTitle` rather than `title` -- `title` is a reserved standard HTML attribute (tooltip text) inherited by every element, and Stencil warns against shadowing it with a component `@Prop`.
+          * @default ''
+         */
+        "initialsTitle"?: string;
         "label"?: string;
+        /**
+          * Number of cells for `type="pin"`.
+          * @default 4
+         */
+        "length"?: number;
+        /**
+          * Maximum value for `type="number"`'s stepper buttons.
+         */
+        "max"?: number;
+        /**
+          * Minimum value for `type="number"`'s stepper buttons.
+         */
+        "min"?: number;
         "onBsChange"?: (event: BsInputCustomEvent<string>) => void;
+        /**
+          * Emitted when a chip is committed (Enter pressed in the draft input) for `type="chip"`.
+         */
+        "onBsChipAdd"?: (event: BsInputCustomEvent<string>) => void;
+        /**
+          * Emitted when a chip's remove button is clicked for `type="chip"`.
+         */
+        "onBsChipRemove"?: (event: BsInputCustomEvent<string>) => void;
+        /**
+          * Emitted when the country `<select>` changes for `type="country"`.
+         */
+        "onBsCountryChange"?: (event: BsInputCustomEvent<string>) => void;
         "onBsInput"?: (event: BsInputCustomEvent<string>) => void;
+        /**
+          * Emitted when `type="dropdown"`'s trigger is toggled. See `open`'s doc comment for this type's shell-only limitation.
+         */
+        "onBsOpen"?: (event: BsInputCustomEvent<boolean>) => void;
+        /**
+          * Emitted when the title `<select>` changes for `type="initials"`.
+         */
+        "onBsTitleChange"?: (event: BsInputCustomEvent<string>) => void;
+        /**
+          * Whether the `type="dropdown"` trigger is open. Reflects to an attribute so consumers can style an open state via CSS. When `options` is non-empty, this also controls whether the `bs-menu` of `bs-menu-item`s is rendered below the field.
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * Options for `type="select"` (rendered as native `<option>`s) and `type="dropdown"` (rendered as a `bs-menu` of `bs-menu-item`s when `open`). Must be set as a JS property, not an HTML attribute -- see CONVENTIONS.md's non-string props rule.
+          * @default []
+         */
+        "options"?: { label: string; value: string }[];
         "placeholder"?: string;
+        /**
+          * Marks the field as required: renders a red `*` after the label and sets `aria-required="true"` on the control. Applies regardless of `type`.
+          * @default false
+         */
+        "required"?: boolean;
+        /**
+          * Number of visible rows for `type="textarea"`.
+          * @default 3
+         */
+        "rows"?: number;
+        /**
+          * Step size for `type="number"`'s increment/decrement stepper buttons.
+          * @default 1
+         */
+        "step"?: number;
+        /**
+          * Title select options for `type="initials"` (e.g. `['Mrs.', 'Mr.', 'Dr.']`). Must be set as a JS property, not an HTML attribute -- see CONVENTIONS.md's non-string props rule.
+          * @default []
+         */
+        "titleOptions"?: string[];
         /**
           * @default 'text'
          */
-        "type"?: 'text' | 'email' | 'password' | 'number';
+        "type"?: | 'text'
+    | 'email'
+    | 'password'
+    | 'number'
+    | 'search'
+    | 'date'
+    | 'dropdown'
+    | 'select'
+    | 'textarea'
+    | 'chip'
+    | 'initials'
+    | 'country'
+    | 'pin';
         /**
-          * Current value. Native `input`/`change` events don't cross the Shadow DOM boundary, so this component re-dispatches them as `bsInput`/`bsChange` custom events instead.
+          * Current value. Native `input`/`change` events don't cross the Shadow DOM boundary, so this component re-dispatches them as `bsInput`/`bsChange` custom events instead. Mutable so the `number` type's stepper buttons can update it directly.
           * @default ''
          */
         "value"?: string;
@@ -2822,12 +3018,33 @@ declare namespace LocalJSX {
     }
     interface BsInputAttributes {
         "value": string;
-        "type": 'text' | 'email' | 'password' | 'number';
+        "type": | 'text'
+    | 'email'
+    | 'password'
+    | 'number'
+    | 'search'
+    | 'date'
+    | 'dropdown'
+    | 'select'
+    | 'textarea'
+    | 'chip'
+    | 'initials'
+    | 'country'
+    | 'pin';
         "label": string;
         "placeholder": string;
         "description": string;
         "error": string;
         "disabled": boolean;
+        "required": boolean;
+        "step": number;
+        "min": number;
+        "max": number;
+        "rows": number;
+        "initialsTitle": string;
+        "country": string;
+        "length": number;
+        "open": boolean;
     }
     interface BsModalAttributes {
         "open": boolean;
@@ -3313,13 +3530,20 @@ declare module "@stencil/core" {
              */
             "bs-data-table": LocalJSX.IntrinsicElements["bs-data-table"] & JSXBase.HTMLAttributes<HTMLBsDataTableElement>;
             /**
-             * A single-line text field with an optional label, description, and error state.
+             * A single-line text field with an optional label, description, and error state. Also covers a
+             * range of related "field" shapes (number stepper, password reveal, date, dropdown trigger,
+             * select, textarea, chip input, initials, country, and pin) via the `type` prop, since they all
+             * share the same label/description/error/icon-slot chrome.
              * ## When to use
              * - Collecting a single line of free-text, email, password, or numeric input.
+             * - Any of the other supported `type`s (search, date, dropdown, select, textarea, chip, initials,
+             *   country, pin) that share this component's label/description/error chrome.
              * - Pair with `error` for inline validation feedback tied to that specific field.
              * ## When not to use
-             * - Multi-line text — this component has no `textarea` mode.
-             * - A fixed set of choices — use a select/radio/checkbox component instead of free text.
+             * - A fixed set of choices best served by a dedicated radio/checkbox group rather than a single
+             *   field. `type="select"` (native `<select>`) and `type="dropdown"` (a `bs-menu` of
+             *   `bs-menu-item`s from the `options` prop) cover the field-shaped cases; `type="chip"` has no
+             *   options list at all (freeform chip entry).
              */
             "bs-input": LocalJSX.IntrinsicElements["bs-input"] & JSXBase.HTMLAttributes<HTMLBsInputElement>;
             /**
