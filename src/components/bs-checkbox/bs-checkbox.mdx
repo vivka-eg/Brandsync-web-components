@@ -105,3 +105,8 @@ three sizes.
   announced by all screen readers).
 - `disabled` sets the native `disabled` attribute, which removes the control from the tab order and
   is announced by assistive technology automatically -- no separate `aria-disabled` is added.
+- **Required whenever the default (label) slot is empty:** set `ariaLabel` (e.g. a bare "select
+  row" checkbox in a table). Setting a plain `aria-label` HTML attribute on the `<bs-checkbox>`
+  host does **not** work -- that attribute never crosses into the shadow DOM, so the actual
+  focusable native `<input>` stays nameless. Same prop/pattern as `bs-button`'s and `bs-tab`'s
+  identical `ariaLabel` prop.

@@ -60,6 +60,18 @@ export class BsCheckbox {
    * text of its own (unlike `bs-input`'s `error: string`), so it's a plain boolean. */
   @Prop() error = false;
 
+  /**
+   * Accessible name for the checkbox. Required whenever the default (label) slot is empty (e.g. a
+   * bare "select row" checkbox in a table) -- without it, the internal native `<input>` has no
+   * accessible name at all. Setting `aria-label` directly on the `<bs-checkbox>` host does NOT
+   * work for this: that attribute stays on the light-DOM host and is never forwarded into the
+   * shadow DOM by the browser, so the actual focusable element (the native `<input>` inside) stays
+   * nameless. This prop exists specifically to bridge that gap -- same pattern as `bs-button`'s and
+   * `bs-tab`'s identical `ariaLabel` prop, both of which explicitly bind it onto their own internal
+   * focusable element for the same reason.
+   */
+  @Prop() ariaLabel: string | null = null;
+
   /** Emitted when the checked state changes via user interaction, with the new `checked` value. */
   @Event() bsChange: EventEmitter<boolean>;
 
@@ -114,6 +126,7 @@ export class BsCheckbox {
           checked={this.checked}
           disabled={this.disabled}
           aria-checked={this.indeterminate ? 'mixed' : String(this.checked)}
+          aria-label={this.ariaLabel}
           onChange={this.onChange}
         />
         <span part="box" class={boxClasses}>

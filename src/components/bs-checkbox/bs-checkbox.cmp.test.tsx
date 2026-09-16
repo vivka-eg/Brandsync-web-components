@@ -9,6 +9,18 @@ describe('bs-checkbox', () => {
     expect(root.shadowRoot.querySelector('[part="box"] [part="icon"]')).toBeNull();
   });
 
+  it('reflects ariaLabel to the native input, for label-less accessible names', async () => {
+    const { root } = await render(<bs-checkbox ariaLabel="Select all rows"></bs-checkbox>);
+    const input = root.shadowRoot.querySelector('input') as HTMLInputElement;
+    expect(input).toEqualAttribute('aria-label', 'Select all rows');
+  });
+
+  it('does not set aria-label on the native input when ariaLabel is not provided', async () => {
+    const { root } = await render(<bs-checkbox></bs-checkbox>);
+    const input = root.shadowRoot.querySelector('input') as HTMLInputElement;
+    expect(input).not.toHaveAttribute('aria-label');
+  });
+
   it('reflects the checked prop to the native input and shows the check icon', async () => {
     const { root } = await render(<bs-checkbox checked></bs-checkbox>);
     const input = root.shadowRoot.querySelector('input') as HTMLInputElement;
