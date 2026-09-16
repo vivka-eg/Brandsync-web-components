@@ -151,7 +151,11 @@
 
 .bs-button--warning {
   background: var(--bs-button-warning-default);
-  color: var(--bs-text-default);
+  /* --bs-text-default (not --bs-text-on-action, unlike every other colored variant here) failed
+     WCAG AA contrast against this background in BOTH themes -- verified: light theme was black
+     text on rgb(128,93,0) at 3.49:1 (needs 4.5:1), dark theme was white text on rgb(177,129,0) at
+     3.51:1. --bs-text-on-action flips appropriately per theme and passes in both (6.02:1 / 5.99:1). */
+  color: var(--bs-text-on-action);
 }
 .bs-button--warning:hover:not(:disabled) {
   background: var(--bs-button-warning-hover);
