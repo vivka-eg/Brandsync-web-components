@@ -1,0 +1,193 @@
+/**
+ * @prop --bs-checkbox-radius: Corner radius of the box, constant across all sizes. Aliased to --bs-border-radius-50.
+ * @prop --bs-checkbox-gap: Gap between the box and the label text. Aliased to --bs-spacing-100.
+ * @prop --bs-checkbox-size-sm: Box width/height at size="sm". Aliased to --bs-spacing-200.
+ * @prop --bs-checkbox-size-md: Box width/height at size="md". Aliased to --bs-spacing-250.
+ * @prop --bs-checkbox-size-lg: Box width/height at size="lg". Aliased to --bs-spacing-300.
+ * @prop --bs-checkbox-border-width-sm: Border width at size="sm".
+ * @prop --bs-checkbox-border-width-md: Border width at size="md".
+ * @prop --bs-checkbox-border-width-lg: Border width at size="lg".
+ * @prop --bs-checkbox-border-default: Border color, deselected/enabled. Aliased to --bs-border-default.
+ * @prop --bs-checkbox-bg-hover: Box background, deselected/hovered. Aliased to --bs-surface-hover.
+ * @prop --bs-checkbox-border-hover: Border color, deselected/hovered. Aliased to --bs-border-neutral-hover.
+ * @prop --bs-checkbox-bg-focus: Box background, deselected/focused. Aliased to --bs-surface-raised.
+ * @prop --bs-checkbox-border-focus: Border color, deselected/focused. Aliased to --bs-border-neutral-hover.
+ * @prop --bs-checkbox-focus-ring-color: Focus ring color, drawn outside the box. Aliased to --bs-border-neutral-focus.
+ * @prop --bs-checkbox-bg-disabled: Box background, disabled. Aliased to --bs-surface-action-disabled.
+ * @prop --bs-checkbox-border-disabled: Border color, disabled. Aliased to --bs-border-neutral-disabled.
+ * @prop --bs-checkbox-border-error: Border color, deselected/error. Aliased to --bs-border-error.
+ * @prop --bs-checkbox-bg-selected: Box background, selected or indeterminate/enabled. Aliased to --bs-color-primary-default.
+ * @prop --bs-checkbox-border-selected: Border color, selected or indeterminate/enabled. Aliased to --bs-color-primary-default.
+ * @prop --bs-checkbox-bg-selected-hover: Box background, selected or indeterminate/hovered. Aliased to --bs-color-primary-hover.
+ * @prop --bs-checkbox-border-selected-hover: Border color, selected or indeterminate/hovered. Aliased to --bs-color-primary-hover.
+ * @prop --bs-checkbox-bg-selected-error: Box background, selected or indeterminate/error. Aliased to --bs-icon-error.
+ * @prop --bs-checkbox-border-selected-error: Border color, selected or indeterminate/error. Aliased to --bs-icon-error.
+ * @prop --bs-checkbox-icon-color: Check/minus icon color. Aliased to --bs-icon-static-white.
+ * @prop --bs-checkbox-icon-color-disabled: Check/minus icon color, disabled. Aliased to --bs-icon-disabled.
+ * @prop --bs-checkbox-label-color: Label text color. Aliased to --bs-text-default.
+ * @prop --bs-checkbox-label-color-disabled: Label text color, disabled. Aliased to --bs-text-on-disabled.
+ * @prop --bs-checkbox-label-color-error: Label text color, error. Aliased to --bs-text-error.
+ */
+:host {
+  display: inline-block;
+
+  --bs-checkbox-radius: var(--bs-border-radius-50);
+  --bs-checkbox-gap: var(--bs-spacing-100);
+
+  --bs-checkbox-size-sm: var(--bs-spacing-200);
+  --bs-checkbox-size-md: var(--bs-spacing-250);
+  --bs-checkbox-size-lg: var(--bs-spacing-300);
+
+  --bs-checkbox-border-width-sm: 1.333px;
+  --bs-checkbox-border-width-md: 1.667px;
+  --bs-checkbox-border-width-lg: 2px;
+
+  --bs-checkbox-border-default: var(--bs-border-default);
+  --bs-checkbox-bg-hover: var(--bs-surface-hover);
+  --bs-checkbox-border-hover: var(--bs-border-neutral-hover);
+  --bs-checkbox-bg-focus: var(--bs-surface-raised);
+  --bs-checkbox-border-focus: var(--bs-border-neutral-hover);
+  --bs-checkbox-focus-ring-color: var(--bs-border-neutral-focus);
+  --bs-checkbox-bg-disabled: var(--bs-surface-action-disabled);
+  --bs-checkbox-border-disabled: var(--bs-border-neutral-disabled);
+  --bs-checkbox-border-error: var(--bs-border-error);
+
+  --bs-checkbox-bg-selected: var(--bs-color-primary-default);
+  --bs-checkbox-border-selected: var(--bs-color-primary-default);
+  --bs-checkbox-bg-selected-hover: var(--bs-color-primary-hover);
+  --bs-checkbox-border-selected-hover: var(--bs-color-primary-hover);
+  --bs-checkbox-bg-selected-error: var(--bs-icon-error);
+  --bs-checkbox-border-selected-error: var(--bs-icon-error);
+
+  --bs-checkbox-icon-color: var(--bs-icon-static-white);
+  --bs-checkbox-icon-color-disabled: var(--bs-icon-disabled);
+
+  --bs-checkbox-label-color: var(--bs-text-default);
+  --bs-checkbox-label-color-disabled: var(--bs-text-on-disabled);
+  --bs-checkbox-label-color-error: var(--bs-text-error);
+}
+
+.bs-checkbox {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bs-checkbox-gap);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.bs-checkbox--disabled {
+  cursor: not-allowed;
+}
+
+/* The native input is visually hidden but stays in the layout/focus/keyboard chain -- opacity: 0
+   (not display: none) so it can still receive and show focus. */
+.bs-checkbox__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.bs-checkbox__input:disabled {
+  cursor: not-allowed;
+}
+
+.bs-checkbox__box {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--bs-checkbox-size-lg);
+  height: var(--bs-checkbox-size-lg);
+  border: var(--bs-checkbox-border-width-lg) solid var(--bs-checkbox-border-default);
+  border-radius: var(--bs-checkbox-radius);
+  background: transparent;
+  color: var(--bs-checkbox-icon-color);
+}
+
+.bs-checkbox__box--md {
+  width: var(--bs-checkbox-size-md);
+  height: var(--bs-checkbox-size-md);
+  border-width: var(--bs-checkbox-border-width-md);
+}
+
+.bs-checkbox__box--sm {
+  width: var(--bs-checkbox-size-sm);
+  height: var(--bs-checkbox-size-sm);
+  border-width: var(--bs-checkbox-border-width-sm);
+}
+
+.bs-checkbox__box--selected {
+  background: var(--bs-checkbox-bg-selected);
+  border-color: var(--bs-checkbox-border-selected);
+}
+
+/* Hover/focus -- keyed off the hidden native input's pseudo-classes, since it sits on top of and
+   is the same size as the box, so it always reflects the user's actual pointer/keyboard target. */
+.bs-checkbox__input:hover:not(:disabled) ~ .bs-checkbox__box {
+  background: var(--bs-checkbox-bg-hover);
+  border-color: var(--bs-checkbox-border-hover);
+}
+
+.bs-checkbox__input:hover:not(:disabled) ~ .bs-checkbox__box--selected {
+  background: var(--bs-checkbox-bg-selected-hover);
+  border-color: var(--bs-checkbox-border-selected-hover);
+}
+
+.bs-checkbox__input:focus-visible ~ .bs-checkbox__box {
+  background: var(--bs-checkbox-bg-focus);
+  border-color: var(--bs-checkbox-border-focus);
+  outline: 2px solid var(--bs-checkbox-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.bs-checkbox__input:focus-visible ~ .bs-checkbox__box--selected {
+  background: var(--bs-checkbox-bg-selected-hover);
+  border-color: var(--bs-checkbox-border-selected-hover);
+}
+
+.bs-checkbox__box--error {
+  border-color: var(--bs-checkbox-border-error);
+}
+
+.bs-checkbox__box--error.bs-checkbox__box--selected {
+  background: var(--bs-checkbox-bg-selected-error);
+  border-color: var(--bs-checkbox-border-selected-error);
+}
+
+.bs-checkbox__box--disabled {
+  background: var(--bs-checkbox-bg-disabled);
+  border-color: var(--bs-checkbox-border-disabled);
+  color: var(--bs-checkbox-icon-color-disabled);
+}
+
+.bs-checkbox__box--disabled.bs-checkbox__box--selected {
+  background: var(--bs-checkbox-bg-disabled);
+  border-color: var(--bs-checkbox-border-disabled);
+}
+
+.bs-checkbox__icon {
+  width: 80%;
+  height: 80%;
+}
+
+.bs-checkbox__label {
+  font-size: var(--bs-font-size-sm);
+  color: var(--bs-checkbox-label-color);
+}
+
+.bs-checkbox--disabled .bs-checkbox__label {
+  color: var(--bs-checkbox-label-color-disabled);
+}
+
+.bs-checkbox:not(.bs-checkbox--disabled) .bs-checkbox__box--error ~ .bs-checkbox__label {
+  color: var(--bs-checkbox-label-color-error);
+}

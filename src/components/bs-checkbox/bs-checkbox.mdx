@@ -1,0 +1,107 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as CheckboxStories from './bs-checkbox.stories';
+
+<Meta of={CheckboxStories} />
+
+# Checkbox
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Checked](#checked)
+- [Indeterminate](#indeterminate)
+- [Disabled](#disabled)
+- [Error](#error)
+- [Sizes](#sizes)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A single checkbox with its label, for a binary choice or one item within a group of independent
+choices.
+
+**When to use**
+- A single standalone binary setting (e.g. "Remember me", "I agree to the terms").
+- One item within a set of independent, non-exclusive choices (a checkbox group/list).
+- `indeterminate` for a "select all" checkbox representing a partially-selected group.
+
+**When not to use**
+- A single mutually-exclusive choice from a set -- use a radio group instead.
+- An on/off setting that takes effect immediately (no explicit form submission) -- use `bs-switch`.
+
+<Canvas of={CheckboxStories.Default} />
+
+## Checked
+
+<Canvas of={CheckboxStories.Checked} />
+
+## Indeterminate
+
+`indeterminate` shows a minus icon instead of a check, and takes visual precedence over `checked`
+regardless of that prop's value -- the same way native `<input type="checkbox">` behaves. Unlike
+`checked`, native checkboxes have no `indeterminate` HTML attribute; it can only be set as a JS
+property, which this component does internally on the native input it wraps. Clicking the checkbox
+clears `indeterminate`, same as a native checkbox.
+
+<Canvas of={CheckboxStories.Indeterminate} />
+
+## Disabled
+
+<Canvas of={CheckboxStories.Disabled} />
+<Canvas of={CheckboxStories.DisabledChecked} />
+
+## Error
+
+This component's spec has no error message text of its own (unlike `bs-input`'s `error: string`),
+so `error` is a plain boolean that only changes the border/label color.
+
+<Canvas of={CheckboxStories.Error} />
+<Canvas of={CheckboxStories.ErrorChecked} />
+
+## Sizes
+
+`size` controls the box's width/height and border width; corner radius stays constant across all
+three sizes.
+
+<Canvas of={CheckboxStories.Small} />
+<Canvas of={CheckboxStories.Medium} />
+<Canvas of={CheckboxStories.Large} />
+
+## Component API
+
+<Controls of={CheckboxStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- CSS Custom Properties: `--bs-checkbox-radius`, `--bs-checkbox-gap`, `--bs-checkbox-size-sm`,
+  `--bs-checkbox-size-md`, `--bs-checkbox-size-lg`, `--bs-checkbox-border-width-sm`,
+  `--bs-checkbox-border-width-md`, `--bs-checkbox-border-width-lg`, `--bs-checkbox-border-default`,
+  `--bs-checkbox-bg-hover`, `--bs-checkbox-border-hover`, `--bs-checkbox-bg-focus`,
+  `--bs-checkbox-border-focus`, `--bs-checkbox-focus-ring-color`, `--bs-checkbox-bg-disabled`,
+  `--bs-checkbox-border-disabled`, `--bs-checkbox-border-error`, `--bs-checkbox-bg-selected`,
+  `--bs-checkbox-border-selected`, `--bs-checkbox-bg-selected-hover`,
+  `--bs-checkbox-border-selected-hover`, `--bs-checkbox-bg-selected-error`,
+  `--bs-checkbox-border-selected-error`, `--bs-checkbox-icon-color`,
+  `--bs-checkbox-icon-color-disabled`, `--bs-checkbox-label-color`,
+  `--bs-checkbox-label-color-disabled`, `--bs-checkbox-label-color-error`
+- Slots: default slot (the label text)
+- Shadow parts: `::part(box)`, `::part(icon)`, `::part(label)`
+
+## Events
+
+| Event      | Fires when                                                  | Payload   | Cancelable |
+| ---------- | ------------------------------------------------------------ | --------- | ---------- |
+| `bsChange` | The checked state changes via user interaction (click/keyboard) | `boolean` | No         |
+
+## Accessibility
+
+- Renders a real `<input type="checkbox">`, visually hidden (`opacity: 0`, not `display: none`) so
+  it stays focusable and keyboard-operable (Space toggles it, same as any native checkbox).
+- The native input is wrapped in a `<label>` together with the visual box and label text, so
+  clicking anywhere in the component toggles it -- no separate `for`/`id` wiring needed.
+- `aria-checked="mixed"` is set on the native input while `indeterminate` is true, so assistive
+  technology announces the partially-selected state (native `.indeterminate` alone isn't reliably
+  announced by all screen readers).
+- `disabled` sets the native `disabled` attribute, which removes the control from the tab order and
+  is announced by assistive technology automatically -- no separate `aria-disabled` is added.

@@ -29,6 +29,7 @@ import '../dist/components/bs-badge.js';
 import '../dist/components/bs-button.js';
 import '../dist/components/bs-button-skeleton.js';
 import '../dist/components/bs-card.js';
+import '../dist/components/bs-checkbox.js';
 import '../dist/components/bs-chatbot-feedback.js';
 import '../dist/components/bs-chatbot-header.js';
 import '../dist/components/bs-chatbot-response-action.js';

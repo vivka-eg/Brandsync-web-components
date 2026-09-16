@@ -10,6 +10,7 @@ import { BsBadgeVariant } from "./components/bs-badge/bs-badge";
 import { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
 import { BsButtonSize as BsButtonSize1 } from "./components/bs-button/bs-button";
 import { BsCardSurface } from "./components/bs-card/bs-card";
+import { BsCheckboxSize } from "./components/bs-checkbox/bs-checkbox";
 import { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
 import { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
@@ -19,6 +20,7 @@ export { BsBadgeVariant } from "./components/bs-badge/bs-badge";
 export { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
 export { BsButtonSize as BsButtonSize1 } from "./components/bs-button/bs-button";
 export { BsCardSurface } from "./components/bs-card/bs-card";
+export { BsCheckboxSize } from "./components/bs-checkbox/bs-checkbox";
 export { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
 export { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
@@ -517,6 +519,44 @@ export namespace Components {
         "disabled": boolean;
     }
     /**
+     * A single checkbox with its label, for a binary choice or one item within a group of independent
+     * choices.
+     * ## When to use
+     * - A single standalone binary setting (e.g. "Remember me", "I agree to the terms").
+     * - One item within a set of independent, non-exclusive choices (a checkbox group/list).
+     * - `indeterminate` for a "select all" checkbox representing a partially-selected group.
+     * ## When not to use
+     * - A single mutually-exclusive choice from a set -- use a radio group instead.
+     * - An on/off setting that takes effect immediately (no explicit form submission) -- use `bs-switch`.
+     */
+    interface BsCheckbox {
+        /**
+          * Whether the checkbox is checked. Mutable so clicking the label/input toggles it directly. When `indeterminate` is also true, `indeterminate` wins visually (shows the minus icon) regardless of this value -- same as native checkboxes.
+          * @default false
+         */
+        "checked": boolean;
+        /**
+          * Disables the checkbox: sets the native `disabled` attribute, suppresses hover/focus styling, and prevents toggling.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * Applies the error border/label-color treatment. This component's spec has no error message text of its own (unlike `bs-input`'s `error: string`), so it's a plain boolean.
+          * @default false
+         */
+        "error": boolean;
+        /**
+          * Whether the checkbox is in the indeterminate ("partially selected") state -- shows a minus icon instead of a check, and takes visual precedence over `checked`. Unlike `checked`, native checkboxes have no `indeterminate` HTML attribute; it can only be set as a JS property on the element. This `@Prop` still works as an attribute for the *host* (`<bs-checkbox>`) since that's this component's own reflected state, not the native control's -- the native `<input>` inside has its `.indeterminate` property set imperatively in `componentDidLoad`/`componentDidUpdate`.
+          * @default false
+         */
+        "indeterminate": boolean;
+        /**
+          * Sizing scale. Controls the box's width/height and border width; corner radius is constant across all sizes.
+          * @default 'lg'
+         */
+        "size": BsCheckboxSize;
+    }
+    /**
      * A chat composer input for Genie AI-style conversational interfaces: a text field
      * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
      * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
@@ -985,6 +1025,10 @@ export interface BsChatbotSourcesDrawerCustomEvent<T> extends CustomEvent<T> {
 export interface BsChatbotSuggestionButtonCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsChatbotSuggestionButtonElement;
+}
+export interface BsCheckboxCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsCheckboxElement;
 }
 export interface BsComposerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1497,6 +1541,34 @@ declare global {
         prototype: HTMLBsChatbotSuggestionButtonElement;
         new (): HTMLBsChatbotSuggestionButtonElement;
     };
+    interface HTMLBsCheckboxElementEventMap {
+        "bsChange": boolean;
+    }
+    /**
+     * A single checkbox with its label, for a binary choice or one item within a group of independent
+     * choices.
+     * ## When to use
+     * - A single standalone binary setting (e.g. "Remember me", "I agree to the terms").
+     * - One item within a set of independent, non-exclusive choices (a checkbox group/list).
+     * - `indeterminate` for a "select all" checkbox representing a partially-selected group.
+     * ## When not to use
+     * - A single mutually-exclusive choice from a set -- use a radio group instead.
+     * - An on/off setting that takes effect immediately (no explicit form submission) -- use `bs-switch`.
+     */
+    interface HTMLBsCheckboxElement extends Components.BsCheckbox, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsCheckboxElementEventMap>(type: K, listener: (this: HTMLBsCheckboxElement, ev: BsCheckboxCustomEvent<HTMLBsCheckboxElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsCheckboxElementEventMap>(type: K, listener: (this: HTMLBsCheckboxElement, ev: BsCheckboxCustomEvent<HTMLBsCheckboxElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsCheckboxElement: {
+        prototype: HTMLBsCheckboxElement;
+        new (): HTMLBsCheckboxElement;
+    };
     interface HTMLBsComposerElementEventMap {
         "bsInput": string;
         "bsSubmit": void;
@@ -1872,6 +1944,7 @@ declare global {
         "bs-chatbot-response-action": HTMLBsChatbotResponseActionElement;
         "bs-chatbot-sources-drawer": HTMLBsChatbotSourcesDrawerElement;
         "bs-chatbot-suggestion-button": HTMLBsChatbotSuggestionButtonElement;
+        "bs-checkbox": HTMLBsCheckboxElement;
         "bs-composer": HTMLBsComposerElement;
         "bs-composer-status-banner": HTMLBsComposerStatusBannerElement;
         "bs-data-table": HTMLBsDataTableElement;
@@ -2449,6 +2522,48 @@ declare namespace LocalJSX {
         "onBsSelect"?: (event: BsChatbotSuggestionButtonCustomEvent<void>) => void;
     }
     /**
+     * A single checkbox with its label, for a binary choice or one item within a group of independent
+     * choices.
+     * ## When to use
+     * - A single standalone binary setting (e.g. "Remember me", "I agree to the terms").
+     * - One item within a set of independent, non-exclusive choices (a checkbox group/list).
+     * - `indeterminate` for a "select all" checkbox representing a partially-selected group.
+     * ## When not to use
+     * - A single mutually-exclusive choice from a set -- use a radio group instead.
+     * - An on/off setting that takes effect immediately (no explicit form submission) -- use `bs-switch`.
+     */
+    interface BsCheckbox {
+        /**
+          * Whether the checkbox is checked. Mutable so clicking the label/input toggles it directly. When `indeterminate` is also true, `indeterminate` wins visually (shows the minus icon) regardless of this value -- same as native checkboxes.
+          * @default false
+         */
+        "checked"?: boolean;
+        /**
+          * Disables the checkbox: sets the native `disabled` attribute, suppresses hover/focus styling, and prevents toggling.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * Applies the error border/label-color treatment. This component's spec has no error message text of its own (unlike `bs-input`'s `error: string`), so it's a plain boolean.
+          * @default false
+         */
+        "error"?: boolean;
+        /**
+          * Whether the checkbox is in the indeterminate ("partially selected") state -- shows a minus icon instead of a check, and takes visual precedence over `checked`. Unlike `checked`, native checkboxes have no `indeterminate` HTML attribute; it can only be set as a JS property on the element. This `@Prop` still works as an attribute for the *host* (`<bs-checkbox>`) since that's this component's own reflected state, not the native control's -- the native `<input>` inside has its `.indeterminate` property set imperatively in `componentDidLoad`/`componentDidUpdate`.
+          * @default false
+         */
+        "indeterminate"?: boolean;
+        /**
+          * Emitted when the checked state changes via user interaction, with the new `checked` value.
+         */
+        "onBsChange"?: (event: BsCheckboxCustomEvent<boolean>) => void;
+        /**
+          * Sizing scale. Controls the box's width/height and border width; corner radius is constant across all sizes.
+          * @default 'lg'
+         */
+        "size"?: BsCheckboxSize;
+    }
+    /**
      * A chat composer input for Genie AI-style conversational interfaces: a text field
      * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
      * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
@@ -3015,6 +3130,13 @@ declare namespace LocalJSX {
     interface BsChatbotSuggestionButtonAttributes {
         "disabled": boolean;
     }
+    interface BsCheckboxAttributes {
+        "size": BsCheckboxSize;
+        "checked": boolean;
+        "indeterminate": boolean;
+        "disabled": boolean;
+        "error": boolean;
+    }
     interface BsComposerAttributes {
         "variant": BsComposerVariant;
         "placeholder": string;
@@ -3099,6 +3221,7 @@ declare namespace LocalJSX {
         "bs-chatbot-response-action": Omit<BsChatbotResponseAction, keyof BsChatbotResponseActionAttributes> & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes]?: BsChatbotResponseAction[K] } & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes as `attr:${K}`]?: BsChatbotResponseActionAttributes[K] } & { [K in keyof BsChatbotResponseAction & keyof BsChatbotResponseActionAttributes as `prop:${K}`]?: BsChatbotResponseAction[K] };
         "bs-chatbot-sources-drawer": Omit<BsChatbotSourcesDrawer, keyof BsChatbotSourcesDrawerAttributes> & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes]?: BsChatbotSourcesDrawer[K] } & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes as `attr:${K}`]?: BsChatbotSourcesDrawerAttributes[K] } & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes as `prop:${K}`]?: BsChatbotSourcesDrawer[K] };
         "bs-chatbot-suggestion-button": Omit<BsChatbotSuggestionButton, keyof BsChatbotSuggestionButtonAttributes> & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes]?: BsChatbotSuggestionButton[K] } & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes as `attr:${K}`]?: BsChatbotSuggestionButtonAttributes[K] } & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes as `prop:${K}`]?: BsChatbotSuggestionButton[K] };
+        "bs-checkbox": Omit<BsCheckbox, keyof BsCheckboxAttributes> & { [K in keyof BsCheckbox & keyof BsCheckboxAttributes]?: BsCheckbox[K] } & { [K in keyof BsCheckbox & keyof BsCheckboxAttributes as `attr:${K}`]?: BsCheckboxAttributes[K] } & { [K in keyof BsCheckbox & keyof BsCheckboxAttributes as `prop:${K}`]?: BsCheckbox[K] };
         "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
         "bs-composer-status-banner": Omit<BsComposerStatusBanner, keyof BsComposerStatusBannerAttributes> & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes]?: BsComposerStatusBanner[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `attr:${K}`]?: BsComposerStatusBannerAttributes[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `prop:${K}`]?: BsComposerStatusBanner[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
@@ -3448,6 +3571,18 @@ declare module "@stencil/core" {
              * `--bs-border-primary-focus`.
              */
             "bs-chatbot-suggestion-button": LocalJSX.IntrinsicElements["bs-chatbot-suggestion-button"] & JSXBase.HTMLAttributes<HTMLBsChatbotSuggestionButtonElement>;
+            /**
+             * A single checkbox with its label, for a binary choice or one item within a group of independent
+             * choices.
+             * ## When to use
+             * - A single standalone binary setting (e.g. "Remember me", "I agree to the terms").
+             * - One item within a set of independent, non-exclusive choices (a checkbox group/list).
+             * - `indeterminate` for a "select all" checkbox representing a partially-selected group.
+             * ## When not to use
+             * - A single mutually-exclusive choice from a set -- use a radio group instead.
+             * - An on/off setting that takes effect immediately (no explicit form submission) -- use `bs-switch`.
+             */
+            "bs-checkbox": LocalJSX.IntrinsicElements["bs-checkbox"] & JSXBase.HTMLAttributes<HTMLBsCheckboxElement>;
             /**
              * A chat composer input for Genie AI-style conversational interfaces: a text field
              * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
