@@ -1,0 +1,216 @@
+/**
+ * @prop --bs-tab-radius: Corner radius of the tab button. Aliased to --bs-border-radius-100.
+ * @prop --bs-tab-padding-y: Top/bottom padding. Aliased to --bs-spacing-150.
+ * @prop --bs-tab-padding-x: Left/right padding. Aliased to --bs-spacing-200.
+ * @prop --bs-tab-gap: Gap between icon and label, icon+text horizontal layout. Aliased to --bs-spacing-75.
+ * @prop --bs-tab-gap-vertical: Gap between icon and label, icon+text vertical layout. Aliased to --bs-spacing-50.
+ * @prop --bs-tab-color-default: Text/icon color, deselected/enabled. Aliased to --bs-text-muted.
+ * @prop --bs-tab-icon-color-default: Icon color, deselected/enabled. Aliased to --bs-icon-muted.
+ * @prop --bs-tab-color-hover: Text/icon color, deselected/hovered, focused or pressed. Aliased to --bs-text-default.
+ * @prop --bs-tab-icon-color-hover: Icon color, deselected/hovered, focused or pressed. Aliased to --bs-icon-default.
+ * @prop --bs-tab-indicator-hover: Underline color, deselected/hovered, focused or pressed. Aliased to --bs-border-neutral-hover.
+ * @prop --bs-tab-color-selected: Text/icon color, selected. Aliased to --bs-color-primary-default.
+ * @prop --bs-tab-color-selected-hover: Text/icon color, selected/hovered or focused. Aliased to --bs-color-primary-hover.
+ * @prop --bs-tab-color-selected-pressed: Text/icon color, selected/pressed. Aliased to --bs-color-primary-pressed.
+ * @prop --bs-tab-indicator-selected: Underline color, selected. Aliased to --bs-color-primary-default.
+ * @prop --bs-tab-indicator-selected-hover: Underline color, selected/hovered or focused. Aliased to --bs-color-primary-hover.
+ * @prop --bs-tab-indicator-selected-pressed: Underline color, selected/pressed. Aliased to --bs-color-primary-pressed.
+ * @prop --bs-tab-focus-ring-color: Focus ring color. Aliased to --bs-border-neutral-focus.
+ * @prop --bs-tab-color-disabled: Text/icon color, disabled. Aliased to --bs-text-on-disabled.
+ * @prop --bs-tab-icon-color-disabled: Icon color, disabled. Aliased to --bs-icon-disabled.
+ * @prop --bs-tab-font-size: Aliased to --bs-font-size-md.
+ * @prop --bs-tab-line-height: Aliased to --bs-line-height-body-md.
+ */
+:host {
+  display: inline-block;
+
+  --bs-tab-radius: var(--bs-border-radius-100);
+  --bs-tab-padding-y: var(--bs-spacing-150);
+  --bs-tab-padding-x: var(--bs-spacing-200);
+  --bs-tab-gap: var(--bs-spacing-75);
+  --bs-tab-gap-vertical: var(--bs-spacing-50);
+
+  --bs-tab-color-default: var(--bs-text-muted);
+  --bs-tab-icon-color-default: var(--bs-icon-muted);
+
+  --bs-tab-color-hover: var(--bs-text-default);
+  --bs-tab-icon-color-hover: var(--bs-icon-default);
+  --bs-tab-indicator-hover: var(--bs-border-neutral-hover);
+
+  --bs-tab-color-selected: var(--bs-color-primary-default);
+  --bs-tab-color-selected-hover: var(--bs-color-primary-hover);
+  --bs-tab-color-selected-pressed: var(--bs-color-primary-pressed);
+  --bs-tab-indicator-selected: var(--bs-color-primary-default);
+  --bs-tab-indicator-selected-hover: var(--bs-color-primary-hover);
+  --bs-tab-indicator-selected-pressed: var(--bs-color-primary-pressed);
+
+  --bs-tab-focus-ring-color: var(--bs-border-neutral-focus);
+
+  --bs-tab-color-disabled: var(--bs-text-on-disabled);
+  --bs-tab-icon-color-disabled: var(--bs-icon-disabled);
+
+  --bs-tab-font-size: var(--bs-font-size-md);
+  --bs-tab-line-height: var(--bs-line-height-body-md);
+}
+
+.bs-tab {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  background: transparent;
+  color: var(--bs-tab-color-default);
+  font-family: inherit;
+  border-radius: var(--bs-tab-radius);
+  padding: var(--bs-tab-padding-y) var(--bs-tab-padding-x);
+  gap: var(--bs-tab-gap);
+  transition:
+    color var(--bs-duration-fast) var(--bs-easing-standard),
+    background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-tab--vertical {
+  flex-direction: column;
+  gap: var(--bs-tab-gap-vertical);
+}
+
+.bs-tab:focus-visible {
+  outline: 2px solid var(--bs-tab-focus-ring-color);
+  outline-offset: 2px;
+}
+
+/* Deselected hover/focus/pressed: text/icon becomes the default (non-muted) color, and the
+   underline "preview" appears in a muted neutral color. */
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):hover,
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):focus-visible,
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):active {
+  color: var(--bs-tab-color-hover);
+}
+
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):hover .bs-tab__icon,
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):focus-visible .bs-tab__icon,
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):active .bs-tab__icon {
+  color: var(--bs-tab-icon-color-hover);
+}
+
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):hover .bs-tab__indicator,
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):focus-visible .bs-tab__indicator,
+.bs-tab:not(.bs-tab--selected):not(.bs-tab--disabled):active .bs-tab__indicator {
+  background: var(--bs-tab-indicator-hover);
+}
+
+/* Selected: text/icon in the primary color, underline always present, in any interaction state --
+   darkening slightly on hover/focus/pressed. */
+.bs-tab--selected {
+  color: var(--bs-tab-color-selected);
+}
+
+.bs-tab--selected .bs-tab__icon--has-content {
+  color: var(--bs-tab-color-selected);
+}
+
+.bs-tab--selected .bs-tab__indicator {
+  background: var(--bs-tab-indicator-selected);
+}
+
+.bs-tab--selected:not(.bs-tab--disabled):hover,
+.bs-tab--selected:not(.bs-tab--disabled):focus-visible {
+  color: var(--bs-tab-color-selected-hover);
+}
+
+.bs-tab--selected:not(.bs-tab--disabled):hover .bs-tab__icon--has-content,
+.bs-tab--selected:not(.bs-tab--disabled):focus-visible .bs-tab__icon--has-content {
+  color: var(--bs-tab-color-selected-hover);
+}
+
+.bs-tab--selected:not(.bs-tab--disabled):hover .bs-tab__indicator,
+.bs-tab--selected:not(.bs-tab--disabled):focus-visible .bs-tab__indicator {
+  background: var(--bs-tab-indicator-selected-hover);
+}
+
+/* Pressed (:active) is a distinctly darker shade than hover/focus, per the Figma spec (selected
+   pressed uses color/primary/pressed, not color/primary/hover) -- not the same rule as above. */
+.bs-tab--selected:not(.bs-tab--disabled):active {
+  color: var(--bs-tab-color-selected-pressed);
+}
+
+.bs-tab--selected:not(.bs-tab--disabled):active .bs-tab__icon--has-content {
+  color: var(--bs-tab-color-selected-pressed);
+}
+
+.bs-tab--selected:not(.bs-tab--disabled):active .bs-tab__indicator {
+  background: var(--bs-tab-indicator-selected-pressed);
+}
+
+.bs-tab--disabled {
+  color: var(--bs-tab-color-disabled);
+  cursor: not-allowed;
+}
+
+.bs-tab--disabled .bs-tab__icon--has-content {
+  color: var(--bs-tab-icon-color-disabled);
+}
+
+/* Disabled always wins over selected for the underline -- no indicator when disabled, even if the
+   tab is also selected. */
+.bs-tab--disabled .bs-tab__indicator {
+  background: transparent;
+}
+
+.bs-tab__icon {
+  display: none;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: var(--bs-tab-icon-color-default);
+}
+
+.bs-tab__icon--has-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bs-tab__icon ::slotted(svg) {
+  width: 24px;
+  height: 24px;
+}
+
+.bs-tab__label {
+  display: none;
+  font-size: var(--bs-tab-font-size);
+  line-height: calc(var(--bs-tab-line-height) * 1px);
+  white-space: nowrap;
+}
+
+.bs-tab__label--has-content {
+  display: inline-block;
+}
+
+.bs-tab__badge {
+  display: none;
+}
+
+.bs-tab__badge--has-content {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* The underline indicator: a real element (not a ::after pseudo-element) so it's independently
+   inspectable/stylable via ::part(indicator) -- this codebase doesn't use ::after anywhere else,
+   and generally prefers real parts as the customization surface for anything that might need its
+   own styling. Absolutely positioned along the bottom edge, transparent (no fill) until an
+   enabled/selected/hover state above sets its background. */
+.bs-tab__indicator {
+  position: absolute;
+  left: var(--bs-tab-padding-x);
+  right: var(--bs-tab-padding-x);
+  bottom: 0;
+  height: 2px;
+  background: transparent;
+  border-radius: var(--bs-border-radius-50, 2px);
+}

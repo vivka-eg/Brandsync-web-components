@@ -15,6 +15,8 @@ import { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-
 import { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 import { BsModalSize } from "./components/bs-modal/bs-modal";
+import { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
+import { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
 export { BsAttachmentType } from "./components/bs-attachment/bs-attachment";
 export { BsBadgeVariant } from "./components/bs-badge/bs-badge";
 export { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button";
@@ -25,6 +27,8 @@ export { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-
 export { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 export { BsModalSize } from "./components/bs-modal/bs-modal";
+export { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
+export { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
 export namespace Components {
     /**
      * A centered caption disclaimer for Genie AI surfaces, e.g. "AI can make mistakes. Please verify
@@ -531,6 +535,11 @@ export namespace Components {
      */
     interface BsCheckbox {
         /**
+          * Accessible name for the checkbox. Required whenever the default (label) slot is empty (e.g. a bare "select row" checkbox in a table) -- without it, the internal native `<input>` has no accessible name at all. Setting `aria-label` directly on the `<bs-checkbox>` host does NOT work for this: that attribute stays on the light-DOM host and is never forwarded into the shadow DOM by the browser, so the actual focusable element (the native `<input>` inside) stays nameless. This prop exists specifically to bridge that gap -- same pattern as `bs-button`'s and `bs-tab`'s identical `ariaLabel` prop, both of which explicitly bind it onto their own internal focusable element for the same reason.
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
           * Whether the checkbox is checked. Mutable so clicking the label/input toggles it directly. When `indeterminate` is also true, `indeterminate` wins visually (shows the minus icon) regardless of this value -- same as native checkboxes.
           * @default false
          */
@@ -738,6 +747,45 @@ export namespace Components {
           * @default 'asc'
          */
         "sortDirection": 'asc' | 'desc';
+    }
+    /**
+     * A pill-shaped tab button -- an optional leading icon plus a text label, rendered as a real
+     * `<button>` so it participates correctly in tab order and native click/keyboard activation.
+     * Unlike `bs-tab`'s underline indicator, selection here is communicated entirely by the pill's
+     * background fill color -- there is no separate indicator element.
+     * ## When to use
+     * - As one button within a segmented-control-style tab bar, where exactly one tab is
+     *   selected/active at a time.
+     * ## When not to use
+     * - As a standalone action button -- use `bs-button` instead, `bs-inline-tab`'s visual language
+     *   (muted pill until selected/hovered) only makes sense as part of a set.
+     * `selected` is NOT self-toggling -- clicking a `bs-inline-tab` only emits `bsSelect`, it does not
+     * set its own `selected` prop, and it does not unselect any sibling tabs. Wrap your
+     * `<bs-inline-tab>` elements in `<bs-tabs type="bs-inline-tab">` -- it owns `role="tablist"` and
+     * coordinates selection (listening for `bsSelect` and setting `selected`/`false` across siblings)
+     * for you. Using `bs-inline-tab` standalone, outside a `<bs-tabs>` wrapper, still means `selected`
+     * doesn't self-toggle and `role="tablist"` isn't provided automatically -- a consumer doing that
+     * would still need to coordinate `selected` and supply `role="tablist"` manually, same as
+     * `bs-tab.mdx`/`bs-radio.mdx` document for their own components. See `bs-inline-tab.mdx`'s
+     * Accessibility section for the full requirement, including `role="tabpanel"` on the corresponding
+     * content panels.
+     */
+    interface BsInlineTab {
+        /**
+          * Accessible name for the tab. Required for icon-only usage (no visible label text via the default slot) so screen readers still announce what the tab does -- without it, an icon-only tab has no discernible name at all (axe-core flags this as a critical `button-name` violation). Stencil reflects this camelCase prop to the `aria-label` HTML attribute automatically, same as `bs-tab`'s identical prop.
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Disables the tab: sets the native `disabled` attribute, suppresses hover/focus styling, and prevents clicking from emitting `bsSelect`.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * Whether this tab is the currently active one. NOT mutable and NOT self-toggling -- see the "Known gap" note in the class JSDoc. Still reflected as an attribute so consumers/CSS can target `bs-inline-tab[selected]`.
+          * @default false
+         */
+        "selected": boolean;
     }
     /**
      * A single-line text field with an optional label, description, and error state. Also covers a
@@ -998,6 +1046,75 @@ export namespace Components {
         "version"?: string;
     }
     /**
+     * A single tab button -- an optional icon plus a text label, rendered as a real `<button>` so it
+     * participates correctly in tab order and native click/keyboard activation.
+     * ## When to use
+     * - As one button within a tab bar, where exactly one tab is selected/active at a time.
+     * ## When not to use
+     * - As a standalone action button -- use `bs-button` instead, `bs-tab`'s visual language (muted
+     *   until selected/hovered, underline indicator) only makes sense as part of a set.
+     * `selected` is NOT self-toggling -- clicking a `bs-tab` only emits `bsSelect`, it does not set its
+     * own `selected` prop, and it does not unselect any sibling tabs. Wrap your `<bs-tab>` elements in
+     * `<bs-tabs type="bs-tab">` -- it owns `role="tablist"` and coordinates selection (listening for
+     * `bsSelect` and setting `selected`/`false` across siblings) for you. Using `bs-tab` standalone,
+     * outside a `<bs-tabs>` wrapper, still means `selected` doesn't self-toggle and `role="tablist"`
+     * isn't provided automatically -- a consumer doing that would still need to coordinate `selected`
+     * and supply `role="tablist"` manually, same as `bs-radio.mdx` documents for `bs-radio`'s missing
+     * `bs-radio-group`. See `bs-tab.mdx`'s Accessibility section for the full requirement, including
+     * `role="tabpanel"` on the corresponding content panels.
+     */
+    interface BsTab {
+        /**
+          * Accessible name for the tab. Required for icon-only usage (no visible label text via the default slot) so screen readers still announce what the tab does -- without it, an icon-only tab has no discernible name at all (axe-core flags this as a critical `button-name` violation). Stencil reflects this camelCase prop to the `aria-label` HTML attribute automatically, same as `bs-button`'s identical prop.
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Disables the tab: sets the native `disabled` attribute, suppresses hover/focus styling, and prevents clicking from emitting `bsSelect`.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * Where the icon sits relative to the label, when both `icon` and the default slot are populated. Ignored for icon-only/text-only layouts.
+          * @default 'start'
+         */
+        "iconPosition": BsTabIconPosition;
+        /**
+          * Whether this tab is the currently active one. NOT mutable and NOT self-toggling -- see the "Known gap" note in the class JSDoc. Still reflected as an attribute so consumers/CSS can target `bs-tab[selected]`.
+          * @default false
+         */
+        "selected": boolean;
+    }
+    /**
+     * A tab-group wrapper: owns `role="tablist"` and coordinates selection across its slotted
+     * `<bs-tab>` or `<bs-inline-tab>` children, so consumers no longer have to hand-roll this.
+     * `bs-tab.mdx`/`bs-inline-tab.mdx` previously documented this coordination -- listening for
+     * `bsSelect` and setting `selected`/`false` on siblings, plus supplying `role="tablist"` on
+     * whatever element groups the tabs -- as a "Known gap"/manual consumer responsibility. This
+     * component is that wrapper: it renders the `role="tablist"` element and listens for `bsSelect`
+     * itself. Using `<bs-tab>`/`<bs-inline-tab>` standalone, outside a `<bs-tabs>` wrapper, still means
+     * `selected` doesn't self-toggle -- a consumer doing that would still need to coordinate `selected`
+     * manually -- but that's no longer the first recommended path.
+     * ## When to use
+     * - Wrapping a set of `<bs-tab>` (underline style) or `<bs-inline-tab>` (pill style) elements that
+     *   should behave as a single-selection tab bar.
+     * ## When not to use
+     * - For a single, standalone tab button not participating in a group -- use `bs-tab`/`bs-inline-tab`
+     *   directly.
+     */
+    interface BsTabs {
+        /**
+          * Layout direction of the tab bar itself. Sets `aria-orientation` on the internal wrapper and switches `flex-direction`.
+          * @default 'horizontal'
+         */
+        "orientation": BsTabsOrientation;
+        /**
+          * Which tab-button family this group wraps. Governs the wrapper's own visual treatment (gap-only for `bs-tab`, a filled pill bar for `bs-inline-tab`). Not reflected as an attribute -- nothing external needs to target it via CSS attribute selector, it only drives internal class names.
+          * @default 'bs-tab'
+         */
+        "type": BsTabsType;
+    }
+    /**
      * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
      * next to a trigger element.
      * `bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it does not manage its own
@@ -1072,6 +1189,10 @@ export interface BsDataTableCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsDataTableElement;
 }
+export interface BsInlineTabCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsInlineTabElement;
+}
 export interface BsInputCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsInputElement;
@@ -1091,6 +1212,10 @@ export interface BsRadioCustomEvent<T> extends CustomEvent<T> {
 export interface BsSourceLinkCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsSourceLinkElement;
+}
+export interface BsTabCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsTabElement;
 }
 declare global {
     /**
@@ -1761,6 +1886,45 @@ declare global {
         prototype: HTMLBsDataTableElement;
         new (): HTMLBsDataTableElement;
     };
+    interface HTMLBsInlineTabElementEventMap {
+        "bsSelect": void;
+    }
+    /**
+     * A pill-shaped tab button -- an optional leading icon plus a text label, rendered as a real
+     * `<button>` so it participates correctly in tab order and native click/keyboard activation.
+     * Unlike `bs-tab`'s underline indicator, selection here is communicated entirely by the pill's
+     * background fill color -- there is no separate indicator element.
+     * ## When to use
+     * - As one button within a segmented-control-style tab bar, where exactly one tab is
+     *   selected/active at a time.
+     * ## When not to use
+     * - As a standalone action button -- use `bs-button` instead, `bs-inline-tab`'s visual language
+     *   (muted pill until selected/hovered) only makes sense as part of a set.
+     * `selected` is NOT self-toggling -- clicking a `bs-inline-tab` only emits `bsSelect`, it does not
+     * set its own `selected` prop, and it does not unselect any sibling tabs. Wrap your
+     * `<bs-inline-tab>` elements in `<bs-tabs type="bs-inline-tab">` -- it owns `role="tablist"` and
+     * coordinates selection (listening for `bsSelect` and setting `selected`/`false` across siblings)
+     * for you. Using `bs-inline-tab` standalone, outside a `<bs-tabs>` wrapper, still means `selected`
+     * doesn't self-toggle and `role="tablist"` isn't provided automatically -- a consumer doing that
+     * would still need to coordinate `selected` and supply `role="tablist"` manually, same as
+     * `bs-tab.mdx`/`bs-radio.mdx` document for their own components. See `bs-inline-tab.mdx`'s
+     * Accessibility section for the full requirement, including `role="tabpanel"` on the corresponding
+     * content panels.
+     */
+    interface HTMLBsInlineTabElement extends Components.BsInlineTab, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsInlineTabElementEventMap>(type: K, listener: (this: HTMLBsInlineTabElement, ev: BsInlineTabCustomEvent<HTMLBsInlineTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsInlineTabElementEventMap>(type: K, listener: (this: HTMLBsInlineTabElement, ev: BsInlineTabCustomEvent<HTMLBsInlineTabElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsInlineTabElement: {
+        prototype: HTMLBsInlineTabElement;
+        new (): HTMLBsInlineTabElement;
+    };
     interface HTMLBsInputElementEventMap {
         "bsInput": string;
         "bsChange": string;
@@ -1957,6 +2121,64 @@ declare global {
         prototype: HTMLBsSourceLinkElement;
         new (): HTMLBsSourceLinkElement;
     };
+    interface HTMLBsTabElementEventMap {
+        "bsSelect": void;
+    }
+    /**
+     * A single tab button -- an optional icon plus a text label, rendered as a real `<button>` so it
+     * participates correctly in tab order and native click/keyboard activation.
+     * ## When to use
+     * - As one button within a tab bar, where exactly one tab is selected/active at a time.
+     * ## When not to use
+     * - As a standalone action button -- use `bs-button` instead, `bs-tab`'s visual language (muted
+     *   until selected/hovered, underline indicator) only makes sense as part of a set.
+     * `selected` is NOT self-toggling -- clicking a `bs-tab` only emits `bsSelect`, it does not set its
+     * own `selected` prop, and it does not unselect any sibling tabs. Wrap your `<bs-tab>` elements in
+     * `<bs-tabs type="bs-tab">` -- it owns `role="tablist"` and coordinates selection (listening for
+     * `bsSelect` and setting `selected`/`false` across siblings) for you. Using `bs-tab` standalone,
+     * outside a `<bs-tabs>` wrapper, still means `selected` doesn't self-toggle and `role="tablist"`
+     * isn't provided automatically -- a consumer doing that would still need to coordinate `selected`
+     * and supply `role="tablist"` manually, same as `bs-radio.mdx` documents for `bs-radio`'s missing
+     * `bs-radio-group`. See `bs-tab.mdx`'s Accessibility section for the full requirement, including
+     * `role="tabpanel"` on the corresponding content panels.
+     */
+    interface HTMLBsTabElement extends Components.BsTab, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsTabElementEventMap>(type: K, listener: (this: HTMLBsTabElement, ev: BsTabCustomEvent<HTMLBsTabElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsTabElementEventMap>(type: K, listener: (this: HTMLBsTabElement, ev: BsTabCustomEvent<HTMLBsTabElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsTabElement: {
+        prototype: HTMLBsTabElement;
+        new (): HTMLBsTabElement;
+    };
+    /**
+     * A tab-group wrapper: owns `role="tablist"` and coordinates selection across its slotted
+     * `<bs-tab>` or `<bs-inline-tab>` children, so consumers no longer have to hand-roll this.
+     * `bs-tab.mdx`/`bs-inline-tab.mdx` previously documented this coordination -- listening for
+     * `bsSelect` and setting `selected`/`false` on siblings, plus supplying `role="tablist"` on
+     * whatever element groups the tabs -- as a "Known gap"/manual consumer responsibility. This
+     * component is that wrapper: it renders the `role="tablist"` element and listens for `bsSelect`
+     * itself. Using `<bs-tab>`/`<bs-inline-tab>` standalone, outside a `<bs-tabs>` wrapper, still means
+     * `selected` doesn't self-toggle -- a consumer doing that would still need to coordinate `selected`
+     * manually -- but that's no longer the first recommended path.
+     * ## When to use
+     * - Wrapping a set of `<bs-tab>` (underline style) or `<bs-inline-tab>` (pill style) elements that
+     *   should behave as a single-selection tab bar.
+     * ## When not to use
+     * - For a single, standalone tab button not participating in a group -- use `bs-tab`/`bs-inline-tab`
+     *   directly.
+     */
+    interface HTMLBsTabsElement extends Components.BsTabs, HTMLStencilElement {
+    }
+    var HTMLBsTabsElement: {
+        prototype: HTMLBsTabsElement;
+        new (): HTMLBsTabsElement;
+    };
     /**
      * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
      * next to a trigger element.
@@ -2009,12 +2231,15 @@ declare global {
         "bs-composer": HTMLBsComposerElement;
         "bs-composer-status-banner": HTMLBsComposerStatusBannerElement;
         "bs-data-table": HTMLBsDataTableElement;
+        "bs-inline-tab": HTMLBsInlineTabElement;
         "bs-input": HTMLBsInputElement;
         "bs-menu": HTMLBsMenuElement;
         "bs-menu-item": HTMLBsMenuItemElement;
         "bs-modal": HTMLBsModalElement;
         "bs-radio": HTMLBsRadioElement;
         "bs-source-link": HTMLBsSourceLinkElement;
+        "bs-tab": HTMLBsTabElement;
+        "bs-tabs": HTMLBsTabsElement;
         "bs-tooltip": HTMLBsTooltipElement;
     }
 }
@@ -2596,6 +2821,11 @@ declare namespace LocalJSX {
      */
     interface BsCheckbox {
         /**
+          * Accessible name for the checkbox. Required whenever the default (label) slot is empty (e.g. a bare "select row" checkbox in a table) -- without it, the internal native `<input>` has no accessible name at all. Setting `aria-label` directly on the `<bs-checkbox>` host does NOT work for this: that attribute stays on the light-DOM host and is never forwarded into the shadow DOM by the browser, so the actual focusable element (the native `<input>` inside) stays nameless. This prop exists specifically to bridge that gap -- same pattern as `bs-button`'s and `bs-tab`'s identical `ariaLabel` prop, both of which explicitly bind it onto their own internal focusable element for the same reason.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
           * Whether the checkbox is checked. Mutable so clicking the label/input toggles it directly. When `indeterminate` is also true, `indeterminate` wins visually (shows the minus icon) regardless of this value -- same as native checkboxes.
           * @default false
          */
@@ -2841,6 +3071,49 @@ declare namespace LocalJSX {
           * @default 'asc'
          */
         "sortDirection"?: 'asc' | 'desc';
+    }
+    /**
+     * A pill-shaped tab button -- an optional leading icon plus a text label, rendered as a real
+     * `<button>` so it participates correctly in tab order and native click/keyboard activation.
+     * Unlike `bs-tab`'s underline indicator, selection here is communicated entirely by the pill's
+     * background fill color -- there is no separate indicator element.
+     * ## When to use
+     * - As one button within a segmented-control-style tab bar, where exactly one tab is
+     *   selected/active at a time.
+     * ## When not to use
+     * - As a standalone action button -- use `bs-button` instead, `bs-inline-tab`'s visual language
+     *   (muted pill until selected/hovered) only makes sense as part of a set.
+     * `selected` is NOT self-toggling -- clicking a `bs-inline-tab` only emits `bsSelect`, it does not
+     * set its own `selected` prop, and it does not unselect any sibling tabs. Wrap your
+     * `<bs-inline-tab>` elements in `<bs-tabs type="bs-inline-tab">` -- it owns `role="tablist"` and
+     * coordinates selection (listening for `bsSelect` and setting `selected`/`false` across siblings)
+     * for you. Using `bs-inline-tab` standalone, outside a `<bs-tabs>` wrapper, still means `selected`
+     * doesn't self-toggle and `role="tablist"` isn't provided automatically -- a consumer doing that
+     * would still need to coordinate `selected` and supply `role="tablist"` manually, same as
+     * `bs-tab.mdx`/`bs-radio.mdx` document for their own components. See `bs-inline-tab.mdx`'s
+     * Accessibility section for the full requirement, including `role="tabpanel"` on the corresponding
+     * content panels.
+     */
+    interface BsInlineTab {
+        /**
+          * Accessible name for the tab. Required for icon-only usage (no visible label text via the default slot) so screen readers still announce what the tab does -- without it, an icon-only tab has no discernible name at all (axe-core flags this as a critical `button-name` violation). Stencil reflects this camelCase prop to the `aria-label` HTML attribute automatically, same as `bs-tab`'s identical prop.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Disables the tab: sets the native `disabled` attribute, suppresses hover/focus styling, and prevents clicking from emitting `bsSelect`.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * Fires when the tab is clicked. Does not toggle `selected` itself -- see the class JSDoc.
+         */
+        "onBsSelect"?: (event: BsInlineTabCustomEvent<void>) => void;
+        /**
+          * Whether this tab is the currently active one. NOT mutable and NOT self-toggling -- see the "Known gap" note in the class JSDoc. Still reflected as an attribute so consumers/CSS can target `bs-inline-tab[selected]`.
+          * @default false
+         */
+        "selected"?: boolean;
     }
     /**
      * A single-line text field with an optional label, description, and error state. Also covers a
@@ -3136,6 +3409,79 @@ declare namespace LocalJSX {
         "version"?: string;
     }
     /**
+     * A single tab button -- an optional icon plus a text label, rendered as a real `<button>` so it
+     * participates correctly in tab order and native click/keyboard activation.
+     * ## When to use
+     * - As one button within a tab bar, where exactly one tab is selected/active at a time.
+     * ## When not to use
+     * - As a standalone action button -- use `bs-button` instead, `bs-tab`'s visual language (muted
+     *   until selected/hovered, underline indicator) only makes sense as part of a set.
+     * `selected` is NOT self-toggling -- clicking a `bs-tab` only emits `bsSelect`, it does not set its
+     * own `selected` prop, and it does not unselect any sibling tabs. Wrap your `<bs-tab>` elements in
+     * `<bs-tabs type="bs-tab">` -- it owns `role="tablist"` and coordinates selection (listening for
+     * `bsSelect` and setting `selected`/`false` across siblings) for you. Using `bs-tab` standalone,
+     * outside a `<bs-tabs>` wrapper, still means `selected` doesn't self-toggle and `role="tablist"`
+     * isn't provided automatically -- a consumer doing that would still need to coordinate `selected`
+     * and supply `role="tablist"` manually, same as `bs-radio.mdx` documents for `bs-radio`'s missing
+     * `bs-radio-group`. See `bs-tab.mdx`'s Accessibility section for the full requirement, including
+     * `role="tabpanel"` on the corresponding content panels.
+     */
+    interface BsTab {
+        /**
+          * Accessible name for the tab. Required for icon-only usage (no visible label text via the default slot) so screen readers still announce what the tab does -- without it, an icon-only tab has no discernible name at all (axe-core flags this as a critical `button-name` violation). Stencil reflects this camelCase prop to the `aria-label` HTML attribute automatically, same as `bs-button`'s identical prop.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Disables the tab: sets the native `disabled` attribute, suppresses hover/focus styling, and prevents clicking from emitting `bsSelect`.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * Where the icon sits relative to the label, when both `icon` and the default slot are populated. Ignored for icon-only/text-only layouts.
+          * @default 'start'
+         */
+        "iconPosition"?: BsTabIconPosition;
+        /**
+          * Fires when the tab is clicked. Does not toggle `selected` itself -- see the class JSDoc.
+         */
+        "onBsSelect"?: (event: BsTabCustomEvent<void>) => void;
+        /**
+          * Whether this tab is the currently active one. NOT mutable and NOT self-toggling -- see the "Known gap" note in the class JSDoc. Still reflected as an attribute so consumers/CSS can target `bs-tab[selected]`.
+          * @default false
+         */
+        "selected"?: boolean;
+    }
+    /**
+     * A tab-group wrapper: owns `role="tablist"` and coordinates selection across its slotted
+     * `<bs-tab>` or `<bs-inline-tab>` children, so consumers no longer have to hand-roll this.
+     * `bs-tab.mdx`/`bs-inline-tab.mdx` previously documented this coordination -- listening for
+     * `bsSelect` and setting `selected`/`false` on siblings, plus supplying `role="tablist"` on
+     * whatever element groups the tabs -- as a "Known gap"/manual consumer responsibility. This
+     * component is that wrapper: it renders the `role="tablist"` element and listens for `bsSelect`
+     * itself. Using `<bs-tab>`/`<bs-inline-tab>` standalone, outside a `<bs-tabs>` wrapper, still means
+     * `selected` doesn't self-toggle -- a consumer doing that would still need to coordinate `selected`
+     * manually -- but that's no longer the first recommended path.
+     * ## When to use
+     * - Wrapping a set of `<bs-tab>` (underline style) or `<bs-inline-tab>` (pill style) elements that
+     *   should behave as a single-selection tab bar.
+     * ## When not to use
+     * - For a single, standalone tab button not participating in a group -- use `bs-tab`/`bs-inline-tab`
+     *   directly.
+     */
+    interface BsTabs {
+        /**
+          * Layout direction of the tab bar itself. Sets `aria-orientation` on the internal wrapper and switches `flex-direction`.
+          * @default 'horizontal'
+         */
+        "orientation"?: BsTabsOrientation;
+        /**
+          * Which tab-button family this group wraps. Governs the wrapper's own visual treatment (gap-only for `bs-tab`, a filled pill bar for `bs-inline-tab`). Not reflected as an attribute -- nothing external needs to target it via CSS attribute selector, it only drives internal class names.
+          * @default 'bs-tab'
+         */
+        "type"?: BsTabsType;
+    }
+    /**
      * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
      * next to a trigger element.
      * `bs-tooltip` is a purely presentational bubble -- like `bs-menu`, it does not manage its own
@@ -3232,6 +3578,7 @@ declare namespace LocalJSX {
         "indeterminate": boolean;
         "disabled": boolean;
         "error": boolean;
+        "ariaLabel": string | null;
     }
     interface BsComposerAttributes {
         "variant": BsComposerVariant;
@@ -3252,6 +3599,11 @@ declare namespace LocalJSX {
         "sortColumn": string;
         "sortDirection": 'asc' | 'desc';
         "selectable": boolean;
+    }
+    interface BsInlineTabAttributes {
+        "selected": boolean;
+        "disabled": boolean;
+        "ariaLabel": string | null;
     }
     interface BsInputAttributes {
         "value": string;
@@ -3304,6 +3656,16 @@ declare namespace LocalJSX {
         "href": string;
         "target": string;
     }
+    interface BsTabAttributes {
+        "selected": boolean;
+        "disabled": boolean;
+        "iconPosition": BsTabIconPosition;
+        "ariaLabel": string | null;
+    }
+    interface BsTabsAttributes {
+        "type": BsTabsType;
+        "orientation": BsTabsOrientation;
+    }
     interface BsTooltipAttributes {
         "placement": 'top';
     }
@@ -3327,12 +3689,15 @@ declare namespace LocalJSX {
         "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
         "bs-composer-status-banner": Omit<BsComposerStatusBanner, keyof BsComposerStatusBannerAttributes> & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes]?: BsComposerStatusBanner[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `attr:${K}`]?: BsComposerStatusBannerAttributes[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `prop:${K}`]?: BsComposerStatusBanner[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
+        "bs-inline-tab": Omit<BsInlineTab, keyof BsInlineTabAttributes> & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes]?: BsInlineTab[K] } & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes as `attr:${K}`]?: BsInlineTabAttributes[K] } & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes as `prop:${K}`]?: BsInlineTab[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
         "bs-menu": BsMenu;
         "bs-menu-item": Omit<BsMenuItem, keyof BsMenuItemAttributes> & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes]?: BsMenuItem[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `attr:${K}`]?: BsMenuItemAttributes[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `prop:${K}`]?: BsMenuItem[K] };
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
         "bs-radio": Omit<BsRadio, keyof BsRadioAttributes> & { [K in keyof BsRadio & keyof BsRadioAttributes]?: BsRadio[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `attr:${K}`]?: BsRadioAttributes[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `prop:${K}`]?: BsRadio[K] };
         "bs-source-link": Omit<BsSourceLink, keyof BsSourceLinkAttributes> & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes]?: BsSourceLink[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `attr:${K}`]?: BsSourceLinkAttributes[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `prop:${K}`]?: BsSourceLink[K] };
+        "bs-tab": Omit<BsTab, keyof BsTabAttributes> & { [K in keyof BsTab & keyof BsTabAttributes]?: BsTab[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `attr:${K}`]?: BsTabAttributes[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `prop:${K}`]?: BsTab[K] };
+        "bs-tabs": Omit<BsTabs, keyof BsTabsAttributes> & { [K in keyof BsTabs & keyof BsTabsAttributes]?: BsTabs[K] } & { [K in keyof BsTabs & keyof BsTabsAttributes as `attr:${K}`]?: BsTabsAttributes[K] } & { [K in keyof BsTabs & keyof BsTabsAttributes as `prop:${K}`]?: BsTabs[K] };
         "bs-tooltip": Omit<BsTooltip, keyof BsTooltipAttributes> & { [K in keyof BsTooltip & keyof BsTooltipAttributes]?: BsTooltip[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `attr:${K}`]?: BsTooltipAttributes[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `prop:${K}`]?: BsTooltip[K] };
     }
 }
@@ -3790,6 +4155,29 @@ declare module "@stencil/core" {
              */
             "bs-data-table": LocalJSX.IntrinsicElements["bs-data-table"] & JSXBase.HTMLAttributes<HTMLBsDataTableElement>;
             /**
+             * A pill-shaped tab button -- an optional leading icon plus a text label, rendered as a real
+             * `<button>` so it participates correctly in tab order and native click/keyboard activation.
+             * Unlike `bs-tab`'s underline indicator, selection here is communicated entirely by the pill's
+             * background fill color -- there is no separate indicator element.
+             * ## When to use
+             * - As one button within a segmented-control-style tab bar, where exactly one tab is
+             *   selected/active at a time.
+             * ## When not to use
+             * - As a standalone action button -- use `bs-button` instead, `bs-inline-tab`'s visual language
+             *   (muted pill until selected/hovered) only makes sense as part of a set.
+             * `selected` is NOT self-toggling -- clicking a `bs-inline-tab` only emits `bsSelect`, it does not
+             * set its own `selected` prop, and it does not unselect any sibling tabs. Wrap your
+             * `<bs-inline-tab>` elements in `<bs-tabs type="bs-inline-tab">` -- it owns `role="tablist"` and
+             * coordinates selection (listening for `bsSelect` and setting `selected`/`false` across siblings)
+             * for you. Using `bs-inline-tab` standalone, outside a `<bs-tabs>` wrapper, still means `selected`
+             * doesn't self-toggle and `role="tablist"` isn't provided automatically -- a consumer doing that
+             * would still need to coordinate `selected` and supply `role="tablist"` manually, same as
+             * `bs-tab.mdx`/`bs-radio.mdx` document for their own components. See `bs-inline-tab.mdx`'s
+             * Accessibility section for the full requirement, including `role="tabpanel"` on the corresponding
+             * content panels.
+             */
+            "bs-inline-tab": LocalJSX.IntrinsicElements["bs-inline-tab"] & JSXBase.HTMLAttributes<HTMLBsInlineTabElement>;
+            /**
              * A single-line text field with an optional label, description, and error state. Also covers a
              * range of related "field" shapes (number stepper, password reveal, date, dropdown trigger,
              * select, textarea, chip input, initials, country, and pin) via the `type` prop, since they all
@@ -3894,6 +4282,43 @@ declare module "@stencil/core" {
              * `--bs-text-secondary`.
              */
             "bs-source-link": LocalJSX.IntrinsicElements["bs-source-link"] & JSXBase.HTMLAttributes<HTMLBsSourceLinkElement>;
+            /**
+             * A single tab button -- an optional icon plus a text label, rendered as a real `<button>` so it
+             * participates correctly in tab order and native click/keyboard activation.
+             * ## When to use
+             * - As one button within a tab bar, where exactly one tab is selected/active at a time.
+             * ## When not to use
+             * - As a standalone action button -- use `bs-button` instead, `bs-tab`'s visual language (muted
+             *   until selected/hovered, underline indicator) only makes sense as part of a set.
+             * `selected` is NOT self-toggling -- clicking a `bs-tab` only emits `bsSelect`, it does not set its
+             * own `selected` prop, and it does not unselect any sibling tabs. Wrap your `<bs-tab>` elements in
+             * `<bs-tabs type="bs-tab">` -- it owns `role="tablist"` and coordinates selection (listening for
+             * `bsSelect` and setting `selected`/`false` across siblings) for you. Using `bs-tab` standalone,
+             * outside a `<bs-tabs>` wrapper, still means `selected` doesn't self-toggle and `role="tablist"`
+             * isn't provided automatically -- a consumer doing that would still need to coordinate `selected`
+             * and supply `role="tablist"` manually, same as `bs-radio.mdx` documents for `bs-radio`'s missing
+             * `bs-radio-group`. See `bs-tab.mdx`'s Accessibility section for the full requirement, including
+             * `role="tabpanel"` on the corresponding content panels.
+             */
+            "bs-tab": LocalJSX.IntrinsicElements["bs-tab"] & JSXBase.HTMLAttributes<HTMLBsTabElement>;
+            /**
+             * A tab-group wrapper: owns `role="tablist"` and coordinates selection across its slotted
+             * `<bs-tab>` or `<bs-inline-tab>` children, so consumers no longer have to hand-roll this.
+             * `bs-tab.mdx`/`bs-inline-tab.mdx` previously documented this coordination -- listening for
+             * `bsSelect` and setting `selected`/`false` on siblings, plus supplying `role="tablist"` on
+             * whatever element groups the tabs -- as a "Known gap"/manual consumer responsibility. This
+             * component is that wrapper: it renders the `role="tablist"` element and listens for `bsSelect`
+             * itself. Using `<bs-tab>`/`<bs-inline-tab>` standalone, outside a `<bs-tabs>` wrapper, still means
+             * `selected` doesn't self-toggle -- a consumer doing that would still need to coordinate `selected`
+             * manually -- but that's no longer the first recommended path.
+             * ## When to use
+             * - Wrapping a set of `<bs-tab>` (underline style) or `<bs-inline-tab>` (pill style) elements that
+             *   should behave as a single-selection tab bar.
+             * ## When not to use
+             * - For a single, standalone tab button not participating in a group -- use `bs-tab`/`bs-inline-tab`
+             *   directly.
+             */
+            "bs-tabs": LocalJSX.IntrinsicElements["bs-tabs"] & JSXBase.HTMLAttributes<HTMLBsTabsElement>;
             /**
              * A dark tooltip bubble with a pointer arrow, used to surface a short hint of extra information
              * next to a trigger element.

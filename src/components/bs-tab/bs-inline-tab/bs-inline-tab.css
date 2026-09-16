@@ -1,0 +1,163 @@
+/**
+ * @prop --bs-inline-tab-radius: Corner radius of the pill. Aliased to --bs-border-radius-full.
+ * @prop --bs-inline-tab-padding-y: Top/bottom padding. Aliased to --bs-spacing-100.
+ * @prop --bs-inline-tab-padding-x: Left/right padding, no icon. Aliased to --bs-spacing-200.
+ * @prop --bs-inline-tab-padding-left-with-icon: Left padding, icon present. Aliased to --bs-spacing-150.
+ * @prop --bs-inline-tab-padding-right-with-icon: Right padding, icon present. Aliased to --bs-spacing-200.
+ * @prop --bs-inline-tab-gap: Gap between icon and label. Aliased to --bs-spacing-50.
+ * @prop --bs-inline-tab-bg-default: Background, deselected/enabled. Aliased to --bs-color-neutral-container.
+ * @prop --bs-inline-tab-color-default: Text/icon color, deselected/enabled. Aliased to --bs-text-secondary.
+ * @prop --bs-inline-tab-bg-hover: Background, deselected/hovered. Aliased to --bs-color-neutral-container-hover.
+ * @prop --bs-inline-tab-color-hover: Text/icon color, deselected/hovered, focused or pressed. Aliased to --bs-text-default.
+ * @prop --bs-inline-tab-bg-focus: Background, deselected/focused. Aliased to --bs-color-neutral-container-focused.
+ * @prop --bs-inline-tab-bg-pressed: Background, deselected/pressed. Aliased to --bs-color-neutral-container-pressed.
+ * @prop --bs-inline-tab-focus-ring-color: Focus ring color. Aliased to --bs-border-neutral-focus.
+ * @prop --bs-inline-tab-bg-disabled: Background, disabled (wins over selected). Aliased to --bs-surface-action-disabled.
+ * @prop --bs-inline-tab-color-disabled: Text/icon color, disabled (wins over selected). Aliased to --bs-text-on-disabled.
+ * @prop --bs-inline-tab-bg-selected: Background, selected/enabled. Aliased to --bs-color-primary-default.
+ * @prop --bs-inline-tab-color-selected: Text/icon color, selected. Aliased to --bs-text-on-action.
+ * @prop --bs-inline-tab-bg-selected-hover: Background, selected/hovered. Aliased to --bs-color-primary-hover.
+ * @prop --bs-inline-tab-bg-selected-focus: Background, selected/focused. Aliased to --bs-color-primary-focused.
+ * @prop --bs-inline-tab-bg-selected-pressed: Background, selected/pressed. Aliased to --bs-color-primary-pressed.
+ * @prop --bs-inline-tab-font-size: Aliased to --bs-font-size-sm.
+ * @prop --bs-inline-tab-font-weight: Aliased to --bs-font-weight-semibold.
+ * @prop --bs-inline-tab-line-height: Aliased to --bs-line-height-body-sm.
+ */
+:host {
+  display: inline-block;
+
+  --bs-inline-tab-radius: var(--bs-border-radius-full);
+  --bs-inline-tab-padding-y: var(--bs-spacing-100);
+  --bs-inline-tab-padding-x: var(--bs-spacing-200);
+  --bs-inline-tab-padding-left-with-icon: var(--bs-spacing-150);
+  --bs-inline-tab-padding-right-with-icon: var(--bs-spacing-200);
+  --bs-inline-tab-gap: var(--bs-spacing-50);
+
+  --bs-inline-tab-bg-default: var(--bs-color-neutral-container);
+  --bs-inline-tab-color-default: var(--bs-text-secondary);
+
+  --bs-inline-tab-bg-hover: var(--bs-color-neutral-container-hover);
+  --bs-inline-tab-color-hover: var(--bs-text-default);
+
+  --bs-inline-tab-bg-focus: var(--bs-color-neutral-container-focused);
+  --bs-inline-tab-bg-pressed: var(--bs-color-neutral-container-pressed);
+
+  --bs-inline-tab-focus-ring-color: var(--bs-border-neutral-focus);
+
+  --bs-inline-tab-bg-disabled: var(--bs-surface-action-disabled);
+  --bs-inline-tab-color-disabled: var(--bs-text-on-disabled);
+
+  --bs-inline-tab-bg-selected: var(--bs-color-primary-default);
+  --bs-inline-tab-color-selected: var(--bs-text-on-action);
+  --bs-inline-tab-bg-selected-hover: var(--bs-color-primary-hover);
+  --bs-inline-tab-bg-selected-focus: var(--bs-color-primary-focused);
+  --bs-inline-tab-bg-selected-pressed: var(--bs-color-primary-pressed);
+
+  --bs-inline-tab-font-size: var(--bs-font-size-sm);
+  --bs-inline-tab-font-weight: var(--bs-font-weight-semibold);
+  --bs-inline-tab-line-height: var(--bs-line-height-body-sm);
+}
+
+.bs-inline-tab {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  border-radius: var(--bs-inline-tab-radius);
+  padding: var(--bs-inline-tab-padding-y) var(--bs-inline-tab-padding-x);
+  background: var(--bs-inline-tab-bg-default);
+  color: var(--bs-inline-tab-color-default);
+  transition:
+    color var(--bs-duration-fast) var(--bs-easing-standard),
+    background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-inline-tab--has-icon {
+  padding-top: var(--bs-inline-tab-padding-y);
+  padding-bottom: var(--bs-inline-tab-padding-y);
+  padding-left: var(--bs-inline-tab-padding-left-with-icon);
+  padding-right: var(--bs-inline-tab-padding-right-with-icon);
+  gap: var(--bs-inline-tab-gap);
+}
+
+.bs-inline-tab:focus-visible {
+  outline: 2px solid var(--bs-inline-tab-focus-ring-color);
+  outline-offset: 2px;
+}
+
+/* Deselected hover/focus/pressed. */
+.bs-inline-tab:not(.bs-inline-tab--selected):not(.bs-inline-tab--disabled):hover {
+  background: var(--bs-inline-tab-bg-hover);
+  color: var(--bs-inline-tab-color-hover);
+}
+
+.bs-inline-tab:not(.bs-inline-tab--selected):not(.bs-inline-tab--disabled):focus-visible {
+  background: var(--bs-inline-tab-bg-focus);
+  color: var(--bs-inline-tab-color-hover);
+}
+
+.bs-inline-tab:not(.bs-inline-tab--selected):not(.bs-inline-tab--disabled):active {
+  background: var(--bs-inline-tab-bg-pressed);
+  color: var(--bs-inline-tab-color-hover);
+}
+
+/* Selected: primary-filled pill, in any interaction state -- darkening slightly on
+   hover/focus/pressed. */
+.bs-inline-tab--selected {
+  background: var(--bs-inline-tab-bg-selected);
+  color: var(--bs-inline-tab-color-selected);
+}
+
+.bs-inline-tab--selected:not(.bs-inline-tab--disabled):hover {
+  background: var(--bs-inline-tab-bg-selected-hover);
+}
+
+.bs-inline-tab--selected:not(.bs-inline-tab--disabled):focus-visible {
+  background: var(--bs-inline-tab-bg-selected-focus);
+}
+
+.bs-inline-tab--selected:not(.bs-inline-tab--disabled):active {
+  background: var(--bs-inline-tab-bg-selected-pressed);
+}
+
+/* Disabled always wins over selected -- no distinct "selected+disabled" treatment defined in the
+   Figma spec, so disabled's own bg/text applies unconditionally regardless of `selected`. */
+.bs-inline-tab--disabled {
+  background: var(--bs-inline-tab-bg-disabled);
+  color: var(--bs-inline-tab-color-disabled);
+  cursor: not-allowed;
+}
+
+.bs-inline-tab__icon {
+  display: none;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.bs-inline-tab__icon--has-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bs-inline-tab__icon ::slotted(svg) {
+  width: 24px;
+  height: 24px;
+}
+
+.bs-inline-tab__label {
+  display: none;
+  font-size: var(--bs-inline-tab-font-size);
+  font-weight: var(--bs-inline-tab-font-weight);
+  line-height: calc(var(--bs-inline-tab-line-height) * 1px);
+  white-space: nowrap;
+}
+
+.bs-inline-tab__label--has-content {
+  display: inline-block;
+}

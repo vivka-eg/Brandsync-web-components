@@ -1,0 +1,39 @@
+/**
+ * @prop --bs-tabs-tab-gap: Gap between tabs when type="bs-tab". Aliased to --bs-spacing-100.
+ * @prop --bs-tabs-inline-tab-bg: Bar background when type="bs-inline-tab". Aliased to --bs-color-neutral-container.
+ * @prop --bs-tabs-inline-tab-padding-x: Bar horizontal padding when type="bs-inline-tab". Aliased to --bs-spacing-50.
+ * @prop --bs-tabs-inline-tab-radius: Bar corner radius when type="bs-inline-tab". Aliased to --bs-border-radius-full.
+ * @prop --bs-tabs-inline-tab-gap: Gap between tabs when type="bs-inline-tab". Aliased to --bs-spacing-50.
+ */
+:host {
+  display: inline-block;
+
+  --bs-tabs-tab-gap: var(--bs-spacing-100);
+
+  --bs-tabs-inline-tab-bg: var(--bs-color-neutral-container);
+  --bs-tabs-inline-tab-padding-x: var(--bs-spacing-50);
+  --bs-tabs-inline-tab-radius: var(--bs-border-radius-full);
+  --bs-tabs-inline-tab-gap: var(--bs-spacing-50);
+}
+
+.bs-tabs {
+  display: inline-flex;
+  align-items: center;
+}
+
+.bs-tabs--vertical {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.bs-tabs--bs-tab {
+  gap: var(--bs-tabs-tab-gap);
+}
+
+.bs-tabs--bs-inline-tab {
+  background: var(--bs-tabs-inline-tab-bg);
+  padding: 0 var(--bs-tabs-inline-tab-padding-x);
+  border-radius: var(--bs-tabs-inline-tab-radius);
+  gap: var(--bs-tabs-inline-tab-gap);
+}

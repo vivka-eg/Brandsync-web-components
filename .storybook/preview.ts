@@ -38,12 +38,15 @@ import '../dist/components/bs-chatbot-suggestion-button.js';
 import '../dist/components/bs-composer.js';
 import '../dist/components/bs-composer-status-banner.js';
 import '../dist/components/bs-data-table.js';
+import '../dist/components/bs-inline-tab.js';
 import '../dist/components/bs-input.js';
 import '../dist/components/bs-menu.js';
 import '../dist/components/bs-menu-item.js';
 import '../dist/components/bs-modal.js';
 import '../dist/components/bs-radio.js';
 import '../dist/components/bs-source-link.js';
+import '../dist/components/bs-tab.js';
+import '../dist/components/bs-tabs.js';
 import '../dist/components/bs-tooltip.js';
 
 // Drives the auto-generated props/slots/parts tables on each component's Docs page from the

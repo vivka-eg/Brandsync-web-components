@@ -1,0 +1,137 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as InlineTabStories from './bs-inline-tab.stories';
+
+<Meta of={InlineTabStories} />
+
+# Inline Tab
+
+## Table of Contents
+
+- [Overview](#overview)
+- [With icon](#with-icon)
+- [Icon only](#icon-only)
+- [Selected](#selected)
+- [Selected with icon](#selected-with-icon)
+- [Disabled](#disabled)
+- [Tab group](#tab-group)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A pill-shaped tab button -- an optional leading icon plus a text label, rendered as a real
+`<button>` so it participates correctly in tab order and native click/keyboard activation. Unlike
+`bs-tab`'s underline indicator, selection here is communicated entirely by the pill's background
+fill color -- there is no separate indicator element.
+
+**When to use**
+- As one button within a segmented-control-style tab bar, where exactly one tab is
+  selected/active at a time.
+
+**When not to use**
+- As a standalone action button -- use `bs-button` instead, `bs-inline-tab`'s visual language
+  (muted pill until selected/hovered) only makes sense as part of a set.
+
+<Canvas of={InlineTabStories.Default} />
+
+## With icon
+
+When both the `icon` slot and the default (label) slot are populated, the icon sits to the left of
+the label in a row, with slightly less padding on the icon side than the text side.
+
+<Canvas of={InlineTabStories.WithIcon} />
+
+## Icon only
+
+When only the `icon` slot has content, no label space is reserved -- the tab renders icon-only.
+Always set `ariaLabel` in this case (see Accessibility below) -- without visible text, the tab
+otherwise has no accessible name at all.
+
+<Canvas of={InlineTabStories.IconOnly} />
+
+## Selected
+
+`selected` fills the pill's background with the primary color and switches the text/icon to the
+on-action (white) color. It is **not** mutable and does not self-toggle on click -- see the
+[Tab group](#tab-group) section and Accessibility below for why.
+
+<Canvas of={InlineTabStories.Selected} />
+
+## Selected with icon
+
+The same selected fill treatment applies with a leading icon.
+
+<Canvas of={InlineTabStories.SelectedWithIcon} />
+
+## Disabled
+
+`disabled` renders a native `disabled` `<button>` (removed from tab order, no click), with its own
+muted background/text treatment -- this wins even over `selected` styling, since the Figma spec
+does not define a distinct "selected + disabled" variant.
+
+<Canvas of={InlineTabStories.Disabled} />
+
+## Tab group
+
+`selected` is **not** self-toggling -- clicking a `bs-inline-tab` only emits `bsSelect`, it does
+not set its own `selected` prop, and it does not unselect any sibling tabs. Wrap your
+`<bs-inline-tab>` elements in `<bs-tabs type="bs-inline-tab">` -- it owns `role="tablist"` and
+coordinates selection for you, as the story below demonstrates.
+
+<Canvas of={InlineTabStories.Group} />
+
+## Component API
+
+<Controls of={InlineTabStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (label text), `icon`
+- Shadow parts: `::part(tab)`, `::part(icon)`, `::part(label)`
+- CSS custom properties: `--bs-inline-tab-radius`, `--bs-inline-tab-padding-y`,
+  `--bs-inline-tab-padding-x`, `--bs-inline-tab-padding-left-with-icon`,
+  `--bs-inline-tab-padding-right-with-icon`, `--bs-inline-tab-gap`, `--bs-inline-tab-bg-default`,
+  `--bs-inline-tab-color-default`, `--bs-inline-tab-bg-hover`, `--bs-inline-tab-color-hover`,
+  `--bs-inline-tab-bg-focus`, `--bs-inline-tab-bg-pressed`, `--bs-inline-tab-focus-ring-color`,
+  `--bs-inline-tab-bg-disabled`, `--bs-inline-tab-color-disabled`, `--bs-inline-tab-bg-selected`,
+  `--bs-inline-tab-color-selected`, `--bs-inline-tab-bg-selected-hover`,
+  `--bs-inline-tab-bg-selected-focus`, `--bs-inline-tab-bg-selected-pressed`,
+  `--bs-inline-tab-font-size`, `--bs-inline-tab-font-weight`, `--bs-inline-tab-line-height`
+
+## Events
+
+| Event      | Fires when         | Payload | Cancelable |
+| ---------- | -------------------- | ------- | ---------- |
+| `bsSelect` | The tab is clicked    | `void`  | No         |
+
+## Accessibility
+
+- Renders a real `<button type="button">` with `role="tab"`, so it participates correctly in tab
+  order and native click/keyboard activation (<kbd>Enter</kbd>/<kbd>Space</kbd>).
+- `aria-selected` is kept in sync with the `selected` prop on every render.
+- `disabled` sets the native `disabled` attribute (removed from tab order, unclickable) and
+  `aria-disabled="true"`.
+- **Required for icon-only tabs:** set `ariaLabel` whenever the default (label) slot is empty --
+  without visible text, an icon-only tab has no accessible name at all (axe-core flags this as a
+  critical `button-name` violation). Same prop/pattern as `bs-tab`'s `ariaLabel`.
+- **Known axe-core false positive:** once `ariaLabel` is set, axe-core's `aria-required-children`
+  rule reports the *parent* tablist as missing a valid `role="tab"` child -- it stops traversing
+  into the `<bs-inline-tab>` host's shadow root once that host carries its own `aria-label`, and
+  doesn't find the role="tab" button. This is an axe-core limitation with custom elements, not a
+  real defect: verified directly against Chromium's actual accessibility tree (via CDP
+  `Accessibility.getFullAXTree`, the same computation screen readers query), which correctly
+  reports `role: tab, name: "<the label>"` nested under `role: tablist` regardless. Safe to ignore
+  this specific violation when `ariaLabel` is set on an icon-only tab.
+- No arrow-key roving focus between sibling tabs is implemented -- users move between tabs with
+  <kbd>Tab</kbd>, same as any list of buttons. A full `role="tablist"` composite widget (with
+  roving tabindex and arrow-key navigation between tabs) isn't implemented yet.
+- **Required:** `role="tab"` is only valid ARIA when contained by an element with
+  `role="tablist"` -- axe-core flags this as a critical `aria-required-parent` violation otherwise.
+  Wrap your `<bs-inline-tab>` elements in `<bs-tabs type="bs-inline-tab">` -- it renders that
+  `role="tablist"` ancestor for you (see the `Group` story). Each tab's corresponding content panel
+  should still have `role="tabpanel"` with an `aria-labelledby` pointing back at its tab.
+- **Known gap:** this component does not coordinate group state itself -- `selected` is not
+  mutable and does not self-toggle on click, clicking only emits `bsSelect`. `<bs-tabs
+  type="bs-inline-tab">` handles this coordination automatically; using `bs-inline-tab` standalone,
+  outside a `<bs-tabs>` wrapper, still means a consumer must listen for `bsSelect` and set
+  `selected` on the clicked tab (and `false` on its siblings) itself.

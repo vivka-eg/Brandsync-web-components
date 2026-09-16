@@ -1,0 +1,73 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as TabsStories from './bs-tabs.stories';
+
+<Meta of={TabsStories} />
+
+# Tabs
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Inline tab group](#inline-tab-group)
+- [Vertical](#vertical)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A tab-group wrapper: owns `role="tablist"` and coordinates selection across its slotted `<bs-tab>`
+or `<bs-inline-tab>` children, so consumers no longer have to hand-roll this.
+
+**When to use**
+- Wrapping a set of `<bs-tab>` (underline style) or `<bs-inline-tab>` (pill style) elements that
+  should behave as a single-selection tab bar.
+
+**When not to use**
+- For a single, standalone tab button not participating in a group -- use `bs-tab`/`bs-inline-tab`
+  directly.
+
+<Canvas of={TabsStories.Default} />
+
+## Inline tab group
+
+Setting `type="bs-inline-tab"` switches the wrapper's own visual treatment to a filled pill bar
+(background, horizontal padding, full corner radius) so a set of deselected `bs-inline-tab` pills
+blend seamlessly into one continuous bar, with only the selected pill standing out.
+
+<Canvas of={TabsStories.InlineTabGroup} />
+
+## Vertical
+
+`orientation="vertical"` stacks the tab bar in a column instead of a row, and sets
+`aria-orientation="vertical"` on the tablist -- e.g. for a sidebar-style tab list.
+
+<Canvas of={TabsStories.Vertical} />
+
+## Component API
+
+<Controls of={TabsStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (the tab elements)
+- Shadow parts: `::part(tablist)`
+- CSS custom properties: `--bs-tabs-tab-gap`, `--bs-tabs-inline-tab-bg`,
+  `--bs-tabs-inline-tab-padding-x`, `--bs-tabs-inline-tab-radius`, `--bs-tabs-inline-tab-gap`
+
+## Accessibility
+
+- Renders a single wrapper `<div part="tablist" role="tablist" aria-orientation="...">` around the
+  default slot, so slotted `<bs-tab>`/`<bs-inline-tab>` elements (each rendering `role="tab"`
+  internally) are correctly contained by a `role="tablist"` ancestor -- previously a manual
+  consumer responsibility (see `bs-tab.mdx`/`bs-inline-tab.mdx`).
+- Listens for `bsSelect` bubbling up from any direct-child `<bs-tab>`/`<bs-inline-tab>` and sets
+  `selected` on the clicked child, `false` on its siblings -- also previously a manual consumer
+  responsibility.
+- Disabled children never emit `bsSelect` in the first place (each tab's own click handler guards
+  on `disabled`), so a disabled tab is never selected by this coordination.
+- **Known gap:** no arrow-key roving focus between sibling tabs is implemented -- users move
+  between tabs with <kbd>Tab</kbd>, same as any list of buttons. A full `role="tablist"` composite
+  widget (with roving tabindex and arrow-key navigation between tabs) isn't implemented yet.
+- Using `<bs-tab>`/`<bs-inline-tab>` standalone, outside a `<bs-tabs>` wrapper, still means
+  `selected` doesn't self-toggle and `role="tablist"` isn't provided automatically -- a consumer
+  doing that would still need to coordinate `selected` and supply `role="tablist"` manually, per
+  `bs-tab.mdx`/`bs-inline-tab.mdx`.
