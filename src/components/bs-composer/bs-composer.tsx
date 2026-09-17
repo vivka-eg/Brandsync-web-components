@@ -43,7 +43,7 @@ const WAVEFORM_BAR_HEIGHTS = [
  *   roughly match `--bs-composer-button-size` to align visually.
  * @part attachments - The wrapper around the `attachments` slot.
  * @part attach - The "+" attach button.
- * @part input - The native text `<input>`.
+ * @part input - The native text `<textarea>`.
  * @part mic - The secondary icon button (microphone, or the stop-recording square while `state="recording"`).
  * @part action - The primary circular action button (send, stop, or confirm depending on `state`).
  * @prop --bs-composer-radius - Corner radius of the container. Aliased to `--bs-border-radius-150`.
@@ -63,6 +63,7 @@ const WAVEFORM_BAR_HEIGHTS = [
  * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
  * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
  * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+ * @prop --bs-composer-input-max-lines - How many lines the text field grows to before scrolling internally instead of growing further. Aliased to `10`.
  */
 @Component({
   tag: 'bs-composer',
@@ -73,6 +74,8 @@ const WAVEFORM_BAR_HEIGHTS = [
 })
 export class BsComposer {
   @Element() el: HTMLElement;
+
+  private inputEl?: HTMLTextAreaElement;
 
   /**
    * Which flavor of composer this is: changes the *default* placeholder text (set `placeholder`
@@ -86,7 +89,12 @@ export class BsComposer {
   @Prop() placeholder?: string;
 
   /** Current text value. Native `input` events don't cross the Shadow DOM boundary, so this
-   * component re-dispatches them as a `bsInput` custom event instead. */
+   * component re-dispatches them as a `bsInput` custom event instead.
+   *
+   * The field is a `<textarea>` (not a single-line `<input>`) that grows with its content, up to
+   * `--bs-composer-input-max-lines` (10 by default) -- beyond that it scrolls internally instead
+   * of growing further. Setting `value` as a prop (not just typing) also re-triggers the resize,
+   * so e.g. programmatically clearing the field after submit correctly shrinks it back down. */
   @Prop() value = '';
 
   /**
@@ -134,12 +142,41 @@ export class BsComposer {
     this.hasAttachments = Array.from(this.el.childNodes).some(node => node.nodeType === Node.ELEMENT_NODE && (node as Element).getAttribute('slot') === 'attachments');
   }
 
+  componentDidLoad() {
+    this.resizeInput();
+  }
+
+  /** Re-runs the auto-grow calculation after every re-render -- notably including a `value` prop
+   * change from the outside (e.g. a consumer clearing the field after submit, or pre-filling it),
+   * not just while the user is typing. This has to be `componentDidUpdate`, not a `@Watch('value')`
+   * callback: `@Watch` fires as soon as the prop is reassigned, which is BEFORE Stencil's next
+   * render actually pushes the new value into the textarea's DOM `.value` -- reading `scrollHeight`
+   * at that point still reflects the OLD content, so the resize would silently no-op. */
+  componentDidUpdate() {
+    this.resizeInput();
+  }
+
+  /**
+   * Grows the textarea to fit its content, up to `--bs-composer-input-max-lines` worth of height
+   * (CSS `max-height` clamps the visual result and `overflow-y: auto` takes over beyond that --
+   * see bs-composer.css). Resetting `height` to `auto` first is required before reading
+   * `scrollHeight`, otherwise a shrinking edit (e.g. deleting a line) would never shrink the
+   * textarea back down -- `scrollHeight` only ever reports the larger of "current height" and
+   * "content height" if the height isn't cleared first.
+   */
+  private resizeInput() {
+    if (!this.inputEl) return;
+    this.inputEl.style.height = 'auto';
+    this.inputEl.style.height = `${this.inputEl.scrollHeight}px`;
+  }
+
   private onAttachmentsSlotchange = (ev: Event) => {
     this.hasAttachments = (ev.target as HTMLSlotElement).assignedNodes().length > 0;
   };
 
   private onInput = (ev: InputEvent) => {
-    const value = (ev.target as HTMLInputElement).value;
+    const value = (ev.target as HTMLTextAreaElement).value;
+    this.resizeInput();
     this.bsInput.emit(value);
   };
 
@@ -184,16 +221,17 @@ export class BsComposer {
           <slot name="attachments" onSlotchange={this.onAttachmentsSlotchange}></slot>
         </div>
         <div class="bs-composer__text-row">
-          <input
+          <textarea
+            ref={el => (this.inputEl = el as HTMLTextAreaElement)}
             part="input"
             class="bs-composer__input"
-            type="text"
+            rows={1}
             value={this.value}
             placeholder={placeholder}
             disabled={disabled}
             aria-label={this.ariaLabel}
             onInput={this.onInput}
-          />
+          ></textarea>
         </div>
         <div class="bs-composer__controls-row">
           <button type="button" part="attach" class="bs-composer__attach" aria-label="Attach" onClick={this.onAttachClick}>

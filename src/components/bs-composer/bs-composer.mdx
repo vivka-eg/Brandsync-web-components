@@ -10,6 +10,7 @@ import * as ComposerStories from './bs-composer.stories';
 - [Overview](#overview)
 - [Generating state](#generating-state)
 - [Disabled state](#disabled-state)
+- [Multi-line growth](#multi-line-growth)
 - [Recording state](#recording-state)
 - [With attachments](#with-attachments)
 - [All variants × states](#all-variants--states)
@@ -47,6 +48,12 @@ they're unreachable by keyboard and clicks are no-ops — same disabled treatmen
 
 <Canvas of={ComposerStories.Disabled} />
 
+## Multi-line growth
+
+The text field is a `<textarea>` that grows with its content as the user types, up to
+`--bs-composer-input-max-lines` (10 by default) -- beyond that, it scrolls internally instead of
+continuing to grow the whole composer. This applies regardless of `variant`/`state`.
+
 ## Recording state
 
 Shows an inline static waveform placeholder next to already-typed text, and swaps the mic button
@@ -80,7 +87,7 @@ Every combination of `variant` and `state` side by side, for visual parity with 
   `--bs-composer-border-focus`, `--bs-composer-action-bg`, `--bs-composer-action-bg-hover`,
   `--bs-composer-action-bg-pressed`, `--bs-composer-action-bg-disabled`,
   `--bs-composer-action-icon`, `--bs-composer-action-icon-disabled`, `--bs-composer-attach-icon`,
-  `--bs-composer-mic-icon`, `--bs-composer-mic-icon-disabled`
+  `--bs-composer-mic-icon`, `--bs-composer-mic-icon-disabled`, `--bs-composer-input-max-lines`
 
 ## Events
 

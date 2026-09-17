@@ -596,6 +596,7 @@ export namespace Components {
      * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
      * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
      * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-composer-input-max-lines - How many lines the text field grows to before scrolling internally instead of growing further. Aliased to `10`.
      */
     interface BsComposer {
         /**
@@ -613,7 +614,7 @@ export namespace Components {
          */
         "state": BsComposerState;
         /**
-          * Current text value. Native `input` events don't cross the Shadow DOM boundary, so this component re-dispatches them as a `bsInput` custom event instead.
+          * Current text value. Native `input` events don't cross the Shadow DOM boundary, so this component re-dispatches them as a `bsInput` custom event instead.  The field is a `<textarea>` (not a single-line `<input>`) that grows with its content, up to `--bs-composer-input-max-lines` (10 by default) -- beyond that it scrolls internally instead of growing further. Setting `value` as a prop (not just typing) also re-triggers the resize, so e.g. programmatically clearing the field after submit correctly shrinks it back down.
           * @default ''
          */
         "value": string;
@@ -1767,6 +1768,7 @@ declare global {
      * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
      * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
      * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-composer-input-max-lines - How many lines the text field grows to before scrolling internally instead of growing further. Aliased to `10`.
      */
     interface HTMLBsComposerElement extends Components.BsComposer, HTMLStencilElement {
         addEventListener<K extends keyof HTMLBsComposerElementEventMap>(type: K, listener: (this: HTMLBsComposerElement, ev: BsComposerCustomEvent<HTMLBsComposerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2886,6 +2888,7 @@ declare namespace LocalJSX {
      * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
      * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
      * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+     * @prop --bs-composer-input-max-lines - How many lines the text field grows to before scrolling internally instead of growing further. Aliased to `10`.
      */
     interface BsComposer {
         /**
@@ -2927,7 +2930,7 @@ declare namespace LocalJSX {
          */
         "state"?: BsComposerState;
         /**
-          * Current text value. Native `input` events don't cross the Shadow DOM boundary, so this component re-dispatches them as a `bsInput` custom event instead.
+          * Current text value. Native `input` events don't cross the Shadow DOM boundary, so this component re-dispatches them as a `bsInput` custom event instead.  The field is a `<textarea>` (not a single-line `<input>`) that grows with its content, up to `--bs-composer-input-max-lines` (10 by default) -- beyond that it scrolls internally instead of growing further. Setting `value` as a prop (not just typing) also re-triggers the resize, so e.g. programmatically clearing the field after submit correctly shrinks it back down.
           * @default ''
          */
         "value"?: string;
@@ -4082,6 +4085,7 @@ declare module "@stencil/core" {
              * @prop --bs-composer-mic-icon-disabled - Aliased to `--bs-icon-disabled`.
              * @prop --bs-composer-subtle-hover - Background of the attach/mic buttons on hover (subtle-button treatment, same as `bs-button`'s `subtle` variant). Aliased to `--bs-color-neutral-container`.
              * @prop --bs-composer-subtle-pressed - Background of the attach/mic buttons when pressed. Aliased to `--bs-color-neutral-container-pressed`.
+             * @prop --bs-composer-input-max-lines - How many lines the text field grows to before scrolling internally instead of growing further. Aliased to `10`.
              */
             "bs-composer": LocalJSX.IntrinsicElements["bs-composer"] & JSXBase.HTMLAttributes<HTMLBsComposerElement>;
             /**

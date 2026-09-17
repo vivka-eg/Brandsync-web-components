@@ -3,7 +3,7 @@ import { render, h, describe, it, expect } from '@stencil/vitest';
 describe('bs-composer', () => {
   it('renders with idle state defaults: ai variant placeholder, enabled mic/action buttons', async () => {
     const { root } = await render(<bs-composer></bs-composer>);
-    const input = root.shadowRoot.querySelector('input') as HTMLInputElement;
+    const input = root.shadowRoot.querySelector('textarea') as HTMLTextAreaElement;
     expect(input).toEqualAttribute('placeholder', 'Ask Genie something...');
     expect(input).not.toHaveAttribute('disabled');
 
@@ -16,25 +16,25 @@ describe('bs-composer', () => {
 
   it('uses the human variant default placeholder', async () => {
     const { root } = await render(<bs-composer variant="human"></bs-composer>);
-    const input = root.shadowRoot.querySelector('input');
+    const input = root.shadowRoot.querySelector('textarea');
     expect(input).toEqualAttribute('placeholder', 'Message your support agent...');
   });
 
   it('overrides the variant default placeholder when placeholder is set', async () => {
     const { root } = await render(<bs-composer variant="ai" placeholder="Custom prompt"></bs-composer>);
-    const input = root.shadowRoot.querySelector('input');
+    const input = root.shadowRoot.querySelector('textarea');
     expect(input).toEqualAttribute('placeholder', 'Custom prompt');
   });
 
   it('reflects the value prop to the native input', async () => {
     const { root } = await render(<bs-composer value="hello there"></bs-composer>);
-    const input = root.shadowRoot.querySelector('input') as HTMLInputElement;
+    const input = root.shadowRoot.querySelector('textarea') as HTMLTextAreaElement;
     expect(input.value).toBe('hello there');
   });
 
   it('sets aria-label on the input from the ariaLabel prop', async () => {
     const { root } = await render(<bs-composer ariaLabel="Message"></bs-composer>);
-    const input = root.shadowRoot.querySelector('input');
+    const input = root.shadowRoot.querySelector('textarea');
     expect(input).toEqualAttribute('aria-label', 'Message');
   });
 
@@ -81,13 +81,66 @@ describe('bs-composer', () => {
   it('emits bsInput with the current value as the user types', async () => {
     const { root, spyOnEvent } = await render(<bs-composer></bs-composer>);
     const spy = spyOnEvent('bsInput');
-    const input = root.shadowRoot.querySelector('input') as HTMLInputElement;
+    const input = root.shadowRoot.querySelector('textarea') as HTMLTextAreaElement;
 
     input.value = 'a';
     input.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
 
     expect(spy).toHaveReceivedEventTimes(1);
     expect(spy).toHaveReceivedEventDetail('a');
+  });
+
+  describe('auto-grow', () => {
+    it('grows taller as multi-line content is typed', async () => {
+      const { root } = await render(<bs-composer></bs-composer>);
+      const textarea = root.shadowRoot.querySelector('textarea') as HTMLTextAreaElement;
+      const oneLineHeight = textarea.getBoundingClientRect().height;
+
+      textarea.value = 'line one\nline two\nline three';
+      textarea.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+
+      const threeLineHeight = textarea.getBoundingClientRect().height;
+      expect(threeLineHeight).toBeGreaterThan(oneLineHeight);
+    });
+
+    it('caps growth at --bs-composer-input-max-lines and scrolls internally beyond that', async () => {
+      const { root } = await render(<bs-composer></bs-composer>);
+      const textarea = root.shadowRoot.querySelector('textarea') as HTMLTextAreaElement;
+      const lineHeight = textarea.getBoundingClientRect().height;
+
+      const fifteenLines = Array.from({ length: 15 }, (_, i) => `line ${i}`).join('\n');
+      textarea.value = fifteenLines;
+      textarea.dispatchEvent(new Event('input', { bubbles: true, composed: true }));
+
+      const cappedHeight = textarea.getBoundingClientRect().height;
+      // 10 lines' worth of height, not 15 -- the default max-lines is 10 (see bs-composer.css).
+      expect(cappedHeight).toBeCloseTo(lineHeight * 10, 0);
+      expect(textarea.scrollHeight).toBeGreaterThan(textarea.clientHeight);
+    });
+
+    it('resizes to fit an initial multi-line value prop, not just user typing', async () => {
+      // Measure each render's height before the other render() call runs -- a second render() in
+      // the same test can detach the first instance from the layout tree, which would make its
+      // getBoundingClientRect() report 0 rather than its real (but by-then-detached) height.
+      const single = await render(<bs-composer value="one line"></bs-composer>);
+      const singleLineHeight = (single.root.shadowRoot.querySelector('textarea') as HTMLTextAreaElement).getBoundingClientRect().height;
+
+      const multi = await render(<bs-composer value={'line one\nline two\nline three'}></bs-composer>);
+      const multiLineHeight = (multi.root.shadowRoot.querySelector('textarea') as HTMLTextAreaElement).getBoundingClientRect().height;
+
+      expect(multiLineHeight).toBeGreaterThan(singleLineHeight);
+    });
+
+    it('re-runs the resize when the value prop is updated programmatically (not via typing)', async () => {
+      const { root, setProps, waitForChanges } = await render(<bs-composer value="one line"></bs-composer>);
+      const textarea = root.shadowRoot.querySelector('textarea') as HTMLTextAreaElement;
+      const oneLineHeight = textarea.getBoundingClientRect().height;
+
+      await setProps({ value: 'line one\nline two\nline three\nline four' });
+      await waitForChanges();
+
+      expect(textarea.getBoundingClientRect().height).toBeGreaterThan(oneLineHeight);
+    });
   });
 
   it('emits bsAttach when the attach button is clicked', async () => {
@@ -140,7 +193,7 @@ describe('bs-composer', () => {
   describe('state="disabled"', () => {
     it('natively disables both the mic and action buttons and the text input', async () => {
       const { root } = await render(<bs-composer state="disabled"></bs-composer>);
-      expect(root.shadowRoot.querySelector('input')).toHaveAttribute('disabled');
+      expect(root.shadowRoot.querySelector('textarea')).toHaveAttribute('disabled');
       expect(root.shadowRoot.querySelector('[part="mic"]')).toHaveAttribute('disabled');
       expect(root.shadowRoot.querySelector('[part="action"]')).toHaveAttribute('disabled');
     });

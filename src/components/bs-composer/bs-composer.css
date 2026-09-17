@@ -22,6 +22,8 @@
   --bs-composer-subtle-pressed: var(--bs-color-neutral-container-pressed);
 
   --bs-composer-waveform-color: var(--bs-border-default);
+
+  --bs-composer-input-max-lines: 10;
 }
 
 .bs-composer {
@@ -62,12 +64,25 @@
 .bs-composer__input {
   flex: 1;
   min-width: 0;
+  box-sizing: border-box;
+  /* Browsers apply their own default padding to <textarea> (Chromium: 2px) -- zero it out so the
+     auto-grow height math (line-height * number of lines) isn't thrown off by unaccounted-for
+     padding. */
+  padding: 0;
   border: none;
   outline: none;
+  resize: none;
   background: transparent;
   color: var(--bs-input-text);
   font-family: inherit;
   font-size: var(--bs-font-size-md);
+  /* Explicit, not the textarea's default line-height -- the auto-grow max-height below is computed
+     in terms of this exact value times --bs-composer-input-max-lines, so it has to be pinned down. */
+  line-height: calc(var(--bs-line-height-body-md) * 1px);
+  /* Grows with content (see bs-composer.tsx's resizeInput) up to this many lines' worth of height,
+     then scrolls internally instead of growing the whole composer further. */
+  max-height: calc(var(--bs-composer-input-max-lines) * var(--bs-line-height-body-md) * 1px);
+  overflow-y: auto;
 }
 
 .bs-composer__input::placeholder {
