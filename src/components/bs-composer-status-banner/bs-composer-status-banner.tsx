@@ -16,6 +16,13 @@ export type BsComposerStatusBannerType = 'error' | 'info' | 'neutral' | 'warning
  * - A toast/snackbar notification unrelated to the composer -- this component is not
  *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
  *
+ * ## Accessibility
+ * Sets `role="status"` for `type="info"`/`type="neutral"` and `role="alert"` for
+ * `type="error"`/`type="warning"` on its own root element automatically -- no opt-in prop needed.
+ * Both roles carry implicit ARIA live-region semantics (`status` is polite, `alert` is assertive),
+ * so a screen reader announces the message as soon as this banner is inserted into the DOM,
+ * without a consumer having to remember to add `role`/`aria-live` themselves.
+ *
  * @slot icon - Overrides the default leading icon. Only rendered when `showIcon` is true.
  * @part icon - The leading icon wrapper.
  * @part message - The message text.
@@ -105,15 +112,26 @@ export class BsComposerStatusBanner {
     this.bsClose.emit();
   };
 
+  /** `error`/`warning` need immediate, interrupting announcement (`alert`); `info`/`neutral` only
+   * need a polite one (`status`) -- matches the Figma Accessibility guidelines for this component. */
+  private roleForType(): 'status' | 'alert' {
+    return this.type === 'error' || this.type === 'warning' ? 'alert' : 'status';
+  }
+
+  /** Clock reads as "waiting/pending", a reasonable default for info/neutral notices -- but is a
+   * weak match for error/warning, which get a warning-triangle icon instead. Either default is
+   * still overridable via the `icon` slot. */
+  private renderDefaultIcon() {
+    return this.type === 'error' || this.type === 'warning' ? <WarningIcon /> : <ClockIcon />;
+  }
+
   render() {
     return (
-      <div class={`bs-composer-status-banner bs-composer-status-banner--${this.type}`}>
+      <div role={this.roleForType()} class={`bs-composer-status-banner bs-composer-status-banner--${this.type}`}>
         <div class="bs-composer-status-banner__message-group">
           {this.showIcon && (
             <span part="icon" class="bs-composer-status-banner__icon">
-              <slot name="icon">
-                <ClockIcon />
-              </slot>
+              <slot name="icon">{this.renderDefaultIcon()}</slot>
             </span>
           )}
           <p part="message" class="bs-composer-status-banner__message">
@@ -139,6 +157,14 @@ const ClockIcon = () => (
   <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
     <circle cx="10" cy="10" r="7.25" stroke="currentColor" stroke-width="1.3" />
     <path d="M10 5.83V10L12.5 11.67" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+);
+
+const WarningIcon = () => (
+  <svg viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <path d="M10 3L18 17H2L10 3Z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round" />
+    <path d="M10 8V11.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" />
+    <circle cx="10" cy="14" r="0.75" fill="currentColor" />
   </svg>
 );
 

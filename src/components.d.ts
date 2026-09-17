@@ -635,6 +635,12 @@ export namespace Components {
      * ## When not to use
      * - A toast/snackbar notification unrelated to the composer -- this component is not
      *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
+     * ## Accessibility
+     * Sets `role="status"` for `type="info"`/`type="neutral"` and `role="alert"` for
+     * `type="error"`/`type="warning"` on its own root element automatically -- no opt-in prop needed.
+     * Both roles carry implicit ARIA live-region semantics (`status` is polite, `alert` is assertive),
+     * so a screen reader announces the message as soon as this banner is inserted into the DOM,
+     * without a consumer having to remember to add `role`/`aria-live` themselves.
      * @prop --bs-composer-status-banner-radius - Corner radius of the top-left/top-right corners
      * (bottom corners are square, so this sits flush above `bs-composer`). Aliased to
      * `--bs-border-radius-150`.
@@ -1799,6 +1805,12 @@ declare global {
      * ## When not to use
      * - A toast/snackbar notification unrelated to the composer -- this component is not
      *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
+     * ## Accessibility
+     * Sets `role="status"` for `type="info"`/`type="neutral"` and `role="alert"` for
+     * `type="error"`/`type="warning"` on its own root element automatically -- no opt-in prop needed.
+     * Both roles carry implicit ARIA live-region semantics (`status` is polite, `alert` is assertive),
+     * so a screen reader announces the message as soon as this banner is inserted into the DOM,
+     * without a consumer having to remember to add `role`/`aria-live` themselves.
      * @prop --bs-composer-status-banner-radius - Corner radius of the top-left/top-right corners
      * (bottom corners are square, so this sits flush above `bs-composer`). Aliased to
      * `--bs-border-radius-150`.
@@ -2951,6 +2963,12 @@ declare namespace LocalJSX {
      * ## When not to use
      * - A toast/snackbar notification unrelated to the composer -- this component is not
      *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
+     * ## Accessibility
+     * Sets `role="status"` for `type="info"`/`type="neutral"` and `role="alert"` for
+     * `type="error"`/`type="warning"` on its own root element automatically -- no opt-in prop needed.
+     * Both roles carry implicit ARIA live-region semantics (`status` is polite, `alert` is assertive),
+     * so a screen reader announces the message as soon as this banner is inserted into the DOM,
+     * without a consumer having to remember to add `role`/`aria-live` themselves.
      * @prop --bs-composer-status-banner-radius - Corner radius of the top-left/top-right corners
      * (bottom corners are square, so this sits flush above `bs-composer`). Aliased to
      * `--bs-border-radius-150`.
@@ -4099,6 +4117,12 @@ declare module "@stencil/core" {
              * ## When not to use
              * - A toast/snackbar notification unrelated to the composer -- this component is not
              *   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
+             * ## Accessibility
+             * Sets `role="status"` for `type="info"`/`type="neutral"` and `role="alert"` for
+             * `type="error"`/`type="warning"` on its own root element automatically -- no opt-in prop needed.
+             * Both roles carry implicit ARIA live-region semantics (`status` is polite, `alert` is assertive),
+             * so a screen reader announces the message as soon as this banner is inserted into the DOM,
+             * without a consumer having to remember to add `role`/`aria-live` themselves.
              * @prop --bs-composer-status-banner-radius - Corner radius of the top-left/top-right corners
              * (bottom corners are square, so this sits flush above `bs-composer`). Aliased to
              * `--bs-border-radius-150`.

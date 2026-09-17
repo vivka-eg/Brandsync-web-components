@@ -20,6 +20,13 @@ composer's current state (e.g. a send failure, an informational notice) with an 
 - A toast/snackbar notification unrelated to the composer -- this component is not
   self-dismissing and has no positioning of its own (it's a static block, not an overlay).
 
+## Accessibility
+Sets `role="status"` for `type="info"`/`type="neutral"` and `role="alert"` for
+`type="error"`/`type="warning"` on its own root element automatically -- no opt-in prop needed.
+Both roles carry implicit ARIA live-region semantics (`status` is polite, `alert` is assertive),
+so a screen reader announces the message as soon as this banner is inserted into the DOM,
+without a consumer having to remember to add `role`/`aria-live` themselves.
+
 ## Properties
 
 | Property      | Attribute      | Description                                                                                        | Type                                          | Default               |

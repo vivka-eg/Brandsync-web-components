@@ -65,7 +65,8 @@ visible seam.
 <Controls of={StatusBannerStories.Default} />
 
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
-- Slots: `icon` (overrides the default clock icon)
+- Slots: `icon` (overrides the default type-based icon -- clock for `info`/`neutral`, a warning
+  triangle for `error`/`warning`)
 - Shadow parts: `::part(icon)`, `::part(message)`, `::part(action)`, `::part(close)`
 - CSS custom properties: `--bs-composer-status-banner-radius`,
   `--bs-composer-status-banner-padding-x`, `--bs-composer-status-banner-padding-top`,
@@ -91,6 +92,10 @@ visible seam.
 
 ## Accessibility
 
+- Sets `role="status"` for `type="info"`/`type="neutral"` and `role="alert"` for
+  `type="error"`/`type="warning"` on its own root element automatically -- no opt-in prop needed.
+  Both roles carry implicit ARIA live-region semantics (`status` is polite, `alert` is assertive),
+  so the message is announced as soon as the banner is inserted into the DOM.
 - The close button has a fixed `aria-label="Dismiss"` since it's icon-only with no visible text.
 - The leading icon is `aria-hidden` — it's decorative, the message text itself conveys the status.
 - Both buttons use the standard focus-visible outline (`--bs-border-neutral-focus`), so keyboard
