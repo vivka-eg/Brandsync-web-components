@@ -1,0 +1,106 @@
+/**
+ * @prop --bs-navigation-header-bg: Background of the bar. Aliased to --bs-surface-base.
+ * @prop --bs-navigation-header-border: Bottom border color. Aliased to --bs-border-default.
+ * @prop --bs-navigation-header-padding-top: Aliased to --bs-spacing-200.
+ * @prop --bs-navigation-header-padding-bottom: Aliased to --bs-spacing-100.
+ * @prop --bs-navigation-header-padding-x: Aliased to --bs-margin-fluid.
+ * @prop --bs-navigation-header-max-width: Overall max-width of the bar. The global vendored
+ *   --bs-breakpoints-max-width token is malformed (`1920rem` instead of `1920px` -- at a 16px root
+ *   font size that's ~30720px, effectively unconstrained), so this is a literal 1920px instead of
+ *   aliasing to it.
+ * @prop --bs-navigation-header-item-gap: Gap between the logo and the `left` slot (`default`
+ *   alignment), or between the `left` and `right` slots (`with-navigation-drawer` alignment, which
+ *   has no logo). Not used in `center` alignment -- see the class doc in bs-navigation-header.tsx.
+ *   The global vendored --bs-navigation-header-gap token is also malformed (a bare unitless `40`,
+ *   which is an invalid `gap` value and silently falls back to `normal`/0), so this multiplies it
+ *   into a real length instead of aliasing directly.
+ * @prop --bs-navigation-header-slot-gap: Gap between items within a single `left`/`right` slot.
+ *   Aliased to --bs-spacing-100.
+ * @prop --bs-navigation-header-skip-link-bg: Skip-to-content link background, once focused into
+ *   view. Aliased to --bs-surface-action.
+ * @prop --bs-navigation-header-skip-link-color: Skip-to-content link text color, once focused
+ *   into view. Aliased to --bs-text-inverse.
+ */
+:host {
+  display: block;
+
+  --bs-navigation-header-bg: var(--bs-surface-base);
+  --bs-navigation-header-border: var(--bs-border-default);
+  --bs-navigation-header-padding-top: var(--bs-spacing-200);
+  --bs-navigation-header-padding-bottom: var(--bs-spacing-100);
+  --bs-navigation-header-padding-x: var(--bs-margin-fluid);
+  --bs-navigation-header-max-width: 1920px;
+  --bs-navigation-header-item-gap: calc(var(--bs-navigation-header-gap) * 1px);
+  --bs-navigation-header-slot-gap: var(--bs-spacing-100);
+  --bs-navigation-header-skip-link-bg: var(--bs-surface-action);
+  --bs-navigation-header-skip-link-color: var(--bs-text-inverse);
+}
+
+.bs-navigation-header {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  max-width: var(--bs-navigation-header-max-width);
+  background: var(--bs-navigation-header-bg);
+  border-bottom: 1px solid var(--bs-navigation-header-border);
+  padding: var(--bs-navigation-header-padding-top) var(--bs-navigation-header-padding-x) var(--bs-navigation-header-padding-bottom);
+}
+
+/* Visually hidden until keyboard-focused, per the standard skip-link pattern -- offscreen (not
+   display: none/visibility: hidden, which would remove it from the tab order entirely) until
+   :focus moves it on-screen, absolutely positioned relative to the header itself (position:
+   relative above) so it doesn't affect the flex layout or push any other content. */
+.bs-navigation-header__skip-link {
+  position: absolute;
+  top: var(--bs-spacing-100);
+  left: -9999px;
+  z-index: 1;
+  padding: var(--bs-spacing-100) var(--bs-spacing-200);
+  border-radius: var(--bs-border-radius-100);
+  background: var(--bs-navigation-header-skip-link-bg);
+  color: var(--bs-navigation-header-skip-link-color);
+  font-size: var(--bs-font-size-sm);
+  text-decoration: underline;
+}
+
+.bs-navigation-header__skip-link:focus {
+  left: var(--bs-navigation-header-padding-x);
+}
+
+/* `default` and `with-navigation-drawer` both space their (present) children with a fixed gap;
+   `center` instead relies on the logo and `right` slot both being flex: 1 (below), which absorbs
+   all remaining space and needs no extra gap of its own -- see bs-navigation-header.tsx's class
+   doc for why. */
+.bs-navigation-header--default,
+.bs-navigation-header--with-navigation-drawer {
+  gap: var(--bs-navigation-header-item-gap);
+}
+
+.bs-navigation-header__logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+.bs-navigation-header--center .bs-navigation-header__logo {
+  flex: 1 0 0;
+  min-width: 0;
+}
+
+.bs-navigation-header__left {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-navigation-header-slot-gap);
+  flex-shrink: 0;
+}
+
+.bs-navigation-header__right {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--bs-navigation-header-slot-gap);
+  flex: 1 0 0;
+  min-width: 0;
+}

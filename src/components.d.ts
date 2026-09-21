@@ -16,6 +16,8 @@ import { BsComposerStatusBannerType } from "./components/bs-composer-status-bann
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 import { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-button/bs-icon-button/bs-icon-button";
 import { BsModalSize } from "./components/bs-modal/bs-modal";
+import { BsNavigationHeaderAlignment } from "./components/bs-navigation-header/bs-navigation-header";
+import { BsSliderType } from "./components/bs-slider/bs-slider";
 import { BsSwitchSize } from "./components/bs-switch/bs-switch";
 import { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 import { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
@@ -30,6 +32,8 @@ export { BsComposerStatusBannerType } from "./components/bs-composer-status-bann
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 export { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-button/bs-icon-button/bs-icon-button";
 export { BsModalSize } from "./components/bs-modal/bs-modal";
+export { BsNavigationHeaderAlignment } from "./components/bs-navigation-header/bs-navigation-header";
+export { BsSliderType } from "./components/bs-slider/bs-slider";
 export { BsSwitchSize } from "./components/bs-switch/bs-switch";
 export { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 export { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
@@ -1022,6 +1026,45 @@ export namespace Components {
         "size": BsModalSize;
     }
     /**
+     * The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots
+     * for menu/action content (e.g. `bs-button`/`bs-icon-button` elements).
+     * ## When to use
+     * - The persistent top bar of an application, above the page content.
+     * ## When not to use
+     * - The header of a Genie AI chat panel -- use `bs-chatbot-header` instead, which is purpose-built
+     *   for that narrower layout and its own fixed action buttons.
+     * `alignment` controls both whether the logo renders and how the two slots are laid out:
+     * - `default` (default): logo on the left, `left` slot content immediately after it, `right` slot
+     *   content pushed to the far right.
+     * - `center`: logo and `right` slot both grow equally (`flex: 1`), which centers the `left` slot
+     *   content in the middle of the bar.
+     * - `with-navigation-drawer`: no logo at all (this variant assumes a nav-drawer toggle is the
+     *   leftmost thing on the page instead) -- `left` slot content starts at the bar's own left edge,
+     *   `right` slot content pushed to the far right.
+     */
+    interface BsNavigationHeader {
+        /**
+          * Controls whether the logo renders and how the `left`/`right` slots are laid out -- see the class doc above for the three variants' exact behavior.
+          * @default 'default'
+         */
+        "alignment": BsNavigationHeaderAlignment;
+        /**
+          * Accessible label for the header landmark, useful when a page has more than one `<header>` (e.g. this one plus a page-specific sub-header) and screen reader users need to tell them apart in the landmarks list.
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Fragment/URL to jump to when the "Skip to main content" link is activated (e.g. `#main-content`, matching an id on your page's main landmark). Unset by default -- the link is opt-in rather than pointing at a guessed default id, since a skip link to a target that doesn't exist on the consumer's page is worse than no skip link at all (it silently does nothing when activated). Set this to the same id your page's `<main>` (or equivalent) already has to enable it.
+          * @default null
+         */
+        "skipToContentHref": string | null;
+        /**
+          * Link text for the skip-to-content link. Only rendered when `skipToContentHref` is set.
+          * @default 'Skip to main content'
+         */
+        "skipToContentLabel": string;
+    }
+    /**
      * A single radio button with its label, for one mutually-exclusive choice within a group.
      * ## When to use
      * - One option within a set of mutually-exclusive choices, where all options should stay visible
@@ -1050,6 +1093,81 @@ export namespace Components {
           * The native radio input's `value` attribute -- read from `event.target.value`, or used when wiring the group up to a form.
          */
         "value": string;
+    }
+    /**
+     * A slider for picking a single numeric value (`type="default"`), a value snapped to evenly
+     * spaced ticks (`type="segmented"`), or a min/max pair (`type="range"`) from within a bounded
+     * `min`/`max` range.
+     * ## When to use
+     * - A numeric value that's easiest to reason about relative to its bounds (volume, brightness,
+     *   a price range) rather than typed digit-by-digit.
+     * - `type="segmented"` when only a fixed number of discrete stops make sense (e.g. a 5-star
+     *   rating-like scale) but a visual track is still preferable to discrete buttons.
+     * - `type="range"` for picking a min/max pair (e.g. a price range filter) with two thumbs.
+     * ## When not to use
+     * - A precise value where mis-dragging by a pixel matters more than the at-a-glance bounds --
+     *   use `bs-input[type="number"]` instead.
+     * - A small, fixed set of mutually exclusive choices -- use a radio group instead.
+     */
+    interface BsSlider {
+        /**
+          * Accessible name for the slider's native range input(s). Required whenever `showLabel` is `false` (a bare track with no visible "Label" text) -- without it, the internal native `<input>` has no accessible name at all. Setting `aria-label` directly on the `<bs-slider>` host does NOT work for this: that attribute stays on the light-DOM host and is never forwarded into the shadow DOM by the browser. Same pattern/reasoning as `bs-switch`'s and `bs-checkbox`'s identical `ariaLabel` prop. For `type="range"`, this labels the lower-bound thumb; the upper-bound thumb gets `"${ariaLabel} end"` (or `"End value"` when `ariaLabel` is unset).
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Disables the slider: sets the native `disabled` attribute on the range input(s), suppresses hover/focus/drag styling and the value tooltip, and prevents interaction.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * Label text shown above the track when `showLabel` is set.
+          * @default 'Label'
+         */
+        "label": string;
+        /**
+          * Maximum selectable value, for all `type`s.
+          * @default 100
+         */
+        "max": number;
+        /**
+          * Minimum selectable value, for all `type`s.
+          * @default 0
+         */
+        "min": number;
+        /**
+          * Number of equal divisions marked by tick lines along the track, for `type="segmented"` only. The first tick (at the very start of the track) is rendered with `opacity: 0` to keep the tick spacing math consistent while not visually doubling up with the track's own start edge -- this matches the design spec, not a bug.
+          * @default 10
+         */
+        "segments": number;
+        /**
+          * Shows/hides the "Label" text and editable percentage field(s) above the track, and the static min/max bound labels flanking it. When `false`, only the bare track (and its knob/knobs) renders.
+          * @default true
+         */
+        "showLabel": boolean;
+        /**
+          * Step size between selectable values. For `type="segmented"`, the effective step is derived from `(max - min) / segments` instead, so the thumb always snaps to a tick.
+          * @default 1
+         */
+        "step": number;
+        /**
+          * Which slider shape to render. `range` uses two thumbs (`valueStart`/`valueEnd`); `default` and `segmented` use one thumb (`value`). `segmented` additionally draws `segments` tick marks along the track.
+          * @default 'default'
+         */
+        "type": BsSliderType;
+        /**
+          * Current value for `type="default"`/`type="segmented"`. Ignored for `type="range"` -- use `valueStart`/`valueEnd` instead. Mutable so dragging the thumb updates it directly.
+          * @default 0
+         */
+        "value": number;
+        /**
+          * Upper thumb's value for `type="range"`. Defaults to `max` when unset. Mutable so dragging the thumb updates it directly.
+         */
+        "valueEnd"?: number;
+        /**
+          * Lower thumb's value for `type="range"`. Defaults to `min` when unset. Mutable so dragging the thumb updates it directly.
+         */
+        "valueStart"?: number;
     }
     /**
      * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
@@ -1295,6 +1413,10 @@ export interface BsModalCustomEvent<T> extends CustomEvent<T> {
 export interface BsRadioCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsRadioElement;
+}
+export interface BsSliderCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsSliderElement;
 }
 export interface BsSourceLinkCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2173,6 +2295,29 @@ declare global {
         prototype: HTMLBsModalElement;
         new (): HTMLBsModalElement;
     };
+    /**
+     * The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots
+     * for menu/action content (e.g. `bs-button`/`bs-icon-button` elements).
+     * ## When to use
+     * - The persistent top bar of an application, above the page content.
+     * ## When not to use
+     * - The header of a Genie AI chat panel -- use `bs-chatbot-header` instead, which is purpose-built
+     *   for that narrower layout and its own fixed action buttons.
+     * `alignment` controls both whether the logo renders and how the two slots are laid out:
+     * - `default` (default): logo on the left, `left` slot content immediately after it, `right` slot
+     *   content pushed to the far right.
+     * - `center`: logo and `right` slot both grow equally (`flex: 1`), which centers the `left` slot
+     *   content in the middle of the bar.
+     * - `with-navigation-drawer`: no logo at all (this variant assumes a nav-drawer toggle is the
+     *   leftmost thing on the page instead) -- `left` slot content starts at the bar's own left edge,
+     *   `right` slot content pushed to the far right.
+     */
+    interface HTMLBsNavigationHeaderElement extends Components.BsNavigationHeader, HTMLStencilElement {
+    }
+    var HTMLBsNavigationHeaderElement: {
+        prototype: HTMLBsNavigationHeaderElement;
+        new (): HTMLBsNavigationHeaderElement;
+    };
     interface HTMLBsRadioElementEventMap {
         "bsChange": string;
     }
@@ -2199,6 +2344,39 @@ declare global {
     var HTMLBsRadioElement: {
         prototype: HTMLBsRadioElement;
         new (): HTMLBsRadioElement;
+    };
+    interface HTMLBsSliderElementEventMap {
+        "bsChange": number;
+        "bsRangeChange": { start: number; end: number };
+    }
+    /**
+     * A slider for picking a single numeric value (`type="default"`), a value snapped to evenly
+     * spaced ticks (`type="segmented"`), or a min/max pair (`type="range"`) from within a bounded
+     * `min`/`max` range.
+     * ## When to use
+     * - A numeric value that's easiest to reason about relative to its bounds (volume, brightness,
+     *   a price range) rather than typed digit-by-digit.
+     * - `type="segmented"` when only a fixed number of discrete stops make sense (e.g. a 5-star
+     *   rating-like scale) but a visual track is still preferable to discrete buttons.
+     * - `type="range"` for picking a min/max pair (e.g. a price range filter) with two thumbs.
+     * ## When not to use
+     * - A precise value where mis-dragging by a pixel matters more than the at-a-glance bounds --
+     *   use `bs-input[type="number"]` instead.
+     * - A small, fixed set of mutually exclusive choices -- use a radio group instead.
+     */
+    interface HTMLBsSliderElement extends Components.BsSlider, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsSliderElementEventMap>(type: K, listener: (this: HTMLBsSliderElement, ev: BsSliderCustomEvent<HTMLBsSliderElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsSliderElementEventMap>(type: K, listener: (this: HTMLBsSliderElement, ev: BsSliderCustomEvent<HTMLBsSliderElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsSliderElement: {
+        prototype: HTMLBsSliderElement;
+        new (): HTMLBsSliderElement;
     };
     interface HTMLBsSourceLinkElementEventMap {
         "bsOpen": void;
@@ -2385,7 +2563,9 @@ declare global {
         "bs-menu": HTMLBsMenuElement;
         "bs-menu-item": HTMLBsMenuItemElement;
         "bs-modal": HTMLBsModalElement;
+        "bs-navigation-header": HTMLBsNavigationHeaderElement;
         "bs-radio": HTMLBsRadioElement;
+        "bs-slider": HTMLBsSliderElement;
         "bs-source-link": HTMLBsSourceLinkElement;
         "bs-switch": HTMLBsSwitchElement;
         "bs-tab": HTMLBsTabElement;
@@ -3523,6 +3703,45 @@ declare namespace LocalJSX {
         "size"?: BsModalSize;
     }
     /**
+     * The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots
+     * for menu/action content (e.g. `bs-button`/`bs-icon-button` elements).
+     * ## When to use
+     * - The persistent top bar of an application, above the page content.
+     * ## When not to use
+     * - The header of a Genie AI chat panel -- use `bs-chatbot-header` instead, which is purpose-built
+     *   for that narrower layout and its own fixed action buttons.
+     * `alignment` controls both whether the logo renders and how the two slots are laid out:
+     * - `default` (default): logo on the left, `left` slot content immediately after it, `right` slot
+     *   content pushed to the far right.
+     * - `center`: logo and `right` slot both grow equally (`flex: 1`), which centers the `left` slot
+     *   content in the middle of the bar.
+     * - `with-navigation-drawer`: no logo at all (this variant assumes a nav-drawer toggle is the
+     *   leftmost thing on the page instead) -- `left` slot content starts at the bar's own left edge,
+     *   `right` slot content pushed to the far right.
+     */
+    interface BsNavigationHeader {
+        /**
+          * Controls whether the logo renders and how the `left`/`right` slots are laid out -- see the class doc above for the three variants' exact behavior.
+          * @default 'default'
+         */
+        "alignment"?: BsNavigationHeaderAlignment;
+        /**
+          * Accessible label for the header landmark, useful when a page has more than one `<header>` (e.g. this one plus a page-specific sub-header) and screen reader users need to tell them apart in the landmarks list.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Fragment/URL to jump to when the "Skip to main content" link is activated (e.g. `#main-content`, matching an id on your page's main landmark). Unset by default -- the link is opt-in rather than pointing at a guessed default id, since a skip link to a target that doesn't exist on the consumer's page is worse than no skip link at all (it silently does nothing when activated). Set this to the same id your page's `<main>` (or equivalent) already has to enable it.
+          * @default null
+         */
+        "skipToContentHref"?: string | null;
+        /**
+          * Link text for the skip-to-content link. Only rendered when `skipToContentHref` is set.
+          * @default 'Skip to main content'
+         */
+        "skipToContentLabel"?: string;
+    }
+    /**
      * A single radio button with its label, for one mutually-exclusive choice within a group.
      * ## When to use
      * - One option within a set of mutually-exclusive choices, where all options should stay visible
@@ -3555,6 +3774,89 @@ declare namespace LocalJSX {
           * The native radio input's `value` attribute -- read from `event.target.value`, or used when wiring the group up to a form.
          */
         "value"?: string;
+    }
+    /**
+     * A slider for picking a single numeric value (`type="default"`), a value snapped to evenly
+     * spaced ticks (`type="segmented"`), or a min/max pair (`type="range"`) from within a bounded
+     * `min`/`max` range.
+     * ## When to use
+     * - A numeric value that's easiest to reason about relative to its bounds (volume, brightness,
+     *   a price range) rather than typed digit-by-digit.
+     * - `type="segmented"` when only a fixed number of discrete stops make sense (e.g. a 5-star
+     *   rating-like scale) but a visual track is still preferable to discrete buttons.
+     * - `type="range"` for picking a min/max pair (e.g. a price range filter) with two thumbs.
+     * ## When not to use
+     * - A precise value where mis-dragging by a pixel matters more than the at-a-glance bounds --
+     *   use `bs-input[type="number"]` instead.
+     * - A small, fixed set of mutually exclusive choices -- use a radio group instead.
+     */
+    interface BsSlider {
+        /**
+          * Accessible name for the slider's native range input(s). Required whenever `showLabel` is `false` (a bare track with no visible "Label" text) -- without it, the internal native `<input>` has no accessible name at all. Setting `aria-label` directly on the `<bs-slider>` host does NOT work for this: that attribute stays on the light-DOM host and is never forwarded into the shadow DOM by the browser. Same pattern/reasoning as `bs-switch`'s and `bs-checkbox`'s identical `ariaLabel` prop. For `type="range"`, this labels the lower-bound thumb; the upper-bound thumb gets `"${ariaLabel} end"` (or `"End value"` when `ariaLabel` is unset).
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Disables the slider: sets the native `disabled` attribute on the range input(s), suppresses hover/focus/drag styling and the value tooltip, and prevents interaction.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * Label text shown above the track when `showLabel` is set.
+          * @default 'Label'
+         */
+        "label"?: string;
+        /**
+          * Maximum selectable value, for all `type`s.
+          * @default 100
+         */
+        "max"?: number;
+        /**
+          * Minimum selectable value, for all `type`s.
+          * @default 0
+         */
+        "min"?: number;
+        /**
+          * Emitted when `value` changes via user interaction (dragging the thumb, or committing the value field), with the new value. Only fires for `type="default"`/`type="segmented"`.
+         */
+        "onBsChange"?: (event: BsSliderCustomEvent<number>) => void;
+        /**
+          * Emitted when `valueStart`/`valueEnd` changes via user interaction, with both current values. Only fires for `type="range"`.
+         */
+        "onBsRangeChange"?: (event: BsSliderCustomEvent<{ start: number; end: number }>) => void;
+        /**
+          * Number of equal divisions marked by tick lines along the track, for `type="segmented"` only. The first tick (at the very start of the track) is rendered with `opacity: 0` to keep the tick spacing math consistent while not visually doubling up with the track's own start edge -- this matches the design spec, not a bug.
+          * @default 10
+         */
+        "segments"?: number;
+        /**
+          * Shows/hides the "Label" text and editable percentage field(s) above the track, and the static min/max bound labels flanking it. When `false`, only the bare track (and its knob/knobs) renders.
+          * @default true
+         */
+        "showLabel"?: boolean;
+        /**
+          * Step size between selectable values. For `type="segmented"`, the effective step is derived from `(max - min) / segments` instead, so the thumb always snaps to a tick.
+          * @default 1
+         */
+        "step"?: number;
+        /**
+          * Which slider shape to render. `range` uses two thumbs (`valueStart`/`valueEnd`); `default` and `segmented` use one thumb (`value`). `segmented` additionally draws `segments` tick marks along the track.
+          * @default 'default'
+         */
+        "type"?: BsSliderType;
+        /**
+          * Current value for `type="default"`/`type="segmented"`. Ignored for `type="range"` -- use `valueStart`/`valueEnd` instead. Mutable so dragging the thumb updates it directly.
+          * @default 0
+         */
+        "value"?: number;
+        /**
+          * Upper thumb's value for `type="range"`. Defaults to `max` when unset. Mutable so dragging the thumb updates it directly.
+         */
+        "valueEnd"?: number;
+        /**
+          * Lower thumb's value for `type="range"`. Defaults to `min` when unset. Mutable so dragging the thumb updates it directly.
+         */
+        "valueStart"?: number;
     }
     /**
      * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
@@ -3887,11 +4189,31 @@ declare namespace LocalJSX {
         "heading": string;
         "size": BsModalSize;
     }
+    interface BsNavigationHeaderAttributes {
+        "alignment": BsNavigationHeaderAlignment;
+        "ariaLabel": string | null;
+        "skipToContentHref": string | null;
+        "skipToContentLabel": string;
+    }
     interface BsRadioAttributes {
         "name": string;
         "value": string;
         "checked": boolean;
         "disabled": boolean;
+    }
+    interface BsSliderAttributes {
+        "type": BsSliderType;
+        "showLabel": boolean;
+        "label": string;
+        "min": number;
+        "max": number;
+        "step": number;
+        "value": number;
+        "valueStart": number;
+        "valueEnd": number;
+        "segments": number;
+        "disabled": boolean;
+        "ariaLabel": string | null;
     }
     interface BsSourceLinkAttributes {
         "fileName": string;
@@ -3945,7 +4267,9 @@ declare namespace LocalJSX {
         "bs-menu": BsMenu;
         "bs-menu-item": Omit<BsMenuItem, keyof BsMenuItemAttributes> & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes]?: BsMenuItem[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `attr:${K}`]?: BsMenuItemAttributes[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `prop:${K}`]?: BsMenuItem[K] };
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
+        "bs-navigation-header": Omit<BsNavigationHeader, keyof BsNavigationHeaderAttributes> & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes]?: BsNavigationHeader[K] } & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes as `attr:${K}`]?: BsNavigationHeaderAttributes[K] } & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes as `prop:${K}`]?: BsNavigationHeader[K] };
         "bs-radio": Omit<BsRadio, keyof BsRadioAttributes> & { [K in keyof BsRadio & keyof BsRadioAttributes]?: BsRadio[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `attr:${K}`]?: BsRadioAttributes[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `prop:${K}`]?: BsRadio[K] };
+        "bs-slider": Omit<BsSlider, keyof BsSliderAttributes> & { [K in keyof BsSlider & keyof BsSliderAttributes]?: BsSlider[K] } & { [K in keyof BsSlider & keyof BsSliderAttributes as `attr:${K}`]?: BsSliderAttributes[K] } & { [K in keyof BsSlider & keyof BsSliderAttributes as `prop:${K}`]?: BsSlider[K] };
         "bs-source-link": Omit<BsSourceLink, keyof BsSourceLinkAttributes> & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes]?: BsSourceLink[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `attr:${K}`]?: BsSourceLinkAttributes[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `prop:${K}`]?: BsSourceLink[K] };
         "bs-switch": Omit<BsSwitch, keyof BsSwitchAttributes> & { [K in keyof BsSwitch & keyof BsSwitchAttributes]?: BsSwitch[K] } & { [K in keyof BsSwitch & keyof BsSwitchAttributes as `attr:${K}`]?: BsSwitchAttributes[K] } & { [K in keyof BsSwitch & keyof BsSwitchAttributes as `prop:${K}`]?: BsSwitch[K] };
         "bs-tab": Omit<BsTab, keyof BsTabAttributes> & { [K in keyof BsTab & keyof BsTabAttributes]?: BsTab[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `attr:${K}`]?: BsTabAttributes[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `prop:${K}`]?: BsTab[K] };
@@ -4523,6 +4847,24 @@ declare module "@stencil/core" {
              */
             "bs-modal": LocalJSX.IntrinsicElements["bs-modal"] & JSXBase.HTMLAttributes<HTMLBsModalElement>;
             /**
+             * The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots
+             * for menu/action content (e.g. `bs-button`/`bs-icon-button` elements).
+             * ## When to use
+             * - The persistent top bar of an application, above the page content.
+             * ## When not to use
+             * - The header of a Genie AI chat panel -- use `bs-chatbot-header` instead, which is purpose-built
+             *   for that narrower layout and its own fixed action buttons.
+             * `alignment` controls both whether the logo renders and how the two slots are laid out:
+             * - `default` (default): logo on the left, `left` slot content immediately after it, `right` slot
+             *   content pushed to the far right.
+             * - `center`: logo and `right` slot both grow equally (`flex: 1`), which centers the `left` slot
+             *   content in the middle of the bar.
+             * - `with-navigation-drawer`: no logo at all (this variant assumes a nav-drawer toggle is the
+             *   leftmost thing on the page instead) -- `left` slot content starts at the bar's own left edge,
+             *   `right` slot content pushed to the far right.
+             */
+            "bs-navigation-header": LocalJSX.IntrinsicElements["bs-navigation-header"] & JSXBase.HTMLAttributes<HTMLBsNavigationHeaderElement>;
+            /**
              * A single radio button with its label, for one mutually-exclusive choice within a group.
              * ## When to use
              * - One option within a set of mutually-exclusive choices, where all options should stay visible
@@ -4533,6 +4875,22 @@ declare module "@stencil/core" {
              * - An on/off setting that takes effect immediately (no explicit form submission) -- use `bs-switch`.
              */
             "bs-radio": LocalJSX.IntrinsicElements["bs-radio"] & JSXBase.HTMLAttributes<HTMLBsRadioElement>;
+            /**
+             * A slider for picking a single numeric value (`type="default"`), a value snapped to evenly
+             * spaced ticks (`type="segmented"`), or a min/max pair (`type="range"`) from within a bounded
+             * `min`/`max` range.
+             * ## When to use
+             * - A numeric value that's easiest to reason about relative to its bounds (volume, brightness,
+             *   a price range) rather than typed digit-by-digit.
+             * - `type="segmented"` when only a fixed number of discrete stops make sense (e.g. a 5-star
+             *   rating-like scale) but a visual track is still preferable to discrete buttons.
+             * - `type="range"` for picking a min/max pair (e.g. a price range filter) with two thumbs.
+             * ## When not to use
+             * - A precise value where mis-dragging by a pixel matters more than the at-a-glance bounds --
+             *   use `bs-input[type="number"]` instead.
+             * - A small, fixed set of mutually exclusive choices -- use a radio group instead.
+             */
+            "bs-slider": LocalJSX.IntrinsicElements["bs-slider"] & JSXBase.HTMLAttributes<HTMLBsSliderElement>;
             /**
              * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
              * line, the originating system and version on the second, and a trailing "open" arrow.

@@ -1,0 +1,105 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SliderStories from './bs-slider.stories';
+
+<Meta of={SliderStories} />
+
+# Slider
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Segmented](#segmented)
+- [Range](#range)
+- [Disabled](#disabled)
+- [Bare track](#bare-track)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A slider for picking a single numeric value (`type="default"`), a value snapped to evenly spaced
+ticks (`type="segmented"`), or a min/max pair (`type="range"`) from within a bounded `min`/`max`
+range.
+
+**When to use**
+- A numeric value that's easiest to reason about relative to its bounds (volume, brightness, a
+  price range) rather than typed digit-by-digit.
+- `type="segmented"` when only a fixed number of discrete stops make sense but a visual track is
+  still preferable to discrete buttons.
+- `type="range"` for picking a min/max pair (e.g. a price range filter) with two thumbs.
+
+**When not to use**
+- A precise value where mis-dragging by a pixel matters more than the at-a-glance bounds -- use
+  `bs-input[type="number"]` instead.
+- A small, fixed set of mutually exclusive choices -- use a radio group instead.
+
+<Canvas of={SliderStories.Default} />
+
+## Segmented
+
+`type="segmented"` snaps the thumb to `segments` evenly spaced ticks along the track (the
+effective step is derived from `(max - min) / segments`, so the thumb can't land between ticks).
+
+<Canvas of={SliderStories.Segmented} />
+
+## Range
+
+`type="range"` renders two thumbs (`valueStart`/`valueEnd`) for picking a min/max pair. `value` is
+ignored in this mode.
+
+<Canvas of={SliderStories.Range} />
+
+## Disabled
+
+<Canvas of={SliderStories.Disabled} />
+
+## Bare track
+
+`showLabel="false"` hides the "Label" text and the numeric value field(s) on both sides, leaving
+just the track and its knob(s) -- useful when the surrounding layout already supplies its own
+label.
+
+<Canvas of={SliderStories.BareTrack} />
+
+## Component API
+
+<Controls of={SliderStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- CSS Custom Properties: `--bs-slider-gap`, `--bs-slider-label-color`,
+  `--bs-slider-label-color-disabled`, `--bs-slider-label-font-weight`, `--bs-slider-track-height`,
+  `--bs-slider-track-radius`, `--bs-slider-track-bg`, `--bs-slider-track-bg-disabled`,
+  `--bs-slider-fill-bg`, `--bs-slider-fill-bg-disabled`, `--bs-slider-knob-hit-size`,
+  `--bs-slider-knob-size`, `--bs-slider-knob-bg`, `--bs-slider-knob-color-disabled`,
+  `--bs-slider-knob-shadow`, `--bs-slider-focus-ring-color`, `--bs-slider-tick-bg`,
+  `--bs-slider-tooltip-bg`, `--bs-slider-tooltip-color`, `--bs-slider-tooltip-radius`,
+  `--bs-slider-field-width`, `--bs-slider-field-border`, `--bs-slider-field-bg`,
+  `--bs-slider-field-radius`, `--bs-slider-field-text`, `--bs-slider-field-text-disabled`
+- Slots: none
+- Shadow parts: `::part(label)`, `::part(field)`, `::part(track)`, `::part(fill)`,
+  `::part(control)`, `::part(tooltip)`
+
+## Events
+
+| Event           | Fires when                                                                   | Payload                        | Cancelable |
+| --------------- | ----------------------------------------------------------------------------- | ------------------------------- | ---------- |
+| `bsChange`      | `value` changes via dragging the thumb or committing the value field (`type="default"`/`"segmented"` only) | `number`                        | No         |
+| `bsRangeChange` | `valueStart`/`valueEnd` changes via dragging a thumb or committing a value field (`type="range"` only)     | `{ start: number; end: number }` | No         |
+
+## Accessibility
+
+- Renders one (or, for `type="range"`, two) real `<input type="range">` elements, so native
+  keyboard support (arrow keys, Home/End, Page Up/Down) and screen-reader value announcements work
+  out of the box.
+- **Required whenever `showLabel` is `false`:** set `ariaLabel` -- without a visible "Label" text
+  or an explicit `ariaLabel`, the native range input(s) have no accessible name. Setting a plain
+  `aria-label` HTML attribute on the `<bs-slider>` host does **not** work for this -- that attribute
+  never crosses into the shadow DOM. Same prop/pattern as `bs-switch`'s and `bs-checkbox`'s
+  identical `ariaLabel` prop. For `type="range"`, the lower-bound thumb gets `ariaLabel` as-is and
+  the upper-bound thumb gets `"${ariaLabel} end"`.
+- `disabled` sets the native `disabled` attribute on the range input(s) and the value field(s),
+  which removes them from the tab order and is announced by assistive technology automatically.
+- **Known gap:** the numeric value field(s) don't currently expose `aria-describedby`/error state
+  the way `bs-input` does -- they're plain unlabeled-by-visible-text `<input type="number">`s with
+  only a static `aria-label`, since the design has no room for a separate visible label per field.

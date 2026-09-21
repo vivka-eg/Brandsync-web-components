@@ -29,7 +29,7 @@ import { Component, h } from '@stencil/core';
   shadow: true,
 })
 export class BsAiDisclaimer {
-  render() {
+  render() {https://images.unsplash.com/photo-1512917774080-9991f1c4c750?w=200&h=200&fit=crop
     return (
       <div class="bs-ai-disclaimer">
         <p part="text" class="bs-ai-disclaimer__text">

@@ -1,0 +1,409 @@
+/**
+ * @prop --bs-slider-gap: Gap between the label text and the row, and between the row's own items. Aliased to --bs-spacing-100.
+ * @prop --bs-slider-label-color: Label text color, enabled. Aliased to --bs-text-default.
+ * @prop --bs-slider-label-color-disabled: Label text color, disabled. Aliased to --bs-text-muted.
+ * @prop --bs-slider-label-font-weight: Label text font weight. Aliased to --bs-font-weight-semibold.
+ * @prop --bs-slider-track-height: Track thickness, constant regardless of type. Aliased to --bs-spacing-50.
+ * @prop --bs-slider-track-radius: Track corner radius (pill). Aliased to --bs-border-radius-full.
+ * @prop --bs-slider-track-bg: Inactive track background, enabled. Aliased to --bs-surface-container.
+ * @prop --bs-slider-track-bg-disabled: Inactive track background, disabled. Aliased to --bs-surface-action-disabled.
+ * @prop --bs-slider-fill-bg: Active/filled track background, enabled. Aliased to --bs-surface-action.
+ * @prop --bs-slider-fill-bg-disabled: Active/filled track background, disabled. Aliased to --bs-surface-on-action-disabled.
+ * @prop --bs-slider-knob-hit-size: Diameter of the knob's invisible hit-target area. Aliased to --bs-spacing-600.
+ * @prop --bs-slider-knob-size: Diameter of the knob's visible circle. Aliased to --bs-spacing-300.
+ * @prop --bs-slider-knob-bg: Knob circle background, enabled/active. A solid filled dot per the Figma spec (node 5266:50184) -- not a white circle with a drop shadow. Aliased to --bs-surface-action.
+ * @prop --bs-slider-knob-color-disabled: Knob circle background, disabled. Aliased to --bs-surface-on-action-disabled (matches the disabled fill token, not the muted text token).
+ * @prop --bs-slider-focus-ring-color: Knob focus ring color. Aliased to --bs-border-primary-focus.
+ * @prop --bs-slider-focus-ring-gap-color: The gap color between the knob and its focus ring (mirrors bs-checkbox's outline-offset gap, drawn via box-shadow here since outline doesn't reliably clip to a circular ::-webkit-slider-thumb/::-moz-range-thumb pseudo-element). Aliased to --bs-surface-base.
+ * @prop --bs-slider-tick-bg: Segmented tick mark color. Aliased to --bs-surface-inset.
+ * @prop --bs-slider-tooltip-bg: Value tooltip background. Aliased to --bs-surface-inverse.
+ * @prop --bs-slider-tooltip-color: Value tooltip text color. Aliased to --bs-text-inverse.
+ * @prop --bs-slider-tooltip-radius: Value tooltip corner radius. Aliased to --bs-border-radius-50.
+ * @prop --bs-slider-field-width: Width of each editable percentage field. Fixed 56px per the design spec.
+ * @prop --bs-slider-field-border: Percentage field border color. Aliased to --bs-input-border-default.
+ * @prop --bs-slider-field-bg: Percentage field background. Aliased to --bs-input-bg-default.
+ * @prop --bs-slider-field-radius: Percentage field corner radius. Aliased to --bs-border-radius-100.
+ * @prop --bs-slider-field-text: Percentage field text color (input value and "%" suffix). Aliased to --bs-input-text.
+ * @prop --bs-slider-field-text-disabled: Percentage field text color, disabled. Aliased to --bs-text-on-disabled.
+ * @prop --bs-slider-bound-color: Static min/max bound label color, enabled. Aliased to --bs-text-default.
+ * @prop --bs-slider-bound-color-disabled: Static min/max bound label color, disabled. Aliased to --bs-text-on-disabled.
+ */
+:host {
+  display: block;
+
+  --bs-slider-gap: var(--bs-spacing-100);
+
+  --bs-slider-label-color: var(--bs-text-default);
+  --bs-slider-label-color-disabled: var(--bs-text-muted);
+  --bs-slider-label-font-weight: var(--bs-font-weight-semibold);
+
+  --bs-slider-track-height: var(--bs-spacing-50);
+  --bs-slider-track-radius: var(--bs-border-radius-full);
+  --bs-slider-track-bg: var(--bs-surface-container);
+  --bs-slider-track-bg-disabled: var(--bs-surface-action-disabled);
+
+  --bs-slider-fill-bg: var(--bs-surface-action);
+  --bs-slider-fill-bg-disabled: var(--bs-surface-on-action-disabled);
+
+  --bs-slider-knob-hit-size: var(--bs-spacing-600);
+  --bs-slider-knob-size: var(--bs-spacing-300);
+  --bs-slider-knob-bg: var(--bs-surface-action);
+  --bs-slider-knob-color-disabled: var(--bs-surface-on-action-disabled);
+  --bs-slider-focus-ring-color: var(--bs-border-primary-focus);
+  --bs-slider-focus-ring-gap-color: var(--bs-surface-base);
+
+  --bs-slider-tick-bg: var(--bs-surface-inset);
+
+  --bs-slider-tooltip-bg: var(--bs-surface-inverse);
+  --bs-slider-tooltip-color: var(--bs-text-inverse);
+  --bs-slider-tooltip-radius: var(--bs-border-radius-50);
+
+  --bs-slider-field-width: 56px;
+  --bs-slider-field-border: var(--bs-input-border-default);
+  --bs-slider-field-bg: var(--bs-input-bg-default);
+  --bs-slider-field-radius: var(--bs-border-radius-100);
+  --bs-slider-field-text: var(--bs-input-text);
+  --bs-slider-field-text-disabled: var(--bs-text-on-disabled);
+
+  --bs-slider-bound-color: var(--bs-text-default);
+  --bs-slider-bound-color-disabled: var(--bs-text-on-disabled);
+}
+
+.bs-slider {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-slider-gap);
+  font-family: inherit;
+}
+
+.bs-slider__label {
+  font-size: var(--bs-font-size-sm);
+  font-weight: var(--bs-slider-label-font-weight);
+  color: var(--bs-slider-label-color);
+}
+
+.bs-slider--disabled .bs-slider__label {
+  color: var(--bs-slider-label-color-disabled);
+  font-weight: normal;
+}
+
+/* Top row: label on the left, editable percentage field(s) on the right -- per the Figma spec,
+   distinct from .bs-slider__row below (the track itself, flanked by static min/max bounds). */
+.bs-slider__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--bs-slider-gap);
+}
+
+.bs-slider__value-fields {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-spacing-100);
+}
+
+.bs-slider__row {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-slider-gap);
+}
+
+/* Static min/max bound label flanking the track -- plain text, not a bordered field (the
+   editable field lives in .bs-slider__header instead; see bs-slider.tsx's render() comment). */
+.bs-slider__bound {
+  color: var(--bs-slider-bound-color);
+  font-size: var(--bs-font-size-md);
+  flex-shrink: 0;
+}
+
+.bs-slider--disabled .bs-slider__bound {
+  color: var(--bs-slider-bound-color-disabled);
+}
+
+.bs-slider__separator {
+  color: var(--bs-slider-field-text);
+  flex-shrink: 0;
+}
+
+.bs-slider--disabled .bs-slider__separator {
+  color: var(--bs-slider-field-text-disabled);
+}
+
+/* Editable percentage field (56px box, shown top-right above the track) */
+.bs-slider__field {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  gap: var(--bs-spacing-25);
+  flex-shrink: 0;
+  width: var(--bs-slider-field-width);
+  border: 1px solid var(--bs-slider-field-border);
+  border-radius: var(--bs-slider-field-radius);
+  background: var(--bs-slider-field-bg);
+  padding: var(--bs-spacing-50) var(--bs-spacing-100);
+}
+
+.bs-slider--disabled .bs-slider__field {
+  cursor: not-allowed;
+}
+
+.bs-slider__field-input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  padding: 0;
+  background: transparent;
+  color: var(--bs-slider-field-text);
+  font-size: var(--bs-font-size-sm);
+  font-family: inherit;
+  text-align: left;
+  /* Suppress the native number spinner arrows -- these are plain value fields, not steppers. */
+  -moz-appearance: textfield;
+}
+
+.bs-slider__field-suffix {
+  flex-shrink: 0;
+  color: var(--bs-slider-field-text);
+  font-size: var(--bs-font-size-sm);
+}
+
+.bs-slider--disabled .bs-slider__field-suffix {
+  color: var(--bs-slider-field-text-disabled);
+}
+
+.bs-slider__field-input::-webkit-outer-spin-button,
+.bs-slider__field-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.bs-slider__field-input:disabled {
+  color: var(--bs-slider-field-text-disabled);
+  cursor: not-allowed;
+}
+
+/* Track + knob(s) */
+.bs-slider__track-wrapper {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  /* Tall enough for the 48px knob hit-target to sit centered on the track without clipping. */
+  height: var(--bs-slider-knob-hit-size);
+  display: flex;
+  align-items: center;
+}
+
+/* pointer-events: none on the track and its fill (below) is required, not decorative: in
+   type="range" mode, each native range input has pointer-events: none on its own box with auto
+   restored only on its ::-webkit-slider-thumb/::-moz-range-thumb pseudo-element (see
+   .bs-slider__input--start/--end further down) so overlapping thumbs stay independently
+   grabbable. Without this rule, the track/fill divs -- which sit earlier in paint order but
+   still have their default pointer-events: auto -- silently swallow the click/drag before it
+   ever reaches the thumb pseudo-element, since a plain pointer-events: auto box always wins a
+   hit-test over a pointer-events: none host even when that host's own pseudo-element opts back
+   into auto. Confirmed via document.elementFromPoint at a thumb's exact screen position landing
+   on .bs-slider__track-fill instead of the input. type="default"/"segmented" mode isn't affected
+   either way, since that single input keeps pointer-events: auto on its whole box. */
+.bs-slider__track {
+  position: relative;
+  width: 100%;
+  height: var(--bs-slider-track-height);
+  border-radius: var(--bs-slider-track-radius);
+  background: var(--bs-slider-track-bg);
+  overflow: visible;
+  pointer-events: none;
+}
+
+.bs-slider--disabled .bs-slider__track {
+  background: var(--bs-slider-track-bg-disabled);
+}
+
+.bs-slider__track-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--bs-slider-fill-start, 0%);
+  right: calc(100% - var(--bs-slider-fill-end, 0%));
+  border-radius: var(--bs-slider-track-radius);
+  background: var(--bs-slider-fill-bg);
+}
+
+.bs-slider--disabled .bs-slider__track-fill {
+  background: var(--bs-slider-fill-bg-disabled);
+}
+
+/* Segmented tick marks */
+.bs-slider__ticks {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 0;
+  display: flex;
+  justify-content: space-between;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.bs-slider__tick {
+  width: 2px;
+  height: var(--bs-spacing-50);
+  background: var(--bs-slider-tick-bg);
+}
+
+/* First tick is deliberately invisible -- see bs-slider.tsx's renderSegmentedTicks comment. */
+.bs-slider__tick--hidden {
+  opacity: 0;
+}
+
+/* The native range input(s) sit on top of the track visuals, fully transparent except for the
+   thumb, which is styled to look like the 48px-hit-target/24px-visible-circle knob. */
+.bs-slider__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+.bs-slider--disabled .bs-slider__input {
+  cursor: not-allowed;
+}
+
+.bs-slider__input::-webkit-slider-runnable-track {
+  background: transparent;
+}
+
+.bs-slider__input::-moz-range-track {
+  background: transparent;
+}
+
+/* The visible knob circle. The Figma spec calls for a 48x48 invisible hit-target with a 24x24
+   circle centered inside it (12px inset on all sides); this instead sizes the thumb pseudo-element
+   directly at the visible 24px diameter -- simpler and more reliable across browsers (no
+   radial-gradient/filter-drop-shadow faking needed for the shadow/focus-ring to hug the circle
+   correctly), at the cost of a smaller drag-grab tolerance than the full 48px target. In
+   type="default"/"segmented" mode this doesn't reduce the actual clickable area versus the spec
+   anyway, since the whole (48px-tall) native input already registers clicks across the full
+   track width, not just near the thumb -- only two-thumb type="range" mode's thumb-only
+   pointer-events restriction is affected. */
+.bs-slider__input::-webkit-slider-thumb {
+  appearance: none;
+  box-sizing: border-box;
+  width: var(--bs-slider-knob-size);
+  height: var(--bs-slider-knob-size);
+  border-radius: var(--bs-border-radius-full);
+  border: none;
+  background: var(--bs-slider-knob-bg);
+  cursor: pointer;
+}
+
+.bs-slider__input::-moz-range-thumb {
+  box-sizing: border-box;
+  width: var(--bs-slider-knob-size);
+  height: var(--bs-slider-knob-size);
+  border-radius: var(--bs-border-radius-full);
+  border: none;
+  background: var(--bs-slider-knob-bg);
+  cursor: pointer;
+}
+
+/* Split per the same mixed-vendor-prefix selector-list caveat noted further down -- a single rule
+   combining ::-webkit-slider-thumb and ::-moz-range-thumb would be silently dropped in its
+   entirety by Chromium. */
+.bs-slider--disabled .bs-slider__input::-webkit-slider-thumb {
+  cursor: not-allowed;
+  background: var(--bs-slider-knob-color-disabled);
+}
+
+.bs-slider--disabled .bs-slider__input::-moz-range-thumb {
+  cursor: not-allowed;
+  background: var(--bs-slider-knob-color-disabled);
+}
+
+/* Two-thumb range mode: each input's own track is invisible and only the thumb receives pointer
+   events, so clicks/drags pass through to whichever thumb is on top at that pixel -- see
+   bs-slider.tsx's renderRangeThumbs comment for the z-index heuristic that picks which one that is. */
+.bs-slider__input--start,
+.bs-slider__input--end {
+  pointer-events: none;
+}
+
+/* Split into two separate rules, not one shared comma list: a plain (non-:is()) selector list
+   where any branch uses a pseudo-element the browser doesn't recognize -- e.g. ::-moz-range-thumb
+   in Chromium -- makes the ENTIRE rule invalid, silently dropping every branch including the
+   ::-webkit-slider-thumb ones. This was the actual bug behind "can't drag the range slider": the
+   combined 4-selector version of this rule was silently discarded by Chromium in its entirety, so
+   pointer-events stayed `none` on the thumbs and clicks fell through to whatever sat underneath. */
+.bs-slider__input--start::-webkit-slider-thumb,
+.bs-slider__input--end::-webkit-slider-thumb {
+  pointer-events: auto;
+}
+
+.bs-slider__input--start::-moz-range-thumb,
+.bs-slider__input--end::-moz-range-thumb {
+  pointer-events: auto;
+}
+
+/* Focus ring + value tooltip -- shown on :focus-visible (keyboard) and :active (actively
+   dragging), hidden otherwise. Convention: bs-switch/bs-checkbox draw their focus ring via
+   `outline` + `outline-offset` (a gap, then the ring), but `outline` on a circular
+   ::-webkit-slider-thumb/::-moz-range-thumb pseudo-element isn't reliably clipped to the circle's
+   shape across browsers -- two stacked box-shadows reproduce the same gap-then-ring look instead
+   (per Figma node 5266:50187: a 2px gap in the page background color, then a 2px ring). */
+.bs-slider__input:focus-visible::-webkit-slider-thumb,
+.bs-slider__input:active::-webkit-slider-thumb {
+  box-shadow: 0 0 0 2px var(--bs-slider-focus-ring-gap-color), 0 0 0 4px var(--bs-slider-focus-ring-color);
+}
+
+.bs-slider__input:focus-visible::-moz-range-thumb,
+.bs-slider__input:active::-moz-range-thumb {
+  box-shadow: 0 0 0 2px var(--bs-slider-focus-ring-gap-color), 0 0 0 4px var(--bs-slider-focus-ring-color);
+}
+
+.bs-slider__tooltip {
+  position: absolute;
+  bottom: calc(50% + 38px);
+  transform: translateX(-50%);
+  padding: var(--bs-spacing-25) var(--bs-spacing-100);
+  background: var(--bs-slider-tooltip-bg);
+  color: var(--bs-slider-tooltip-color);
+  border-radius: var(--bs-slider-tooltip-radius);
+  font-size: var(--bs-font-size-xs);
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.1s ease;
+}
+
+.bs-slider__tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: var(--bs-slider-tooltip-bg);
+  clip-path: polygon(50% 100%, 0% 0%, 100% 0%);
+}
+
+.bs-slider__input:focus-visible ~ .bs-slider__tooltip,
+.bs-slider__input:active ~ .bs-slider__tooltip {
+  opacity: 1;
+}
+
+/* In range mode, only the tooltip belonging to the input that's currently focused/active shows --
+   :focus-visible/:active on --start only reveals --start's own tooltip, same for --end, since
+   both tooltips are siblings of both inputs but only match their own type-scoped selector below. */
+.bs-slider__input--start:focus-visible ~ .bs-slider__tooltip--end,
+.bs-slider__input--start:active ~ .bs-slider__tooltip--end,
+.bs-slider__input--end:focus-visible ~ .bs-slider__tooltip--start,
+.bs-slider__input--end:active ~ .bs-slider__tooltip--start {
+  opacity: 0;
+}

@@ -1,0 +1,87 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as NavigationHeaderStories from './bs-navigation-header.stories';
+
+<Meta of={NavigationHeaderStories} />
+
+# Navigation Header
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Center alignment](#center-alignment)
+- [With navigation drawer](#with-navigation-drawer)
+- [Left slot as tabs](#left-slot-as-tabs)
+- [Skip to content](#skip-to-content)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots for
+menu/action content.
+
+**When to use**
+- The persistent top bar of an application, above the page content.
+
+**When not to use**
+- The header of a Genie AI chat panel -- use `bs-chatbot-header` instead, which is purpose-built
+  for that narrower layout and its own fixed action buttons.
+
+<Canvas of={NavigationHeaderStories.Default} />
+
+## Center alignment
+
+The logo and `right` slot both grow equally, which centers the `left` slot content in the middle
+of the bar.
+
+<Canvas of={NavigationHeaderStories.Center} />
+
+## With navigation drawer
+
+No logo at all -- this variant assumes a nav-drawer toggle is the leftmost thing on the page
+instead, so `left` slot content starts flush at the bar's own left edge.
+
+<Canvas of={NavigationHeaderStories.WithNavigationDrawer} />
+
+## Left slot as tabs
+
+The `left`/`right` slots aren't limited to buttons -- any content works, e.g. a `<bs-tabs
+type="bs-tab">` group for primary page navigation instead of a row of `subtle`-variant
+`bs-button`s.
+
+<Canvas of={NavigationHeaderStories.WithTabs} />
+
+## Skip to content
+
+Set `skipToContentHref` to the id of your page's main content landmark (e.g. `#main-content`) to
+render a "Skip to main content" link -- offscreen by default, brought into view on keyboard focus,
+matching the standard skip-link pattern (Carbon's UI Shell calls this `cds-skip-to-content`). It's
+opt-in rather than pointing at a guessed default id, since a skip link to a target that doesn't
+exist on your page silently does nothing when activated. Tab into the story below to see it.
+
+<Canvas of={NavigationHeaderStories.SkipToContent} />
+
+## Component API
+
+<Controls of={NavigationHeaderStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- CSS Custom Properties: `--bs-navigation-header-bg`, `--bs-navigation-header-border`,
+  `--bs-navigation-header-padding-top`, `--bs-navigation-header-padding-bottom`,
+  `--bs-navigation-header-padding-x`, `--bs-navigation-header-max-width`,
+  `--bs-navigation-header-item-gap`, `--bs-navigation-header-slot-gap`,
+  `--bs-navigation-header-skip-link-bg`, `--bs-navigation-header-skip-link-color`
+- Slots: `left`, `right`
+- Shadow parts: `::part(logo)`, `::part(left)`, `::part(right)`, `::part(skip-link)`
+
+## Accessibility
+
+- Renders a real `<header>` element, which carries the implicit `banner` landmark role as long as
+  it isn't nested inside an `<article>`/`<section>` -- no extra `role` attribute needed.
+- Set `ariaLabel` when a page has more than one `<header>` landmark (e.g. this one plus a
+  page-specific sub-header), so screen reader users can tell them apart in the landmarks list.
+- The logo is a decorative brand mark rendered with `role="img"` and a plain `aria-label="BrandSync"`
+  -- it isn't a link back to the homepage by itself; wrap it yourself (e.g. an `<a>` around the
+  whole `bs-navigation-header`, or via the `logo` shadow part) if your app needs that behavior.
+- The skip-to-content link (when `skipToContentHref` is set) is the first element inside the
+  `<header>`, ahead of the logo and both slots, so it's the first thing a keyboard user tabs to.
