@@ -1,0 +1,322 @@
+/**
+ * @prop --bs-icon-button-radius: Corner radius. Aliased to --bs-border-radius-100.
+ * @prop --bs-icon-button-size-sm: Container width/height at size="sm". 40px.
+ * @prop --bs-icon-button-size-md: Container width/height at size="md". 44px.
+ * @prop --bs-icon-button-size-lg: Container width/height at size="lg". 48px.
+ * @prop --bs-icon-button-icon-size-sm: Slotted icon width/height at size="sm". 16px.
+ * @prop --bs-icon-button-icon-size-md: Slotted icon width/height at size="md". 20px.
+ * @prop --bs-icon-button-icon-size-lg: Slotted icon width/height at size="lg". 24px.
+ * @prop --bs-icon-button-padding: Padding on all sides, all sizes (constant -- centers the icon
+ * inside the container at every size). Aliased to --bs-spacing-150.
+ * @prop --bs-icon-button-primary-default: Background, variant="primary", default. Aliased to --bs-color-primary-default.
+ * @prop --bs-icon-button-primary-hover: Background, variant="primary", hover. Aliased to --bs-color-primary-hover.
+ * @prop --bs-icon-button-primary-pressed: Background, variant="primary", pressed. Aliased to --bs-color-primary-pressed.
+ * @prop --bs-icon-button-primary-disabled: Background, variant="primary", disabled. Aliased to --bs-surface-action-disabled.
+ * @prop --bs-icon-button-neutral-container: Background, variant="neutral", default/disabled. Aliased to --bs-color-neutral-container.
+ * @prop --bs-icon-button-neutral-hover: Background, variant="neutral", hover. Aliased to --bs-color-neutral-container-hover.
+ * @prop --bs-icon-button-neutral-pressed: Background, variant="neutral", pressed. Aliased to --bs-color-neutral-container-pressed.
+ * @prop --bs-icon-button-neutral-border: Border color, variant="neutral", default/disabled. Aliased to --bs-border-neutral-container.
+ * @prop --bs-icon-button-neutral-border-hover: Border color, variant="neutral", hover. Aliased to --bs-border-neutral-container-hover.
+ * @prop --bs-icon-button-neutral-border-pressed: Border color, variant="neutral", pressed. Aliased to --bs-border-neutral-container-pressed.
+ * @prop --bs-icon-button-subtle-hover: Background, variant="subtle", hover. Aliased to --bs-color-neutral-container.
+ * @prop --bs-icon-button-subtle-pressed: Background, variant="subtle", pressed. Aliased to --bs-color-neutral-container-pressed.
+ * @prop --bs-icon-button-subtle-focus: Focus ring color, variant="subtle". Aliased to --bs-border-primary-focus.
+ * @prop --bs-icon-button-outlined-border: Border color, variant="outlined", default. Aliased to --bs-border-primary.
+ * @prop --bs-icon-button-outlined-border-hover: Border color, variant="outlined", hover/pressed. Aliased to --bs-border-primary-hover.
+ * @prop --bs-icon-button-outlined-container: Background, variant="outlined", hover/pressed. Aliased to --bs-color-primary-container.
+ * @prop --bs-icon-button-outlined-focus: Focus ring color, variant="outlined". Aliased to --bs-border-primary-focus.
+ * @prop --bs-icon-button-success-default: Background, variant="success", default. Aliased to --bs-color-success-default.
+ * @prop --bs-icon-button-success-hover: Background, variant="success", hover. Aliased to --bs-color-success-hover.
+ * @prop --bs-icon-button-success-pressed: Background, variant="success", pressed. Aliased to --bs-color-success-pressed.
+ * @prop --bs-icon-button-success-disabled: Background, variant="success", disabled. Aliased to --bs-surface-action-disabled.
+ * @prop --bs-icon-button-success-focus: Focus ring color, variant="success". Aliased to --bs-border-success-focus.
+ * @prop --bs-icon-button-warning-default: Background, variant="warning", default. Aliased to --bs-color-warning-default.
+ * @prop --bs-icon-button-warning-hover: Background, variant="warning", hover. Aliased to --bs-color-warning-hover.
+ * @prop --bs-icon-button-warning-pressed: Background, variant="warning", pressed. Aliased to --bs-color-warning-pressed.
+ * @prop --bs-icon-button-warning-disabled: Background, variant="warning", disabled. Aliased to --bs-surface-action-disabled.
+ * @prop --bs-icon-button-warning-focus: Focus ring color, variant="warning". Aliased to --bs-border-warning-focus.
+ * @prop --bs-icon-button-info-default: Background, variant="info", default. Aliased to --bs-color-info-default.
+ * @prop --bs-icon-button-info-hover: Background, variant="info", hover. Aliased to --bs-color-info-hover.
+ * @prop --bs-icon-button-info-pressed: Background, variant="info", pressed. Aliased to --bs-color-info-pressed.
+ * @prop --bs-icon-button-info-disabled: Background, variant="info", disabled. Aliased to --bs-surface-action-disabled.
+ * @prop --bs-icon-button-info-focus: Focus ring color, variant="info". Aliased to --bs-border-info-focus.
+ * @prop --bs-icon-button-error-default: Background, variant="error", default. Aliased to --bs-color-error-default.
+ * @prop --bs-icon-button-error-hover: Background, variant="error", hover. Aliased to --bs-color-error-hover.
+ * @prop --bs-icon-button-error-pressed: Background, variant="error", pressed. Aliased to --bs-color-error-pressed.
+ * @prop --bs-icon-button-error-disabled: Background, variant="error", disabled. Aliased to --bs-surface-action-disabled.
+ * @prop --bs-icon-button-error-focus: Focus ring color, variant="error". Aliased to --bs-border-error-focus.
+ */
+:host {
+  display: inline-block;
+
+  --bs-icon-button-radius: var(--bs-border-radius-100);
+  /* Confirmed against Figma node 10365:55161: Large is 48x48 with a 24x24 icon, Medium is 44x44
+     with a 20x20 icon, Small is 40x40 with a 16x16 icon -- (container - icon) / 2 is 12px in all
+     three cases, matching the one concrete Figma data point (spacing/150, 12px padding on the
+     Large size) exactly, so padding is a single constant across all sizes. */
+  --bs-icon-button-size-sm: 40px;
+  --bs-icon-button-size-md: 44px;
+  --bs-icon-button-size-lg: 48px;
+  --bs-icon-button-icon-size-sm: 16px;
+  --bs-icon-button-icon-size-md: 20px;
+  --bs-icon-button-icon-size-lg: 24px;
+  --bs-icon-button-padding: var(--bs-spacing-150);
+
+  --bs-icon-button-primary-default: var(--bs-color-primary-default);
+  --bs-icon-button-primary-hover: var(--bs-color-primary-hover);
+  --bs-icon-button-primary-pressed: var(--bs-color-primary-pressed);
+  --bs-icon-button-primary-disabled: var(--bs-surface-action-disabled);
+
+  /* Same corrected pattern already applied to bs-button--neutral: a 1px border using the
+     neutral-container border family (not the plain --bs-border-neutral-hover/-active tokens),
+     and hover/pressed backgrounds from --bs-color-neutral-container-hover/-pressed. */
+  --bs-icon-button-neutral-container: var(--bs-color-neutral-container);
+  --bs-icon-button-neutral-hover: var(--bs-color-neutral-container-hover);
+  --bs-icon-button-neutral-pressed: var(--bs-color-neutral-container-pressed);
+  --bs-icon-button-neutral-border: var(--bs-border-neutral-container);
+  --bs-icon-button-neutral-border-hover: var(--bs-border-neutral-container-hover);
+  --bs-icon-button-neutral-border-pressed: var(--bs-border-neutral-container-pressed);
+
+  --bs-icon-button-subtle-hover: var(--bs-color-neutral-container);
+  --bs-icon-button-subtle-pressed: var(--bs-color-neutral-container-pressed);
+  --bs-icon-button-subtle-focus: var(--bs-border-primary-focus);
+
+  --bs-icon-button-outlined-border: var(--bs-border-primary);
+  --bs-icon-button-outlined-border-hover: var(--bs-border-primary-hover);
+  --bs-icon-button-outlined-container: var(--bs-color-primary-container);
+  --bs-icon-button-outlined-focus: var(--bs-border-primary-focus);
+
+  --bs-icon-button-success-default: var(--bs-color-success-default);
+  --bs-icon-button-success-hover: var(--bs-color-success-hover);
+  --bs-icon-button-success-pressed: var(--bs-color-success-pressed);
+  --bs-icon-button-success-disabled: var(--bs-surface-action-disabled);
+  --bs-icon-button-success-focus: var(--bs-border-success-focus);
+
+  --bs-icon-button-warning-default: var(--bs-color-warning-default);
+  --bs-icon-button-warning-hover: var(--bs-color-warning-hover);
+  --bs-icon-button-warning-pressed: var(--bs-color-warning-pressed);
+  --bs-icon-button-warning-disabled: var(--bs-surface-action-disabled);
+  --bs-icon-button-warning-focus: var(--bs-border-warning-focus);
+
+  --bs-icon-button-info-default: var(--bs-color-info-default);
+  --bs-icon-button-info-hover: var(--bs-color-info-hover);
+  --bs-icon-button-info-pressed: var(--bs-color-info-pressed);
+  --bs-icon-button-info-disabled: var(--bs-surface-action-disabled);
+  --bs-icon-button-info-focus: var(--bs-border-info-focus);
+
+  --bs-icon-button-error-default: var(--bs-color-error-default);
+  --bs-icon-button-error-hover: var(--bs-color-error-hover);
+  --bs-icon-button-error-pressed: var(--bs-color-error-pressed);
+  --bs-icon-button-error-disabled: var(--bs-surface-action-disabled);
+  --bs-icon-button-error-focus: var(--bs-border-error-focus);
+}
+
+.bs-icon-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  border: none;
+  border-radius: var(--bs-icon-button-radius);
+  padding: var(--bs-icon-button-padding);
+  cursor: pointer;
+  transition: background-color var(--bs-duration-fast, 120ms) var(--bs-easing-standard, ease);
+}
+
+.bs-icon-button:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+
+.bs-icon-button:disabled {
+  cursor: not-allowed;
+}
+
+.bs-icon-button--sm {
+  width: var(--bs-icon-button-size-sm);
+  height: var(--bs-icon-button-size-sm);
+}
+.bs-icon-button--sm .bs-icon-button__icon {
+  width: var(--bs-icon-button-icon-size-sm);
+  height: var(--bs-icon-button-icon-size-sm);
+}
+
+.bs-icon-button--md {
+  width: var(--bs-icon-button-size-md);
+  height: var(--bs-icon-button-size-md);
+}
+.bs-icon-button--md .bs-icon-button__icon {
+  width: var(--bs-icon-button-icon-size-md);
+  height: var(--bs-icon-button-icon-size-md);
+}
+
+.bs-icon-button--lg {
+  width: var(--bs-icon-button-size-lg);
+  height: var(--bs-icon-button-size-lg);
+}
+.bs-icon-button--lg .bs-icon-button__icon {
+  width: var(--bs-icon-button-icon-size-lg);
+  height: var(--bs-icon-button-icon-size-lg);
+}
+
+.bs-icon-button__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: inherit;
+}
+
+.bs-icon-button__icon ::slotted(*) {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.bs-icon-button--primary {
+  background: var(--bs-icon-button-primary-default);
+  color: var(--bs-text-on-action);
+}
+.bs-icon-button--primary:hover:not(:disabled) {
+  background: var(--bs-icon-button-primary-hover);
+}
+.bs-icon-button--primary:active:not(:disabled) {
+  background: var(--bs-icon-button-primary-pressed);
+}
+.bs-icon-button--primary:disabled {
+  background: var(--bs-icon-button-primary-disabled);
+  color: var(--bs-text-on-disabled);
+}
+
+.bs-icon-button--neutral {
+  background: var(--bs-icon-button-neutral-container);
+  color: var(--bs-text-default);
+  border: 1px solid var(--bs-icon-button-neutral-border);
+}
+.bs-icon-button--neutral:hover:not(:disabled) {
+  background: var(--bs-icon-button-neutral-hover);
+  border-color: var(--bs-icon-button-neutral-border-hover);
+}
+.bs-icon-button--neutral:active:not(:disabled) {
+  background: var(--bs-icon-button-neutral-pressed);
+  border-color: var(--bs-icon-button-neutral-border-pressed);
+}
+.bs-icon-button--neutral:disabled {
+  background: var(--bs-icon-button-neutral-container);
+  color: var(--bs-text-on-disabled);
+  border-color: var(--bs-icon-button-neutral-border);
+}
+
+.bs-icon-button--error {
+  background: var(--bs-icon-button-error-default);
+  color: var(--bs-text-on-action);
+}
+.bs-icon-button--error:hover:not(:disabled) {
+  background: var(--bs-icon-button-error-hover);
+}
+.bs-icon-button--error:active:not(:disabled) {
+  background: var(--bs-icon-button-error-pressed);
+}
+.bs-icon-button--error:disabled {
+  background: var(--bs-icon-button-error-disabled);
+  color: var(--bs-text-on-disabled);
+}
+.bs-icon-button--error:focus-visible {
+  outline-color: var(--bs-icon-button-error-focus);
+}
+
+.bs-icon-button--success {
+  background: var(--bs-icon-button-success-default);
+  color: var(--bs-text-on-action);
+}
+.bs-icon-button--success:hover:not(:disabled) {
+  background: var(--bs-icon-button-success-hover);
+}
+.bs-icon-button--success:active:not(:disabled) {
+  background: var(--bs-icon-button-success-pressed);
+}
+.bs-icon-button--success:disabled {
+  background: var(--bs-icon-button-success-disabled);
+  color: var(--bs-text-on-disabled);
+}
+.bs-icon-button--success:focus-visible {
+  outline-color: var(--bs-icon-button-success-focus);
+}
+
+.bs-icon-button--warning {
+  background: var(--bs-icon-button-warning-default);
+  /* --bs-text-on-action (not --bs-text-default), matching bs-button--warning's own contrast fix --
+     --bs-text-default failed WCAG AA against this background in both themes. */
+  color: var(--bs-text-on-action);
+}
+.bs-icon-button--warning:hover:not(:disabled) {
+  background: var(--bs-icon-button-warning-hover);
+}
+.bs-icon-button--warning:active:not(:disabled) {
+  background: var(--bs-icon-button-warning-pressed);
+}
+.bs-icon-button--warning:disabled {
+  background: var(--bs-icon-button-warning-disabled);
+  color: var(--bs-text-on-disabled);
+}
+.bs-icon-button--warning:focus-visible {
+  outline-color: var(--bs-icon-button-warning-focus);
+}
+
+.bs-icon-button--info {
+  background: var(--bs-icon-button-info-default);
+  color: var(--bs-text-on-action);
+}
+.bs-icon-button--info:hover:not(:disabled) {
+  background: var(--bs-icon-button-info-hover);
+}
+.bs-icon-button--info:active:not(:disabled) {
+  background: var(--bs-icon-button-info-pressed);
+}
+.bs-icon-button--info:disabled {
+  background: var(--bs-icon-button-info-disabled);
+  color: var(--bs-text-on-disabled);
+}
+.bs-icon-button--info:focus-visible {
+  outline-color: var(--bs-icon-button-info-focus);
+}
+
+.bs-icon-button--subtle {
+  background: transparent;
+  color: var(--bs-icon-neutral-default);
+}
+.bs-icon-button--subtle:hover:not(:disabled) {
+  background: var(--bs-icon-button-subtle-hover);
+}
+.bs-icon-button--subtle:active:not(:disabled) {
+  background: var(--bs-icon-button-subtle-pressed);
+}
+.bs-icon-button--subtle:disabled {
+  background: transparent;
+  color: var(--bs-text-on-disabled);
+}
+.bs-icon-button--subtle:focus-visible {
+  outline-color: var(--bs-icon-button-subtle-focus);
+  background: var(--bs-icon-button-subtle-hover);
+}
+
+.bs-icon-button--outlined {
+  background: transparent;
+  color: var(--bs-color-primary-default);
+  border: 1.5px solid var(--bs-icon-button-outlined-border);
+}
+.bs-icon-button--outlined:hover:not(:disabled) {
+  background: var(--bs-icon-button-outlined-container);
+  border-color: var(--bs-icon-button-outlined-border-hover);
+}
+.bs-icon-button--outlined:active:not(:disabled) {
+  background: var(--bs-icon-button-outlined-container);
+  color: var(--bs-color-primary-pressed);
+  border-color: var(--bs-icon-button-outlined-border-hover);
+}
+.bs-icon-button--outlined:disabled {
+  opacity: var(--bs-opacity-disabled);
+  cursor: not-allowed;
+}
+.bs-icon-button--outlined:focus-visible {
+  outline-color: var(--bs-icon-button-outlined-focus);
+}

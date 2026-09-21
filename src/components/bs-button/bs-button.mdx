@@ -20,7 +20,6 @@ import * as ButtonStories from './bs-button.stories';
 - [With icon](#with-icon)
 - [With end icon](#with-end-icon)
 - [Icon-only button](#icon-only-button)
-- [Long label (edge case)](#long-label-edge-case)
 - [All variant × size × disabled combinations](#all-variant-size-disabled-combinations)
 - [Component API](#component-api)
 - [Skeleton state](#skeleton-state)
@@ -123,21 +122,9 @@ right), looser next to the label (now on the left).
 
 <Canvas of={ButtonStories.WithEndIcon} />
 
-## Icon-only button
 
-A button can render with only the `icon` slot and no visible label text — the `bs-button--icon-only`
-class adjusts padding so the button stays square instead of stretching to fit an empty label. Since
-there's no visible text, `aria-label` is required so the button still has an accessible name for
-screen readers.
 
-<Canvas of={ButtonStories.IconOnly} />
 
-## Long label (edge case)
-
-Buttons aren't designed to wrap or truncate long labels — this shows what happens when a label
-runs longer than the icon-and-text layout was designed for inside a narrow container.
-
-<Canvas of={ButtonStories.LongLabel} />
 
 ## All variant × size × disabled combinations
 

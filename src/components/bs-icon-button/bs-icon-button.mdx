@@ -1,0 +1,81 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as IconButtonStories from './bs-icon-button.stories';
+
+<Meta of={IconButtonStories} />
+
+# Icon Button
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Sizes](#sizes)
+- [Disabled state](#disabled-state)
+- [All variant × size × disabled combinations](#all-variant-size-disabled-combinations)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same 8
+visual variants and color language, but always rendering a single icon with no label.
+
+**When to use**
+- A compact action where the icon alone is unambiguous (e.g. a close/dismiss control, a toolbar
+  action) and adding a text label would take up more space than the context allows.
+- The same variant guidance as `bs-button` applies: `primary` for the single most important
+  action, `neutral`/`subtle`/`outlined` for lower-emphasis alternatives, `error` reserved for
+  destructive/irreversible actions (never `neutral`), `success`/`warning`/`info` only when the
+  action's own outcome is predictable and clearly communicated.
+
+**When not to use**
+- When the action isn't self-evident from the icon alone -- use `bs-button` with a visible label
+  instead, don't rely on a tooltip to compensate for an unclear icon.
+- For navigation between pages -- use a link/nav component instead.
+
+<Canvas of={IconButtonStories.Primary} />
+
+## Sizes
+
+Three sizes -- `sm`, `md`, `lg` -- render as 40×40px, 44×44px, and 48×48px square containers
+respectively, with 16×16px, 20×20px, and 24×24px icons. Padding is a constant 12px on every side
+at every size.
+
+<Canvas of={IconButtonStories.Sizes} />
+
+## Disabled state
+
+Uses the native `disabled` attribute, not just a visual style -- see Accessibility below. See it
+live (every variant) in the
+[variant × size × disabled table](#all-variant-size-disabled-combinations) below.
+
+## All variant × size × disabled combinations
+
+Every combination of `variant`, `size`, and `disabled` side by side, for a quick visual regression
+check across the full matrix at once. All 8 variants (`primary`, `neutral`, `subtle`, `outlined`,
+`success`, `warning`, `info`, `error`) use the same semantic tokens and hover/pressed/disabled
+treatment as their `bs-button` counterparts.
+
+<Canvas of={IconButtonStories.AllCombinations} />
+
+## Component API
+
+<Controls of={IconButtonStories.Primary} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (icon content, exactly one icon)
+- Shadow parts: `::part(icon)`
+- CSS Custom Properties: `--bs-icon-button-radius`, `--bs-icon-button-size-sm/md/lg`,
+  `--bs-icon-button-icon-size-sm/md/lg`, plus per-variant background/color/border tokens (see
+  `bs-icon-button.css` for the full list)
+- `variant` is one of `primary`, `neutral`, `subtle`, `outlined`, `success`, `warning`, `info`, `error`
+- `ariaLabel` prop reflects to the native `aria-label` attribute -- **required** for every usage,
+  since this component is always icon-only and has no visible label text to fall back on
+
+## Accessibility
+
+- Renders a native `<button>` internally, so it's keyboard-focusable and activates on
+  <kbd>Enter</kbd>/<kbd>Space</kbd> without any extra ARIA wiring.
+- `disabled` uses the native `disabled` attribute -- this removes the button from the tab order
+  and is announced as disabled by screen readers, not just styled to look inactive.
+- Always pass `aria-label` -- unlike `bs-button`, this component has no visible label text under
+  any configuration, so without it the button has no accessible name at all.

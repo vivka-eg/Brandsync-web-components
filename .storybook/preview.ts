@@ -38,6 +38,7 @@ import '../dist/components/bs-chatbot-suggestion-button.js';
 import '../dist/components/bs-composer.js';
 import '../dist/components/bs-composer-status-banner.js';
 import '../dist/components/bs-data-table.js';
+import '../dist/components/bs-icon-button.js';
 import '../dist/components/bs-inline-tab.js';
 import '../dist/components/bs-input.js';
 import '../dist/components/bs-menu.js';

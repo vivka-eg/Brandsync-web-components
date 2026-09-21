@@ -15,7 +15,7 @@ const variants: BsButtonVariant[] = ['primary', 'neutral', 'subtle', 'outlined',
 const sizes: BsButtonSize[] = ['sm', 'md', 'lg'];
 
 const meta: Meta<BsButtonArgs> = {
-  title: 'Components/bs-button',
+  title: 'Buttons/bs-button',
   parameters: { docs: { description: { component: componentDescription('bs-button') } } },
   render: args => html`
     <bs-button variant=${args.variant} size=${args.size} type=${args.type} ?disabled=${args.disabled}>
@@ -114,32 +114,7 @@ export const WithEndIcon: Story = {
   `,
 };
 
-export const IconOnly: Story = {
-  name: 'Icon-only',
-  render: args => html`
-    <bs-button variant=${args.variant} size=${args.size} ?disabled=${args.disabled} aria-label="Delete">
-      <svg slot="icon" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path
-          d="M2 4H14M6 4V2.5C6 2.22386 6.22386 2 6.5 2H9.5C9.77614 2 10 2.22386 10 2.5V4M12.5 4L12 13.5C12 13.7761 11.7761 14 11.5 14H4.5C4.22386 14 4 13.7761 4 13.5L3.5 4"
-          stroke="currentColor"
-          stroke-width="1.3"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-        />
-      </svg>
-    </bs-button>
-  `,
-};
 
-export const LongLabel: Story = {
-  name: 'Long label (edge case)',
-  args: { label: 'This button has a much longer label than the icon-and-text layout was designed for' },
-  render: args => html`
-    <div style="max-width: 220px;">
-      <bs-button variant=${args.variant} size=${args.size} ?disabled=${args.disabled}> ${args.label} </bs-button>
-    </div>
-  `,
-};
 
 export const AllCombinations: Story = {
   name: 'All variant × size × disabled combinations',

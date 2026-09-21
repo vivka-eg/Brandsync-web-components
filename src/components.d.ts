@@ -14,6 +14,7 @@ import { BsCheckboxSize } from "./components/bs-checkbox/bs-checkbox";
 import { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
 import { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
+import { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-icon-button/bs-icon-button";
 import { BsModalSize } from "./components/bs-modal/bs-modal";
 import { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 import { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
@@ -26,6 +27,7 @@ export { BsCheckboxSize } from "./components/bs-checkbox/bs-checkbox";
 export { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
 export { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
+export { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-icon-button/bs-icon-button";
 export { BsModalSize } from "./components/bs-modal/bs-modal";
 export { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 export { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
@@ -759,6 +761,51 @@ export namespace Components {
           * @default 'asc'
          */
         "sortDirection": 'asc' | 'desc';
+    }
+    /**
+     * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
+     * 8 visual variants and color language, but ALWAYS rendering just a single icon, never a label.
+     * ## When to use
+     * - A compact action where the icon alone is unambiguous (e.g. a close/dismiss control, a toolbar
+     *   action) and adding a text label would take up more space than the context allows.
+     * - The same variant guidance as `bs-button` applies: `primary` for the single most important
+     *   action, `neutral`/`subtle`/`outlined` for lower-emphasis alternatives, `error` reserved for
+     *   destructive/irreversible actions (never `neutral`, per BrandSync guidance), `success`/
+     *   `warning`/`info` only when the action's own outcome is predictable and clearly communicated.
+     * ## When not to use
+     * - When the action isn't self-evident from the icon alone -- use `bs-button` with a visible label
+     *   instead, don't rely on a tooltip to compensate for an unclear icon.
+     * - For navigation between pages -- use a link/nav component instead.
+     * Because this component is always icon-only, `ariaLabel` is required for every real usage (not
+     * just conditionally, unlike `bs-button`) -- there's no visible label text to fall back on for an
+     * accessible name.
+     */
+    interface BsIconButton {
+        /**
+          * Accessible name for the button. Required -- this component is always icon-only, so there's no visible label text for screen readers to fall back on. Stencil reflects this camelCase prop to the `aria-label` HTML attribute automatically.
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Disables the button and applies the disabled token set.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * Sizing scale.
+          * @default 'md'
+         */
+        "size": BsIconButtonSize;
+        /**
+          * Native `<button>` type.
+          * @default 'button'
+         */
+        "type": 'button' | 'submit' | 'reset';
+        /**
+          * Visual style. Maps to the same semantic token families as `bs-button`'s `variant`. `error` is for destructive/irreversible actions per BrandSync guidance, not a stronger emphasis alternative to `primary`.
+          * @default 'primary'
+         */
+        "variant": BsIconButtonVariant;
     }
     /**
      * A pill-shaped tab button -- an optional leading icon plus a text label, rendered as a real
@@ -1910,6 +1957,30 @@ declare global {
         prototype: HTMLBsDataTableElement;
         new (): HTMLBsDataTableElement;
     };
+    /**
+     * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
+     * 8 visual variants and color language, but ALWAYS rendering just a single icon, never a label.
+     * ## When to use
+     * - A compact action where the icon alone is unambiguous (e.g. a close/dismiss control, a toolbar
+     *   action) and adding a text label would take up more space than the context allows.
+     * - The same variant guidance as `bs-button` applies: `primary` for the single most important
+     *   action, `neutral`/`subtle`/`outlined` for lower-emphasis alternatives, `error` reserved for
+     *   destructive/irreversible actions (never `neutral`, per BrandSync guidance), `success`/
+     *   `warning`/`info` only when the action's own outcome is predictable and clearly communicated.
+     * ## When not to use
+     * - When the action isn't self-evident from the icon alone -- use `bs-button` with a visible label
+     *   instead, don't rely on a tooltip to compensate for an unclear icon.
+     * - For navigation between pages -- use a link/nav component instead.
+     * Because this component is always icon-only, `ariaLabel` is required for every real usage (not
+     * just conditionally, unlike `bs-button`) -- there's no visible label text to fall back on for an
+     * accessible name.
+     */
+    interface HTMLBsIconButtonElement extends Components.BsIconButton, HTMLStencilElement {
+    }
+    var HTMLBsIconButtonElement: {
+        prototype: HTMLBsIconButtonElement;
+        new (): HTMLBsIconButtonElement;
+    };
     interface HTMLBsInlineTabElementEventMap {
         "bsSelect": void;
     }
@@ -2255,6 +2326,7 @@ declare global {
         "bs-composer": HTMLBsComposerElement;
         "bs-composer-status-banner": HTMLBsComposerStatusBannerElement;
         "bs-data-table": HTMLBsDataTableElement;
+        "bs-icon-button": HTMLBsIconButtonElement;
         "bs-inline-tab": HTMLBsInlineTabElement;
         "bs-input": HTMLBsInputElement;
         "bs-menu": HTMLBsMenuElement;
@@ -3109,6 +3181,51 @@ declare namespace LocalJSX {
         "sortDirection"?: 'asc' | 'desc';
     }
     /**
+     * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
+     * 8 visual variants and color language, but ALWAYS rendering just a single icon, never a label.
+     * ## When to use
+     * - A compact action where the icon alone is unambiguous (e.g. a close/dismiss control, a toolbar
+     *   action) and adding a text label would take up more space than the context allows.
+     * - The same variant guidance as `bs-button` applies: `primary` for the single most important
+     *   action, `neutral`/`subtle`/`outlined` for lower-emphasis alternatives, `error` reserved for
+     *   destructive/irreversible actions (never `neutral`, per BrandSync guidance), `success`/
+     *   `warning`/`info` only when the action's own outcome is predictable and clearly communicated.
+     * ## When not to use
+     * - When the action isn't self-evident from the icon alone -- use `bs-button` with a visible label
+     *   instead, don't rely on a tooltip to compensate for an unclear icon.
+     * - For navigation between pages -- use a link/nav component instead.
+     * Because this component is always icon-only, `ariaLabel` is required for every real usage (not
+     * just conditionally, unlike `bs-button`) -- there's no visible label text to fall back on for an
+     * accessible name.
+     */
+    interface BsIconButton {
+        /**
+          * Accessible name for the button. Required -- this component is always icon-only, so there's no visible label text for screen readers to fall back on. Stencil reflects this camelCase prop to the `aria-label` HTML attribute automatically.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Disables the button and applies the disabled token set.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * Sizing scale.
+          * @default 'md'
+         */
+        "size"?: BsIconButtonSize;
+        /**
+          * Native `<button>` type.
+          * @default 'button'
+         */
+        "type"?: 'button' | 'submit' | 'reset';
+        /**
+          * Visual style. Maps to the same semantic token families as `bs-button`'s `variant`. `error` is for destructive/irreversible actions per BrandSync guidance, not a stronger emphasis alternative to `primary`.
+          * @default 'primary'
+         */
+        "variant"?: BsIconButtonVariant;
+    }
+    /**
      * A pill-shaped tab button -- an optional leading icon plus a text label, rendered as a real
      * `<button>` so it participates correctly in tab order and native click/keyboard activation.
      * Unlike `bs-tab`'s underline indicator, selection here is communicated entirely by the pill's
@@ -3636,6 +3753,13 @@ declare namespace LocalJSX {
         "sortDirection": 'asc' | 'desc';
         "selectable": boolean;
     }
+    interface BsIconButtonAttributes {
+        "variant": BsIconButtonVariant;
+        "size": BsIconButtonSize;
+        "disabled": boolean;
+        "type": 'button' | 'submit' | 'reset';
+        "ariaLabel": string | null;
+    }
     interface BsInlineTabAttributes {
         "selected": boolean;
         "disabled": boolean;
@@ -3725,6 +3849,7 @@ declare namespace LocalJSX {
         "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
         "bs-composer-status-banner": Omit<BsComposerStatusBanner, keyof BsComposerStatusBannerAttributes> & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes]?: BsComposerStatusBanner[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `attr:${K}`]?: BsComposerStatusBannerAttributes[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `prop:${K}`]?: BsComposerStatusBanner[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
+        "bs-icon-button": Omit<BsIconButton, keyof BsIconButtonAttributes> & { [K in keyof BsIconButton & keyof BsIconButtonAttributes]?: BsIconButton[K] } & { [K in keyof BsIconButton & keyof BsIconButtonAttributes as `attr:${K}`]?: BsIconButtonAttributes[K] } & { [K in keyof BsIconButton & keyof BsIconButtonAttributes as `prop:${K}`]?: BsIconButton[K] };
         "bs-inline-tab": Omit<BsInlineTab, keyof BsInlineTabAttributes> & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes]?: BsInlineTab[K] } & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes as `attr:${K}`]?: BsInlineTabAttributes[K] } & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes as `prop:${K}`]?: BsInlineTab[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
         "bs-menu": BsMenu;
@@ -4202,6 +4327,25 @@ declare module "@stencil/core" {
              * - Deeply nested/hierarchical data — this component renders one flat row per record.
              */
             "bs-data-table": LocalJSX.IntrinsicElements["bs-data-table"] & JSXBase.HTMLAttributes<HTMLBsDataTableElement>;
+            /**
+             * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
+             * 8 visual variants and color language, but ALWAYS rendering just a single icon, never a label.
+             * ## When to use
+             * - A compact action where the icon alone is unambiguous (e.g. a close/dismiss control, a toolbar
+             *   action) and adding a text label would take up more space than the context allows.
+             * - The same variant guidance as `bs-button` applies: `primary` for the single most important
+             *   action, `neutral`/`subtle`/`outlined` for lower-emphasis alternatives, `error` reserved for
+             *   destructive/irreversible actions (never `neutral`, per BrandSync guidance), `success`/
+             *   `warning`/`info` only when the action's own outcome is predictable and clearly communicated.
+             * ## When not to use
+             * - When the action isn't self-evident from the icon alone -- use `bs-button` with a visible label
+             *   instead, don't rely on a tooltip to compensate for an unclear icon.
+             * - For navigation between pages -- use a link/nav component instead.
+             * Because this component is always icon-only, `ariaLabel` is required for every real usage (not
+             * just conditionally, unlike `bs-button`) -- there's no visible label text to fall back on for an
+             * accessible name.
+             */
+            "bs-icon-button": LocalJSX.IntrinsicElements["bs-icon-button"] & JSXBase.HTMLAttributes<HTMLBsIconButtonElement>;
             /**
              * A pill-shaped tab button -- an optional leading icon plus a text label, rendered as a real
              * `<button>` so it participates correctly in tab order and native click/keyboard activation.
