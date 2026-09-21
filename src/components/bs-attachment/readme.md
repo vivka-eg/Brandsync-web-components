@@ -9,7 +9,9 @@
 
 A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
 with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
-a hover/focus-revealed remove button.
+a hover/focus-revealed remove button (a `bs-icon-button` with `size="xs"` `variant="neutral"` --
+the same 16x16px compact tier `bs-icon-button` documents as meant for exactly this kind of
+chip/tag "remove" control).
 
 ## When to use
 - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
@@ -48,6 +50,19 @@ a hover/focus-revealed remove button.
 | `"remove"`    | The remove button.                                     |
 | `"thumbnail"` | The image thumbnail wrapper (type="image" only).       |
 
+
+## Dependencies
+
+### Depends on
+
+- [bs-icon-button](../bs-button/bs-icon-button)
+
+### Graph
+```mermaid
+graph TD;
+  bs-attachment --> bs-icon-button
+  style bs-attachment fill:#f9f,stroke:#333,stroke-width:4px
+```
 
 ----------------------------------------------
 

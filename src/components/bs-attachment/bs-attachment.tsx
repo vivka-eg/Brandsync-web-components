@@ -5,7 +5,9 @@ export type BsAttachmentType = 'image' | 'pdf' | 'document';
 /**
  * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
  * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
- * a hover/focus-revealed remove button.
+ * a hover/focus-revealed remove button (a `bs-icon-button` with `size="xs"` `variant="neutral"` --
+ * the same 16x16px compact tier `bs-icon-button` documents as meant for exactly this kind of
+ * chip/tag "remove" control).
  *
  * ## When to use
  * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
@@ -30,14 +32,6 @@ export type BsAttachmentType = 'image' | 'pdf' | 'document';
  * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
  * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
  *   `--bs-badge-bg-info`.
- * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
- *   Aliased to `--bs-button-neutral-container`.
- * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
- *   `--bs-button-neutral-hover`.
- * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
- *   `--bs-button-neutral-pressed`.
- * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
- *   `--bs-border-neutral-focus`.
  */
 @Component({
   tag: 'bs-attachment',
@@ -77,9 +71,16 @@ export class BsAttachment {
       <div class={{ 'bs-attachment': true, 'bs-attachment--loading': this.loading }} aria-busy={this.loading ? 'true' : 'false'}>
         {isImage ? this.renderImage() : this.renderCard()}
         {this.removable && (
-          <button type="button" part="remove" class="bs-attachment__remove" aria-label={`Remove attachment: ${this.fileName}`} onClick={this.onRemoveClick}>
+          <bs-icon-button
+            part="remove"
+            class="bs-attachment__remove"
+            size="xs"
+            variant="neutral"
+            ariaLabel={`Remove attachment: ${this.fileName}`}
+            onClick={this.onRemoveClick}
+          >
             <CloseIcon />
-          </button>
+          </bs-icon-button>
         )}
       </div>
     );

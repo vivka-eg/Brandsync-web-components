@@ -43,7 +43,7 @@ describe('bs-attachment', () => {
     const { root, spyOnEvent } = await render(<bs-attachment></bs-attachment>);
     const removeSpy = spyOnEvent('bsRemove');
 
-    (root.shadowRoot.querySelector('[part="remove"]') as HTMLButtonElement).click();
+    (root.shadowRoot.querySelector('[part="remove"]') as HTMLElement).click();
 
     expect(removeSpy).toHaveReceivedEventTimes(1);
   });

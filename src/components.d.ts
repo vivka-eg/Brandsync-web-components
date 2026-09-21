@@ -120,7 +120,9 @@ export namespace Components {
     /**
      * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
      * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
-     * a hover/focus-revealed remove button.
+     * a hover/focus-revealed remove button (a `bs-icon-button` with `size="xs"` `variant="neutral"` --
+     * the same 16x16px compact tier `bs-icon-button` documents as meant for exactly this kind of
+     * chip/tag "remove" control).
      * ## When to use
      * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
      *   typically alongside or inside `bs-composer`.
@@ -137,14 +139,6 @@ export namespace Components {
      * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
      * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
      * `--bs-badge-bg-info`.
-     * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
-     * Aliased to `--bs-button-neutral-container`.
-     * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
-     * `--bs-button-neutral-hover`.
-     * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
-     * `--bs-button-neutral-pressed`.
-     * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
-     * `--bs-border-neutral-focus`.
      */
     interface BsAttachment {
         /**
@@ -1366,7 +1360,9 @@ declare global {
     /**
      * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
      * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
-     * a hover/focus-revealed remove button.
+     * a hover/focus-revealed remove button (a `bs-icon-button` with `size="xs"` `variant="neutral"` --
+     * the same 16x16px compact tier `bs-icon-button` documents as meant for exactly this kind of
+     * chip/tag "remove" control).
      * ## When to use
      * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
      *   typically alongside or inside `bs-composer`.
@@ -1383,14 +1379,6 @@ declare global {
      * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
      * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
      * `--bs-badge-bg-info`.
-     * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
-     * Aliased to `--bs-button-neutral-container`.
-     * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
-     * `--bs-button-neutral-hover`.
-     * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
-     * `--bs-button-neutral-pressed`.
-     * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
-     * `--bs-border-neutral-focus`.
      */
     interface HTMLBsAttachmentElement extends Components.BsAttachment, HTMLStencilElement {
         addEventListener<K extends keyof HTMLBsAttachmentElementEventMap>(type: K, listener: (this: HTMLBsAttachmentElement, ev: BsAttachmentCustomEvent<HTMLBsAttachmentElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
@@ -2428,7 +2416,9 @@ declare namespace LocalJSX {
     /**
      * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
      * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
-     * a hover/focus-revealed remove button.
+     * a hover/focus-revealed remove button (a `bs-icon-button` with `size="xs"` `variant="neutral"` --
+     * the same 16x16px compact tier `bs-icon-button` documents as meant for exactly this kind of
+     * chip/tag "remove" control).
      * ## When to use
      * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
      *   typically alongside or inside `bs-composer`.
@@ -2445,14 +2435,6 @@ declare namespace LocalJSX {
      * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
      * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
      * `--bs-badge-bg-info`.
-     * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
-     * Aliased to `--bs-button-neutral-container`.
-     * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
-     * `--bs-button-neutral-hover`.
-     * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
-     * `--bs-button-neutral-pressed`.
-     * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
-     * `--bs-border-neutral-focus`.
      */
     interface BsAttachment {
         /**
@@ -3937,7 +3919,9 @@ declare module "@stencil/core" {
             /**
              * A single file attachment preview for `bs-composer` -- an image thumbnail, or a filename card
              * with a colored file-type badge (PDF/Document), with an optional upload-in-progress spinner and
-             * a hover/focus-revealed remove button.
+             * a hover/focus-revealed remove button (a `bs-icon-button` with `size="xs"` `variant="neutral"` --
+             * the same 16x16px compact tier `bs-icon-button` documents as meant for exactly this kind of
+             * chip/tag "remove" control).
              * ## When to use
              * - Rendered by the consuming app for each file a user has attached to a Genie AI chat message,
              *   typically alongside or inside `bs-composer`.
@@ -3954,14 +3938,6 @@ declare module "@stencil/core" {
              * @prop --bs-attachment-badge-bg-pdf - PDF badge background. Aliased to `--bs-badge-bg-error`.
              * @prop --bs-attachment-badge-bg-document - Document badge background. Aliased to
              * `--bs-badge-bg-info`.
-             * @prop --bs-attachment-remove-bg - Remove button (neutral icon button) default background.
-             * Aliased to `--bs-button-neutral-container`.
-             * @prop --bs-attachment-remove-hover - Remove button hover background. Aliased to
-             * `--bs-button-neutral-hover`.
-             * @prop --bs-attachment-remove-pressed - Remove button active/pressed background. Aliased to
-             * `--bs-button-neutral-pressed`.
-             * @prop --bs-attachment-remove-focus - Remove button focus outline color. Aliased to
-             * `--bs-border-neutral-focus`.
              */
             "bs-attachment": LocalJSX.IntrinsicElements["bs-attachment"] & JSXBase.HTMLAttributes<HTMLBsAttachmentElement>;
             /**

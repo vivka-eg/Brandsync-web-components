@@ -107,6 +107,19 @@ accessible name.
 | `--bs-icon-button-warning-pressed`        | Background, variant="warning", pressed. Aliased to --bs-color-warning-pressed.                                                                                                            |
 
 
+## Dependencies
+
+### Used by
+
+ - [bs-attachment](../../bs-attachment)
+
+### Graph
+```mermaid
+graph TD;
+  bs-attachment --> bs-icon-button
+  style bs-icon-button fill:#f9f,stroke:#333,stroke-width:4px
+```
+
 ----------------------------------------------
 
 *Built with [StencilJS](https://stenciljs.com/)*

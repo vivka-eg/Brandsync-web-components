@@ -7,10 +7,6 @@
   --bs-attachment-filename-color: var(--bs-text-default);
   --bs-attachment-badge-bg-pdf: var(--bs-badge-bg-error);
   --bs-attachment-badge-bg-document: var(--bs-badge-bg-info);
-  --bs-attachment-remove-bg: var(--bs-button-neutral-container);
-  --bs-attachment-remove-hover: var(--bs-button-neutral-hover);
-  --bs-attachment-remove-pressed: var(--bs-button-neutral-pressed);
-  --bs-attachment-remove-focus: var(--bs-border-neutral-focus);
 }
 
 .bs-attachment {
@@ -98,46 +94,25 @@
   background: var(--bs-attachment-badge-bg-document);
 }
 
-/* --- Remove button --- */
+/* --- Remove button ---
+   bs-icon-button owns its own background/color/radius/hover/pressed/focus styling internally
+   (variant="neutral" size="xs") -- this component only positions it (absolute, top-right corner)
+   and drives the hover/focus-revealed opacity, both external layout concerns bs-icon-button
+   itself has no opinion on. */
 
 .bs-attachment__remove {
-  box-sizing: border-box;
   position: absolute;
   top: var(--bs-spacing-50);
   right: var(--bs-spacing-50);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 20px;
-  height: 20px;
-  padding: 0;
-  background: var(--bs-attachment-remove-bg);
-  border: none;
-  border-radius: var(--bs-border-radius-50);
-  color: var(--bs-icon-default);
-  cursor: pointer;
   opacity: 0;
   pointer-events: none;
-  transition: background-color var(--bs-duration-fast) var(--bs-easing-standard), opacity var(--bs-duration-fast) var(--bs-easing-standard);
-}
-
-.bs-attachment__remove:hover {
-  background: var(--bs-attachment-remove-hover);
-}
-
-.bs-attachment__remove:active {
-  background: var(--bs-attachment-remove-pressed);
+  transition: opacity var(--bs-duration-fast) var(--bs-easing-standard);
 }
 
 .bs-attachment:hover .bs-attachment__remove,
 .bs-attachment:focus-within .bs-attachment__remove {
   opacity: 1;
   pointer-events: auto;
-}
-
-.bs-attachment__remove:focus-visible {
-  outline: 2px solid var(--bs-attachment-remove-focus);
-  outline-offset: 1px;
 }
 
 /* --- Spinner --- */
