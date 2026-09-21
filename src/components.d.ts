@@ -16,6 +16,7 @@ import { BsComposerStatusBannerType } from "./components/bs-composer-status-bann
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 import { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-button/bs-icon-button/bs-icon-button";
 import { BsModalSize } from "./components/bs-modal/bs-modal";
+import { BsSwitchSize } from "./components/bs-switch/bs-switch";
 import { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 import { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
 export { BsAttachmentType } from "./components/bs-attachment/bs-attachment";
@@ -29,6 +30,7 @@ export { BsComposerStatusBannerType } from "./components/bs-composer-status-bann
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 export { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-button/bs-icon-button/bs-icon-button";
 export { BsModalSize } from "./components/bs-modal/bs-modal";
+export { BsSwitchSize } from "./components/bs-switch/bs-switch";
 export { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 export { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
 export namespace Components {
@@ -1099,6 +1101,38 @@ export namespace Components {
         "version"?: string;
     }
     /**
+     * A toggle switch for an on/off setting that takes effect immediately (no explicit form
+     * submission required).
+     * ## When to use
+     * - A binary setting that applies right away (e.g. "Enable notifications", "Dark mode").
+     * ## When not to use
+     * - A binary choice that's part of a form submitted later, or one item within a group of
+     *   independent choices -- use `bs-checkbox` instead.
+     * - A single mutually-exclusive choice from a set -- use a radio group instead.
+     */
+    interface BsSwitch {
+        /**
+          * Accessible name for the switch. Required whenever the default (label) slot is empty (e.g. a bare "enabled" switch in a table row) -- without it, the internal native `<input>` has no accessible name at all. Setting `aria-label` directly on the `<bs-switch>` host does NOT work for this: that attribute stays on the light-DOM host and is never forwarded into the shadow DOM by the browser, so the actual focusable element (the native `<input>` inside) stays nameless. This prop exists specifically to bridge that gap -- same pattern as `bs-button`'s and `bs-checkbox`'s identical `ariaLabel` prop, both of which explicitly bind it onto their own internal focusable element for the same reason.
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Whether the switch is on. Mutable so clicking the label/input toggles it directly, and reflected so consumers can target `bs-switch[checked]` via CSS.
+          * @default false
+         */
+        "checked": boolean;
+        /**
+          * Disables the switch: sets the native `disabled` attribute, suppresses hover/focus styling, and prevents toggling.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * Sizing scale. Controls the track's width/height and the knob's diameter.
+          * @default 'lg'
+         */
+        "size": BsSwitchSize;
+    }
+    /**
      * A single tab button -- an optional icon plus a text label, rendered as a real `<button>` so it
      * participates correctly in tab order and native click/keyboard activation.
      * ## When to use
@@ -1265,6 +1299,10 @@ export interface BsRadioCustomEvent<T> extends CustomEvent<T> {
 export interface BsSourceLinkCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsSourceLinkElement;
+}
+export interface BsSwitchCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsSwitchElement;
 }
 export interface BsTabCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2204,6 +2242,33 @@ declare global {
         prototype: HTMLBsSourceLinkElement;
         new (): HTMLBsSourceLinkElement;
     };
+    interface HTMLBsSwitchElementEventMap {
+        "bsChange": boolean;
+    }
+    /**
+     * A toggle switch for an on/off setting that takes effect immediately (no explicit form
+     * submission required).
+     * ## When to use
+     * - A binary setting that applies right away (e.g. "Enable notifications", "Dark mode").
+     * ## When not to use
+     * - A binary choice that's part of a form submitted later, or one item within a group of
+     *   independent choices -- use `bs-checkbox` instead.
+     * - A single mutually-exclusive choice from a set -- use a radio group instead.
+     */
+    interface HTMLBsSwitchElement extends Components.BsSwitch, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsSwitchElementEventMap>(type: K, listener: (this: HTMLBsSwitchElement, ev: BsSwitchCustomEvent<HTMLBsSwitchElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsSwitchElementEventMap>(type: K, listener: (this: HTMLBsSwitchElement, ev: BsSwitchCustomEvent<HTMLBsSwitchElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsSwitchElement: {
+        prototype: HTMLBsSwitchElement;
+        new (): HTMLBsSwitchElement;
+    };
     interface HTMLBsTabElementEventMap {
         "bsSelect": void;
     }
@@ -2322,6 +2387,7 @@ declare global {
         "bs-modal": HTMLBsModalElement;
         "bs-radio": HTMLBsRadioElement;
         "bs-source-link": HTMLBsSourceLinkElement;
+        "bs-switch": HTMLBsSwitchElement;
         "bs-tab": HTMLBsTabElement;
         "bs-tabs": HTMLBsTabsElement;
         "bs-tooltip": HTMLBsTooltipElement;
@@ -3544,6 +3610,42 @@ declare namespace LocalJSX {
         "version"?: string;
     }
     /**
+     * A toggle switch for an on/off setting that takes effect immediately (no explicit form
+     * submission required).
+     * ## When to use
+     * - A binary setting that applies right away (e.g. "Enable notifications", "Dark mode").
+     * ## When not to use
+     * - A binary choice that's part of a form submitted later, or one item within a group of
+     *   independent choices -- use `bs-checkbox` instead.
+     * - A single mutually-exclusive choice from a set -- use a radio group instead.
+     */
+    interface BsSwitch {
+        /**
+          * Accessible name for the switch. Required whenever the default (label) slot is empty (e.g. a bare "enabled" switch in a table row) -- without it, the internal native `<input>` has no accessible name at all. Setting `aria-label` directly on the `<bs-switch>` host does NOT work for this: that attribute stays on the light-DOM host and is never forwarded into the shadow DOM by the browser, so the actual focusable element (the native `<input>` inside) stays nameless. This prop exists specifically to bridge that gap -- same pattern as `bs-button`'s and `bs-checkbox`'s identical `ariaLabel` prop, both of which explicitly bind it onto their own internal focusable element for the same reason.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Whether the switch is on. Mutable so clicking the label/input toggles it directly, and reflected so consumers can target `bs-switch[checked]` via CSS.
+          * @default false
+         */
+        "checked"?: boolean;
+        /**
+          * Disables the switch: sets the native `disabled` attribute, suppresses hover/focus styling, and prevents toggling.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * Emitted when the checked state changes via user interaction, with the new `checked` value.
+         */
+        "onBsChange"?: (event: BsSwitchCustomEvent<boolean>) => void;
+        /**
+          * Sizing scale. Controls the track's width/height and the knob's diameter.
+          * @default 'lg'
+         */
+        "size"?: BsSwitchSize;
+    }
+    /**
      * A single tab button -- an optional icon plus a text label, rendered as a real `<button>` so it
      * participates correctly in tab order and native click/keyboard activation.
      * ## When to use
@@ -3798,6 +3900,12 @@ declare namespace LocalJSX {
         "href": string;
         "target": string;
     }
+    interface BsSwitchAttributes {
+        "size": BsSwitchSize;
+        "checked": boolean;
+        "disabled": boolean;
+        "ariaLabel": string | null;
+    }
     interface BsTabAttributes {
         "selected": boolean;
         "disabled": boolean;
@@ -3839,6 +3947,7 @@ declare namespace LocalJSX {
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
         "bs-radio": Omit<BsRadio, keyof BsRadioAttributes> & { [K in keyof BsRadio & keyof BsRadioAttributes]?: BsRadio[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `attr:${K}`]?: BsRadioAttributes[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `prop:${K}`]?: BsRadio[K] };
         "bs-source-link": Omit<BsSourceLink, keyof BsSourceLinkAttributes> & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes]?: BsSourceLink[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `attr:${K}`]?: BsSourceLinkAttributes[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `prop:${K}`]?: BsSourceLink[K] };
+        "bs-switch": Omit<BsSwitch, keyof BsSwitchAttributes> & { [K in keyof BsSwitch & keyof BsSwitchAttributes]?: BsSwitch[K] } & { [K in keyof BsSwitch & keyof BsSwitchAttributes as `attr:${K}`]?: BsSwitchAttributes[K] } & { [K in keyof BsSwitch & keyof BsSwitchAttributes as `prop:${K}`]?: BsSwitch[K] };
         "bs-tab": Omit<BsTab, keyof BsTabAttributes> & { [K in keyof BsTab & keyof BsTabAttributes]?: BsTab[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `attr:${K}`]?: BsTabAttributes[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `prop:${K}`]?: BsTab[K] };
         "bs-tabs": Omit<BsTabs, keyof BsTabsAttributes> & { [K in keyof BsTabs & keyof BsTabsAttributes]?: BsTabs[K] } & { [K in keyof BsTabs & keyof BsTabsAttributes as `attr:${K}`]?: BsTabsAttributes[K] } & { [K in keyof BsTabs & keyof BsTabsAttributes as `prop:${K}`]?: BsTabs[K] };
         "bs-tooltip": Omit<BsTooltip, keyof BsTooltipAttributes> & { [K in keyof BsTooltip & keyof BsTooltipAttributes]?: BsTooltip[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `attr:${K}`]?: BsTooltipAttributes[K] } & { [K in keyof BsTooltip & keyof BsTooltipAttributes as `prop:${K}`]?: BsTooltip[K] };
@@ -4450,6 +4559,17 @@ declare module "@stencil/core" {
              * `--bs-text-secondary`.
              */
             "bs-source-link": LocalJSX.IntrinsicElements["bs-source-link"] & JSXBase.HTMLAttributes<HTMLBsSourceLinkElement>;
+            /**
+             * A toggle switch for an on/off setting that takes effect immediately (no explicit form
+             * submission required).
+             * ## When to use
+             * - A binary setting that applies right away (e.g. "Enable notifications", "Dark mode").
+             * ## When not to use
+             * - A binary choice that's part of a form submitted later, or one item within a group of
+             *   independent choices -- use `bs-checkbox` instead.
+             * - A single mutually-exclusive choice from a set -- use a radio group instead.
+             */
+            "bs-switch": LocalJSX.IntrinsicElements["bs-switch"] & JSXBase.HTMLAttributes<HTMLBsSwitchElement>;
             /**
              * A single tab button -- an optional icon plus a text label, rendered as a real `<button>` so it
              * participates correctly in tab order and native click/keyboard activation.

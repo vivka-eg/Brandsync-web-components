@@ -1,0 +1,196 @@
+/**
+ * @prop --bs-switch-radius: Corner radius of the track, constant across all sizes. Aliased to --bs-border-radius-full.
+ * @prop --bs-switch-padding: Internal padding of the track around the knob, constant across all sizes. Aliased to --bs-spacing-25.
+ * @prop --bs-switch-gap: Gap between the track and the label text. Aliased to --bs-spacing-100.
+ * @prop --bs-switch-track-width-md: Track width at size="md".
+ * @prop --bs-switch-track-height-md: Track height at size="md".
+ * @prop --bs-switch-track-width-lg: Track width at size="lg".
+ * @prop --bs-switch-track-height-lg: Track height at size="lg".
+ * @prop --bs-switch-knob-size-md: Knob width/height at size="md".
+ * @prop --bs-switch-knob-size-lg: Knob width/height at size="lg".
+ * @prop --bs-switch-border-width: Track border width, constant across all sizes.
+ * @prop --bs-switch-track-bg: Track background, unchecked/resting. Aliased to --bs-switch-track-bg-default.
+ * @prop --bs-switch-track-bg-hover: Track background, unchecked/hovered. This is the global vendored token directly (src/global/tokens.css) -- not locally re-aliased under a different name here, since it already carries this exact name; see the :host comment below for why.
+ * @prop --bs-switch-track-bg-checked: Track background, checked/resting. Aliased to --bs-switch-track-bg-checked-default.
+ * @prop --bs-switch-track-bg-checked-hover: Track background, checked/hovered. The global vendored token directly, same reasoning as --bs-switch-track-bg-hover above.
+ * @prop --bs-switch-track-bg-checked-focus: Track background, checked/focused. Aliased to --bs-switch-track-bg-checked-focused.
+ * @prop --bs-switch-track-bg-disabled: Track background, disabled (either checked state). The global vendored token directly, same reasoning as --bs-switch-track-bg-hover above.
+ * @prop --bs-switch-track-border: Track border color, resting/disabled. Aliased to --bs-switch-track-border-default.
+ * @prop --bs-switch-track-border-hover: Track border color, hovered or focused. The global vendored token directly, same reasoning as --bs-switch-track-bg-hover above.
+ * @prop --bs-switch-focus-ring-color: Outer focus ring color, drawn outside the track. Aliased to --bs-switch-track-border-focus.
+ * @prop --bs-switch-knob-bg: Knob background, resting. Aliased to --bs-switch-thumb-bg-default.
+ * @prop --bs-switch-knob-bg-hover: Knob background, hovered. Aliased to --bs-switch-thumb-bg-hover.
+ * @prop --bs-switch-knob-bg-checked: Knob background, checked. Aliased to --bs-switch-thumb-bg-checked.
+ * @prop --bs-switch-knob-bg-disabled: Knob background, disabled. Aliased to --bs-switch-thumb-bg-disabled.
+ * @prop --bs-switch-label-color: Label text color. Aliased to --bs-text-default.
+ * @prop --bs-switch-label-color-disabled: Label text color, disabled. Aliased to --bs-text-on-disabled.
+ */
+:host {
+  display: inline-block;
+
+  --bs-switch-radius: var(--bs-border-radius-full);
+  --bs-switch-padding: var(--bs-spacing-25);
+  --bs-switch-gap: var(--bs-spacing-100);
+
+  --bs-switch-track-width-md: 36px;
+  --bs-switch-track-height-md: 20px;
+  --bs-switch-track-width-lg: 48px;
+  --bs-switch-track-height-lg: 28px;
+
+  --bs-switch-knob-size-md: 16px;
+  --bs-switch-knob-size-lg: 24px;
+
+  --bs-switch-border-width: 1px;
+
+  /* --bs-switch-track-bg-hover/-checked-hover/-disabled and --bs-switch-track-border-hover are
+     deliberately NOT re-declared here, unlike their siblings below -- the global vendored tokens
+     in src/global/tokens.css already use these exact same names (they were pre-vendored
+     specifically for this component), so a local :host alias under the identical name would be a
+     self-reference (var(--x) used inside the declaration of --x on the same element), which per
+     the CSS spec resolves to invalid/empty, not "inherit the global value" as it might look --
+     verified empirically: with the self-referencing declaration in place, all four resolved to ""
+     and the track's hover background rendered fully transparent. Omitting the local declaration
+     entirely lets the global token inherit through unchanged, which is the correct/only fix. */
+  --bs-switch-track-bg: var(--bs-switch-track-bg-default);
+  --bs-switch-track-bg-checked: var(--bs-switch-track-bg-checked-default);
+  --bs-switch-track-bg-checked-focus: var(--bs-switch-track-bg-checked-focused);
+
+  --bs-switch-track-border: var(--bs-switch-track-border-default);
+  --bs-switch-focus-ring-color: var(--bs-switch-track-border-focus);
+
+  --bs-switch-knob-bg: var(--bs-switch-thumb-bg-default);
+  --bs-switch-knob-bg-hover: var(--bs-switch-thumb-bg-hover);
+  --bs-switch-knob-bg-checked: var(--bs-switch-thumb-bg-checked);
+  --bs-switch-knob-bg-disabled: var(--bs-switch-thumb-bg-disabled);
+
+  --bs-switch-label-color: var(--bs-text-default);
+  --bs-switch-label-color-disabled: var(--bs-text-on-disabled);
+}
+
+.bs-switch {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--bs-switch-gap);
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.bs-switch--disabled {
+  cursor: not-allowed;
+}
+
+/* The native input is visually hidden but stays in the layout/focus/keyboard chain -- opacity: 0
+   (not display: none) so it can still receive and show focus. */
+.bs-switch__input {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.bs-switch__input:disabled {
+  cursor: not-allowed;
+}
+
+.bs-switch__track {
+  box-sizing: border-box;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-shrink: 0;
+  padding: var(--bs-switch-padding);
+  border: var(--bs-switch-border-width) solid var(--bs-switch-track-border);
+  border-radius: var(--bs-switch-radius);
+  background: var(--bs-switch-track-bg);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.bs-switch__track--md {
+  width: var(--bs-switch-track-width-md);
+  height: var(--bs-switch-track-height-md);
+}
+
+.bs-switch__track--lg {
+  width: var(--bs-switch-track-width-lg);
+  height: var(--bs-switch-track-height-lg);
+}
+
+.bs-switch__track--checked {
+  justify-content: flex-end;
+  background: var(--bs-switch-track-bg-checked);
+}
+
+.bs-switch__knob {
+  box-sizing: border-box;
+  border-radius: var(--bs-border-radius-full);
+  background: var(--bs-switch-knob-bg);
+  transition: background-color 0.15s ease;
+}
+
+.bs-switch__knob--md {
+  width: var(--bs-switch-knob-size-md);
+  height: var(--bs-switch-knob-size-md);
+}
+
+.bs-switch__knob--lg {
+  width: var(--bs-switch-knob-size-lg);
+  height: var(--bs-switch-knob-size-lg);
+}
+
+.bs-switch__track--checked .bs-switch__knob {
+  background: var(--bs-switch-knob-bg-checked);
+}
+
+/* Hover/focus -- keyed off the hidden native input's pseudo-classes, since it sits on top of and
+   is the same size as the track, so it always reflects the user's actual pointer/keyboard target. */
+.bs-switch__input:hover:not(:disabled) ~ .bs-switch__track {
+  background: var(--bs-switch-track-bg-hover);
+  border-color: var(--bs-switch-track-border-hover);
+}
+
+.bs-switch__input:hover:not(:disabled) ~ .bs-switch__track .bs-switch__knob {
+  background: var(--bs-switch-knob-bg-hover);
+}
+
+.bs-switch__input:hover:not(:disabled) ~ .bs-switch__track--checked {
+  background: var(--bs-switch-track-bg-checked-hover);
+}
+
+.bs-switch__input:focus-visible ~ .bs-switch__track {
+  border-color: var(--bs-switch-track-border-hover);
+  outline: 2px solid var(--bs-switch-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.bs-switch__input:focus-visible ~ .bs-switch__track--checked {
+  background: var(--bs-switch-track-bg-checked-focus);
+}
+
+.bs-switch__track--disabled {
+  background: var(--bs-switch-track-bg-disabled);
+  border-color: var(--bs-switch-track-border);
+}
+
+.bs-switch__track--disabled.bs-switch__track--checked {
+  background: var(--bs-switch-track-bg-disabled);
+}
+
+.bs-switch__knob--disabled {
+  background: var(--bs-switch-knob-bg-disabled);
+}
+
+.bs-switch__label {
+  font-size: var(--bs-font-size-md);
+  color: var(--bs-switch-label-color);
+}
+
+.bs-switch--disabled .bs-switch__label {
+  color: var(--bs-switch-label-color-disabled);
+}

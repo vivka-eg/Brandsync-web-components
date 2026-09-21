@@ -1,0 +1,88 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SwitchStories from './bs-switch.stories';
+
+<Meta of={SwitchStories} />
+
+# Switch
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Checked](#checked)
+- [Sizes](#sizes)
+- [Disabled](#disabled)
+- [All combinations](#all-combinations)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A toggle switch for an on/off setting that takes effect immediately (no explicit form submission
+required).
+
+**When to use**
+- A binary setting that applies right away (e.g. "Enable notifications", "Dark mode").
+
+**When not to use**
+- A binary choice that's part of a form submitted later, or one item within a group of
+  independent choices -- use `bs-checkbox` instead.
+- A single mutually-exclusive choice from a set -- use a radio group instead.
+
+<Canvas of={SwitchStories.Default} />
+
+## Checked
+
+<Canvas of={SwitchStories.Checked} />
+
+## Sizes
+
+`size` controls the track's width/height and the knob's diameter.
+
+<Canvas of={SwitchStories.Medium} />
+<Canvas of={SwitchStories.Large} />
+
+## Disabled
+
+<Canvas of={SwitchStories.Disabled} />
+
+## All combinations
+
+<Canvas of={SwitchStories.AllCombinations} />
+
+## Component API
+
+<Controls of={SwitchStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- CSS Custom Properties: `--bs-switch-radius`, `--bs-switch-padding`, `--bs-switch-gap`,
+  `--bs-switch-track-width-md`, `--bs-switch-track-height-md`, `--bs-switch-track-width-lg`,
+  `--bs-switch-track-height-lg`, `--bs-switch-knob-size-md`, `--bs-switch-knob-size-lg`,
+  `--bs-switch-border-width`, `--bs-switch-track-bg`, `--bs-switch-track-bg-hover`,
+  `--bs-switch-track-bg-checked`, `--bs-switch-track-bg-checked-hover`,
+  `--bs-switch-track-bg-checked-focus`, `--bs-switch-track-bg-disabled`, `--bs-switch-track-border`,
+  `--bs-switch-track-border-hover`, `--bs-switch-focus-ring-color`, `--bs-switch-knob-bg`,
+  `--bs-switch-knob-bg-hover`, `--bs-switch-knob-bg-checked`, `--bs-switch-knob-bg-disabled`,
+  `--bs-switch-label-color`, `--bs-switch-label-color-disabled`
+- Slots: default slot (the label text)
+- Shadow parts: `::part(track)`, `::part(knob)`, `::part(label)`
+
+## Events
+
+| Event      | Fires when                                             | Payload   | Cancelable |
+| ---------- | ------------------------------------------------------- | --------- | ---------- |
+| `bsChange` | The checked state changes via user interaction (click/keyboard) | `boolean` | No         |
+
+## Accessibility
+
+- Renders a real `<input type="checkbox" role="switch">`, visually hidden (`opacity: 0`, not
+  `display: none`) so it stays focusable and keyboard-operable (Space toggles it, same as any
+  native switch).
+- The native input is wrapped in a `<label>` together with the visual track/knob and label text,
+  so clicking anywhere in the component toggles it -- no separate `for`/`id` wiring needed.
+- `disabled` sets the native `disabled` attribute, which removes the control from the tab order and
+  is announced by assistive technology automatically -- no separate `aria-disabled` is added.
+- **Required whenever the default (label) slot is empty:** set `ariaLabel` (e.g. a bare "enabled"
+  switch in a table row). Setting a plain `aria-label` HTML attribute on the `<bs-switch>` host does
+  **not** work -- that attribute never crosses into the shadow DOM, so the actual focusable native
+  `<input>` stays nameless. Same prop/pattern as `bs-checkbox`'s identical `ariaLabel` prop.

@@ -46,6 +46,7 @@ import '../dist/components/bs-menu-item.js';
 import '../dist/components/bs-modal.js';
 import '../dist/components/bs-radio.js';
 import '../dist/components/bs-source-link.js';
+import '../dist/components/bs-switch.js';
 import '../dist/components/bs-tab.js';
 import '../dist/components/bs-tabs.js';
 import '../dist/components/bs-tooltip.js';
