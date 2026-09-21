@@ -30,6 +30,20 @@
   --bs-button-subtle-hover: var(--bs-color-neutral-container);
   --bs-button-subtle-pressed: var(--bs-color-neutral-container-pressed);
   --bs-button-subtle-focus: var(--bs-border-primary-focus);
+  /* Verified against Figma node 2842:50178 ("Style=Neutral, States=Enabled"): the neutral variant
+     has its own 1px border, unlike every other filled variant here -- previously missing entirely. */
+  --bs-button-neutral-border: var(--bs-border-neutral-container);
+  --bs-button-neutral-border-hover: var(--bs-border-neutral-container-hover);
+  --bs-button-neutral-border-pressed: var(--bs-border-neutral-container-pressed);
+  /* Locally overriding the vendored --bs-button-neutral-hover/-pressed tokens (used directly
+     below elsewhere in this codebase) -- they alias to --bs-color-neutral-hover (a dark,
+     near-black scale meant for on-neutral text/icons, not a container background) and
+     --bs-color-primary-pressed (BLUE, not neutral at all) respectively. Verified visually: with
+     the vendored values, hover rendered near-black and pressed rendered blue, neither matching the
+     light-lavender-family redline. --bs-color-neutral-container-hover/-pressed are the correct
+     step family, matching --bs-button-neutral-container (--bs-color-neutral-container) itself. */
+  --bs-button-neutral-hover: var(--bs-color-neutral-container-hover);
+  --bs-button-neutral-pressed: var(--bs-color-neutral-container-pressed);
   --bs-button-outlined-border: var(--bs-border-primary);
   --bs-button-outlined-border-hover: var(--bs-border-primary-hover);
   --bs-button-outlined-focus: var(--bs-border-primary-focus);
@@ -100,16 +114,20 @@
 .bs-button--neutral {
   background: var(--bs-button-neutral-container);
   color: var(--bs-text-default);
+  border: 1px solid var(--bs-button-neutral-border);
 }
 .bs-button--neutral:hover:not(:disabled) {
   background: var(--bs-button-neutral-hover);
+  border-color: var(--bs-button-neutral-border-hover);
 }
 .bs-button--neutral:active:not(:disabled) {
   background: var(--bs-button-neutral-pressed);
+  border-color: var(--bs-button-neutral-border-pressed);
 }
 .bs-button--neutral:disabled {
   background: var(--bs-button-neutral-disabled);
   color: var(--bs-text-on-disabled);
+  border-color: var(--bs-button-neutral-border);
 }
 
 .bs-button--error {

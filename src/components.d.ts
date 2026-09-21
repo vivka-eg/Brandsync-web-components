@@ -237,6 +237,9 @@ export namespace Components {
      * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
      * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
      * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
+     * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
+     * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
      */
     interface BsButton {
         /**
@@ -1414,6 +1417,9 @@ declare global {
      * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
      * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
      * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
+     * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
+     * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
      */
     interface HTMLBsButtonElement extends Components.BsButton, HTMLStencilElement {
     }
@@ -2469,6 +2475,9 @@ declare namespace LocalJSX {
      * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
      * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
      * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+     * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
+     * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
+     * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
      */
     interface BsButton {
         /**
@@ -3874,6 +3883,9 @@ declare module "@stencil/core" {
              * @prop --bs-button-height-sm - Height at `size="sm"`. Aliased to `--bs-spacing-500`.
              * @prop --bs-button-height-md - Height at `size="md"`. Aliased to `--bs-spacing-600`.
              * @prop --bs-button-height-lg - Height at `size="lg"`. Aliased to `--bs-spacing-700`.
+             * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
+             * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
+             * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
              */
             "bs-button": LocalJSX.IntrinsicElements["bs-button"] & JSXBase.HTMLAttributes<HTMLBsButtonElement>;
             /**
