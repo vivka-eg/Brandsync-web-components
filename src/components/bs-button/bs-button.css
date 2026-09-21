@@ -60,9 +60,9 @@
   border: none;
   border-radius: var(--bs-button-radius);
   font-family: inherit;
-  /* Figma's button label text style is body/*-medium (font-weight 500), not semibold -- verified
-     against node 2842:50344 in the BrandSync UI Kit file. */
-  font-weight: var(--bs-font-weight-medium);
+  /* Was semibold, then medium -- both wrong per direct comparison against the live Figma file.
+     Every variant's label actually uses the regular weight. */
+  font-weight: var(--bs-font-weight-regular);
   cursor: pointer;
   transition: background-color var(--bs-duration-fast, 120ms) var(--bs-easing-standard, ease);
 }
@@ -117,9 +117,6 @@
   background: var(--bs-button-neutral-container);
   color: var(--bs-text-default);
   border: 1px solid var(--bs-button-neutral-border);
-  /* Unlike every other variant here (medium, set on the base .bs-button rule), the neutral
-     variant's label uses the regular weight -- verified against the Figma redline. */
-  font-weight: var(--bs-font-weight-regular);
 }
 .bs-button--neutral:hover:not(:disabled) {
   background: var(--bs-button-neutral-hover);
