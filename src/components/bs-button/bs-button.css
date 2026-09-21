@@ -115,6 +115,9 @@
   background: var(--bs-button-neutral-container);
   color: var(--bs-text-default);
   border: 1px solid var(--bs-button-neutral-border);
+  /* Unlike every other variant here (medium, set on the base .bs-button rule), the neutral
+     variant's label uses the regular weight -- verified against the Figma redline. */
+  font-weight: var(--bs-font-weight-regular);
 }
 .bs-button--neutral:hover:not(:disabled) {
   background: var(--bs-button-neutral-hover);
