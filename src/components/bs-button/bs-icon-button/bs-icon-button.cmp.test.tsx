@@ -108,6 +108,21 @@ describe('bs-icon-button', () => {
     expect(root.shadowRoot.querySelector('button')).toHaveClass('bs-icon-button--lg');
   });
 
+  it('renders size="xs" at 16px with an 8px icon and a smaller radius than sm/md/lg', async () => {
+    const { root } = await render(
+      <bs-icon-button ariaLabel="Remove" size="xs">
+        <svg viewBox="0 0 16 16"></svg>
+      </bs-icon-button>,
+    );
+    const button = root.shadowRoot.querySelector('button');
+    expect(button).toHaveClass('bs-icon-button--xs');
+    expect(getComputedStyle(button).width).toBe('16px');
+    expect(getComputedStyle(button).height).toBe('16px');
+    const icon = root.shadowRoot.querySelector('[part="icon"]');
+    expect(getComputedStyle(icon).width).toBe('8px');
+    expect(getComputedStyle(icon).height).toBe('8px');
+  });
+
   it('sets aria-label on the inner button from the ariaLabel prop', async () => {
     const { root } = await render(
       <bs-icon-button ariaLabel="Delete">

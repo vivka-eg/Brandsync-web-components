@@ -792,7 +792,7 @@ export namespace Components {
          */
         "disabled": boolean;
         /**
-          * Sizing scale.
+          * Sizing scale. `xs` (16px, an 8px icon) is a distinct, much smaller tier meant for compact chip/tag "remove" controls, not just a smaller toolbar button -- verified against a separate Figma redline (EG BrandSync UI Kit v1.5, node 20731:18427) from the one `sm`/`md`/`lg` were built against.
           * @default 'md'
          */
         "size": BsIconButtonSize;
@@ -3210,7 +3210,7 @@ declare namespace LocalJSX {
          */
         "disabled"?: boolean;
         /**
-          * Sizing scale.
+          * Sizing scale. `xs` (16px, an 8px icon) is a distinct, much smaller tier meant for compact chip/tag "remove" controls, not just a smaller toolbar button -- verified against a separate Figma redline (EG BrandSync UI Kit v1.5, node 20731:18427) from the one `sm`/`md`/`lg` were built against.
           * @default 'md'
          */
         "size"?: BsIconButtonSize;

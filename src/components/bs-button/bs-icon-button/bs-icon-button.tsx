@@ -1,7 +1,7 @@
 import { Component, Element, Prop, h } from '@stencil/core';
 
 export type BsIconButtonVariant = 'primary' | 'neutral' | 'error' | 'subtle' | 'outlined' | 'success' | 'warning' | 'info';
-export type BsIconButtonSize = 'sm' | 'md' | 'lg';
+export type BsIconButtonSize = 'xs' | 'sm' | 'md' | 'lg';
 
 /**
  * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
@@ -48,7 +48,10 @@ export class BsIconButton {
    */
   @Prop() variant: BsIconButtonVariant = 'primary';
 
-  /** Sizing scale. */
+  /** Sizing scale. `xs` (16px, an 8px icon) is a distinct, much smaller tier meant for compact
+   * chip/tag "remove" controls, not just a smaller toolbar button -- verified against a separate
+   * Figma redline (EG BrandSync UI Kit v1.5, node 20731:18427) from the one `sm`/`md`/`lg` were
+   * built against. */
   @Prop() size: BsIconButtonSize = 'md';
 
   /** Disables the button and applies the disabled token set. */

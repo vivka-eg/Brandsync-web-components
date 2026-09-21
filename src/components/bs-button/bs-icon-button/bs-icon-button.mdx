@@ -36,9 +36,14 @@ visual variants and color language, but always rendering a single icon with no l
 
 ## Sizes
 
-Three sizes -- `sm`, `md`, `lg` -- render as 40×40px, 44×44px, and 48×48px square containers
-respectively, with 16×16px, 20×20px, and 24×24px icons. Padding is a constant 12px on every side
-at every size.
+Four sizes -- `xs`, `sm`, `md`, `lg` -- render as 16×16px, 40×40px, 44×44px, and 48×48px square
+containers respectively, with 8×8px, 16×16px, 20×20px, and 24×24px icons. Padding is 4px at
+`xs` and a constant 12px on every side at `sm`/`md`/`lg`. `xs` also uses a smaller corner radius
+(`--bs-icon-button-radius-xs`, aliased to `--bs-border-radius-50`) than the other three
+(`--bs-icon-button-radius`, `--bs-border-radius-100`) -- the larger radius would look nearly
+circular on a box this small. `xs` is a distinct tier meant for compact chip/tag "remove"
+controls, not just a smaller toolbar button, verified against a separate Figma redline (EG
+BrandSync UI Kit v1.5, node 20731:18427) from the one `sm`/`md`/`lg` were built against.
 
 <Canvas of={IconButtonStories.Sizes} />
 
@@ -64,8 +69,9 @@ treatment as their `bs-button` counterparts.
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
 - Slots: default (icon content, exactly one icon)
 - Shadow parts: `::part(icon)`
-- CSS Custom Properties: `--bs-icon-button-radius`, `--bs-icon-button-size-sm/md/lg`,
-  `--bs-icon-button-icon-size-sm/md/lg`, plus per-variant background/color/border tokens (see
+- CSS Custom Properties: `--bs-icon-button-radius`, `--bs-icon-button-radius-xs`,
+  `--bs-icon-button-size-xs/sm/md/lg`, `--bs-icon-button-icon-size-xs/sm/md/lg`,
+  `--bs-icon-button-padding-xs`, plus per-variant background/color/border tokens (see
   `bs-icon-button.css` for the full list)
 - `variant` is one of `primary`, `neutral`, `subtle`, `outlined`, `success`, `warning`, `info`, `error`
 - `ariaLabel` prop reflects to the native `aria-label` attribute -- **required** for every usage,

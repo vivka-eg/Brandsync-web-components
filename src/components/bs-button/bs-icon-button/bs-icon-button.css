@@ -1,5 +1,9 @@
 /**
- * @prop --bs-icon-button-radius: Corner radius. Aliased to --bs-border-radius-100.
+ * @prop --bs-icon-button-radius: Corner radius, size="sm"/"md"/"lg". Aliased to --bs-border-radius-100.
+ * @prop --bs-icon-button-radius-xs: Corner radius, size="xs" -- a smaller radius than --bs-icon-button-radius, since --bs-border-radius-100 (8px) on a 16px box would look nearly circular. Aliased to --bs-border-radius-50.
+ * @prop --bs-icon-button-size-xs: Container width/height at size="xs". 16px.
+ * @prop --bs-icon-button-icon-size-xs: Slotted icon width/height at size="xs". 8px.
+ * @prop --bs-icon-button-padding-xs: Padding on all sides, size="xs" only -- distinct from --bs-icon-button-padding, since 16px/8px icon math (4px) differs from the sm/md/lg constant (12px). Aliased to --bs-spacing-50.
  * @prop --bs-icon-button-size-sm: Container width/height at size="sm". 40px.
  * @prop --bs-icon-button-size-md: Container width/height at size="md". 44px.
  * @prop --bs-icon-button-size-lg: Container width/height at size="lg". 48px.
@@ -61,6 +65,15 @@
   --bs-icon-button-icon-size-md: 20px;
   --bs-icon-button-icon-size-lg: 24px;
   --bs-icon-button-padding: var(--bs-spacing-150);
+
+  /* "Extra small" is a separate, much smaller tier (chip/tag "remove" controls) verified against a
+     different Figma redline (EG BrandSync UI Kit v1.5, node 20731:18427) -- 16px container, 8px
+     icon, 4px padding ((16-8)/2), matching --bs-spacing-50 exactly. Its own radius is smaller than
+     --bs-icon-button-radius (8px), which would look nearly circular on a 16px box. */
+  --bs-icon-button-radius-xs: var(--bs-border-radius-50);
+  --bs-icon-button-size-xs: 16px;
+  --bs-icon-button-icon-size-xs: 8px;
+  --bs-icon-button-padding-xs: var(--bs-spacing-50);
 
   --bs-icon-button-primary-default: var(--bs-color-primary-default);
   --bs-icon-button-primary-hover: var(--bs-color-primary-hover);
@@ -130,6 +143,17 @@
 
 .bs-icon-button:disabled {
   cursor: not-allowed;
+}
+
+.bs-icon-button--xs {
+  width: var(--bs-icon-button-size-xs);
+  height: var(--bs-icon-button-size-xs);
+  padding: var(--bs-icon-button-padding-xs);
+  border-radius: var(--bs-icon-button-radius-xs);
+}
+.bs-icon-button--xs .bs-icon-button__icon {
+  width: var(--bs-icon-button-icon-size-xs);
+  height: var(--bs-icon-button-icon-size-xs);
 }
 
 .bs-icon-button--sm {

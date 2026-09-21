@@ -12,7 +12,7 @@ interface BsIconButtonArgs {
 }
 
 const variants: BsIconButtonVariant[] = ['primary', 'neutral', 'subtle', 'outlined', 'success', 'warning', 'info', 'error'];
-const sizes: BsIconButtonSize[] = ['sm', 'md', 'lg'];
+const sizes: BsIconButtonSize[] = ['xs', 'sm', 'md', 'lg'];
 
 const checkIcon = html`
   <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -52,6 +52,7 @@ export const Primary: Story = {};
 export const Sizes: Story = {
   render: args => html`
     <div style="display:flex; gap:12px; align-items:center;">
+      <bs-icon-button size="xs" aria-label=${args.ariaLabel}>${checkIcon}</bs-icon-button>
       <bs-icon-button size="sm" aria-label=${args.ariaLabel}>${checkIcon}</bs-icon-button>
       <bs-icon-button size="md" aria-label=${args.ariaLabel}>${checkIcon}</bs-icon-button>
       <bs-icon-button size="lg" aria-label=${args.ariaLabel}>${checkIcon}</bs-icon-button>
