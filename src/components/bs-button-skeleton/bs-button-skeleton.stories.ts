@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
 import { componentDescription, propDescription } from '../../stories-utils';
-import type { BsButtonSize } from '../bs-button/bs-button';
+import type { BsButtonSize } from '../bs-button/bs-button/bs-button';
 
 interface BsButtonSkeletonArgs {
   size: BsButtonSize;

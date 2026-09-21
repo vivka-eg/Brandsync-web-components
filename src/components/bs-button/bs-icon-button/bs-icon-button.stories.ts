@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-import { componentDescription, propDescription } from '../../stories-utils';
+import { componentDescription, propDescription } from '../../../stories-utils';
 import type { BsIconButtonVariant, BsIconButtonSize } from './bs-icon-button';
 
 interface BsIconButtonArgs {
@@ -21,7 +21,7 @@ const checkIcon = html`
 `;
 
 const meta: Meta<BsIconButtonArgs> = {
-  title: 'Buttons/bs-icon-button',
+  title: 'Components/bs-button/bs-icon-button',
   parameters: { docs: { description: { component: componentDescription('bs-icon-button') } } },
   render: args => html`
     <bs-icon-button variant=${args.variant} size=${args.size} type=${args.type} aria-label=${args.ariaLabel} ?disabled=${args.disabled}>

@@ -1,5 +1,5 @@
 import { Component, Prop, h } from '@stencil/core';
-import type { BsButtonSize } from '../bs-button/bs-button';
+import type { BsButtonSize } from '../bs-button/bs-button/bs-button';
 
 /**
  * A shape-matched loading placeholder for `bs-button`, shown while the real label/action isn't

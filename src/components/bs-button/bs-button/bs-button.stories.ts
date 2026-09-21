@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
-import { componentDescription, propDescription } from '../../stories-utils';
+import { componentDescription, propDescription } from '../../../stories-utils';
 import type { BsButtonVariant, BsButtonSize } from './bs-button';
 
 interface BsButtonArgs {
@@ -15,7 +15,7 @@ const variants: BsButtonVariant[] = ['primary', 'neutral', 'subtle', 'outlined',
 const sizes: BsButtonSize[] = ['sm', 'md', 'lg'];
 
 const meta: Meta<BsButtonArgs> = {
-  title: 'Buttons/bs-button',
+  title: 'Components/bs-button/bs-button',
   parameters: { docs: { description: { component: componentDescription('bs-button') } } },
   render: args => html`
     <bs-button variant=${args.variant} size=${args.size} type=${args.type} ?disabled=${args.disabled}>
