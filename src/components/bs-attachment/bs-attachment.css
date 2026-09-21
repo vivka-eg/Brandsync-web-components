@@ -102,8 +102,12 @@
 
 .bs-attachment__remove {
   position: absolute;
-  top: var(--bs-spacing-50);
-  right: var(--bs-spacing-50);
+  /* Verified against Figma node 2513:32843 (EG Genie UI Kit v1.0): the remove button's own 32x32
+     hit-target box sits flush at the thumbnail's top-right corner (top:0, right:0), with the
+     *visible* 16px button centered inside it (8px inset on every side) -- so the visible button's
+     real offset from the thumbnail's corner is 8px, not 4px. */
+  top: var(--bs-spacing-100);
+  right: var(--bs-spacing-100);
   opacity: 0;
   pointer-events: none;
   transition: opacity var(--bs-duration-fast) var(--bs-easing-standard);
