@@ -29,19 +29,34 @@ const PANEL_STYLE = `
   font-family: var(--bs-typography-font-family-body), sans-serif;
 `;
 
+// Page padding per the Genie Chatbot pattern spec (16px left/right, 24px top/bottom -- not a flat
+// 16px on every side). No uniform \`gap\` here: the user-bubble-to-AI-response spacing below is a
+// distinct, much larger value (40px) than any other spacing within a single AI turn, so it's set
+// explicitly per-element instead of via one flex gap.
 const TRANSCRIPT_STYLE = `
   flex: 1;
   min-height: 0;
   overflow-y: auto;
   display: flex;
   flex-direction: column;
-  gap: var(--bs-spacing-200);
-  padding: var(--bs-spacing-200);
+  padding: var(--bs-spacing-300) var(--bs-spacing-200);
 `;
 
+// The gap from a user's message bubble to the AI's response that follows it, per the Genie
+// Chatbot pattern spec's conversationWindow.userBubbleToAiResponsePx (40px) -- deliberately much
+// larger than ordinary internal spacing (e.g. the 4px gap between an AI response's own text and
+// its action row below).
+const AI_RESPONSE_GAP_STYLE = `margin-top: var(--bs-spacing-500);`;
+
+// margin: 0 on both -- these render as <p> tags, and this Storybook environment has no CSS reset
+// zeroing the browser's default <p> margin (~1em top/bottom). Left unset, that default margin
+// silently added to the intentional 40px user-bubble-to-AI-response gap (AI_RESPONSE_GAP_STYLE
+// above), measuring 56px instead of the spec's 40px -- confirmed via getBoundingClientRect before
+// this fix.
 const USER_BUBBLE_STYLE = `
   align-self: flex-end;
   max-width: 80%;
+  margin: 0;
   padding: var(--bs-spacing-100) var(--bs-spacing-150);
   border-radius: var(--bs-border-radius-150);
   background: var(--bs-color-primary-container);
@@ -52,6 +67,7 @@ const USER_BUBBLE_STYLE = `
 
 const AI_RESPONSE_STYLE = `
   max-width: 100%;
+  margin: 0;
   color: var(--bs-text-default);
   font-size: var(--bs-font-size-md);
   line-height: 1.5;
@@ -71,7 +87,7 @@ export const EmptyState: Story = {
         </div>
       </div>
       <bs-composer aria-label="Message" style="margin: var(--bs-spacing-100) var(--bs-spacing-200) 0;"></bs-composer>
-      <bs-ai-disclaimer style="padding: var(--bs-spacing-100) 0;">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
+      <bs-ai-disclaimer style="padding: var(--bs-spacing-150) 0 var(--bs-spacing-100);">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
     </div>
   `,
 };
@@ -83,7 +99,7 @@ export const ActiveConversation: Story = {
       <bs-chatbot-header heading="Genie"></bs-chatbot-header>
       <div style=${TRANSCRIPT_STYLE}>
         <p style=${USER_BUBBLE_STYLE}>How do I submit a ByggSøk application?</p>
-        <div style="display: flex; flex-direction: column; gap: var(--bs-spacing-50);">
+        <div style="${AI_RESPONSE_GAP_STYLE} display: flex; flex-direction: column; gap: var(--bs-spacing-50);">
           <p style=${AI_RESPONSE_STYLE}>
             You can submit a ByggSøk application through the municipal portal. Log in with your ID, select "New
             application", and attach your building plans before submitting for review.
@@ -92,7 +108,7 @@ export const ActiveConversation: Story = {
         </div>
       </div>
       <bs-composer aria-label="Message" style="margin: var(--bs-spacing-100) var(--bs-spacing-200) 0;"></bs-composer>
-      <bs-ai-disclaimer style="padding: var(--bs-spacing-100) 0;">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
+      <bs-ai-disclaimer style="padding: var(--bs-spacing-150) 0 var(--bs-spacing-100);">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
     </div>
   `,
 };
@@ -104,10 +120,10 @@ export const Thinking: Story = {
       <bs-chatbot-header heading="Genie"></bs-chatbot-header>
       <div style=${TRANSCRIPT_STYLE}>
         <p style=${USER_BUBBLE_STYLE}>How do I submit a ByggSøk application?</p>
-        <bs-ai-thinking label="Retrieving sources"></bs-ai-thinking>
+        <bs-ai-thinking label="Retrieving sources" style=${AI_RESPONSE_GAP_STYLE}></bs-ai-thinking>
       </div>
       <bs-composer aria-label="Message" state="generating" style="margin: var(--bs-spacing-100) var(--bs-spacing-200) 0;"></bs-composer>
-      <bs-ai-disclaimer style="padding: var(--bs-spacing-100) 0;">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
+      <bs-ai-disclaimer style="padding: var(--bs-spacing-150) 0 var(--bs-spacing-100);">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
     </div>
   `,
 };
@@ -119,7 +135,7 @@ export const WithSourcesDrawerOpen: Story = {
       <bs-chatbot-header heading="Genie"></bs-chatbot-header>
       <div style=${TRANSCRIPT_STYLE}>
         <p style=${USER_BUBBLE_STYLE}>How do I submit a ByggSøk application?</p>
-        <div style="display: flex; flex-direction: column; gap: var(--bs-spacing-50);">
+        <div style="${AI_RESPONSE_GAP_STYLE} display: flex; flex-direction: column; gap: var(--bs-spacing-50);">
           <p style=${AI_RESPONSE_STYLE}>
             You can submit a ByggSøk application through the municipal portal. Log in with your ID, select "New
             application", and attach your building plans before submitting for review.
@@ -128,7 +144,7 @@ export const WithSourcesDrawerOpen: Story = {
         </div>
       </div>
       <bs-composer aria-label="Message" style="margin: var(--bs-spacing-100) var(--bs-spacing-200) 0;"></bs-composer>
-      <bs-ai-disclaimer style="padding: var(--bs-spacing-100) 0;">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
+      <bs-ai-disclaimer style="padding: var(--bs-spacing-150) 0 var(--bs-spacing-100);">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
 
       <!-- Backdrop -->
       <div style="position: absolute; inset: 0; background: rgba(33, 38, 46, 0.32);"></div>
@@ -165,7 +181,7 @@ export const UploadingAttachments: Story = {
           </bs-attachment-list>
         </bs-composer>
       </div>
-      <bs-ai-disclaimer style="padding: var(--bs-spacing-100) 0;">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
+      <bs-ai-disclaimer style="padding: var(--bs-spacing-150) 0 var(--bs-spacing-100);">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
     </div>
   `,
 };
@@ -188,7 +204,7 @@ export const SendFailed: Story = {
         ></bs-composer-status-banner>
         <bs-composer aria-label="Message"></bs-composer>
       </div>
-      <bs-ai-disclaimer style="padding: var(--bs-spacing-100) 0;">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
+      <bs-ai-disclaimer style="padding: var(--bs-spacing-150) 0 var(--bs-spacing-100);">AI can make mistakes. Please verify important information.</bs-ai-disclaimer>
     </div>
   `,
 };
