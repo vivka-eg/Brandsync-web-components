@@ -45,62 +45,56 @@ A clickable action element for the single most important action in a given conte
 ## Neutral button
 
 Lower-emphasis alternative to the primary variant, for secondary actions alongside it (e.g. a
-"Cancel" next to a "Confirm").
-
-<Canvas of={ButtonStories.Neutral} />
+"Cancel" next to a "Confirm"). See it live in the
+[variant × size × disabled table](#all-variant-size-disabled-combinations) below, or switch
+`variant` to `neutral` in the Controls above.
 
 ## Subtle button
 
 A ghost/text-only style for low-priority actions that shouldn't compete visually with the
-primary/neutral buttons around them (e.g. an inline "Learn more" next to a form).
-
-<Canvas of={ButtonStories.Subtle} />
+primary/neutral buttons around them (e.g. an inline "Learn more" next to a form). See it live in
+the [variant × size × disabled table](#all-variant-size-disabled-combinations) below.
 
 ## Outlined button
 
 A bordered, transparent-background style for neutral actions that need more visual weight than
-`subtle` but shouldn't draw focus away from the primary action (e.g. "Cancel" or "Back").
-
-<Canvas of={ButtonStories.Outlined} />
+`subtle` but shouldn't draw focus away from the primary action (e.g. "Cancel" or "Back"). See it
+live in the [variant × size × disabled table](#all-variant-size-disabled-combinations) below.
 
 ## Success button
 
 A semantic variant for actions whose outcome is predictable and clearly communicated by the
 button itself (e.g. "Approve", "Mark as complete") — per BrandSync guidance, only use `success`
 when the button's own label/action conveys that outcome, not to reflect some other element's
-visual state.
-
-<Canvas of={ButtonStories.Success} />
+visual state. See it live in the
+[variant × size × disabled table](#all-variant-size-disabled-combinations) below.
 
 ## Warning button
 
 A semantic variant for actions that need the user's attention before proceeding (e.g. "Proceed
 anyway"), reserved for cases where the action's outcome is predictable and clearly communicated —
-not a general-purpose "caution" color for unrelated content.
-
-<Canvas of={ButtonStories.Warning} />
+not a general-purpose "caution" color for unrelated content. See it live in the
+[variant × size × disabled table](#all-variant-size-disabled-combinations) below.
 
 ## Info button
 
 A semantic variant for informational actions with a predictable, clearly communicated outcome
 (e.g. "View details"), following the same restraint as `success`/`warning` — don't reach for it
-just because something nearby happens to be styled as "info".
-
-<Canvas of={ButtonStories.Info} />
+just because something nearby happens to be styled as "info". See it live in the
+[variant × size × disabled table](#all-variant-size-disabled-combinations) below.
 
 ## Error button
 
 Destructive actions should always use the error variant, never `neutral` — using `error` signals
 the risk of the action (e.g. "Delete account") rather than just adding visual emphasis, per
-BrandSync's own destructive-action guidance.
-
-<Canvas of={ButtonStories.Error} />
+BrandSync's own destructive-action guidance. See it live in the
+[variant × size × disabled table](#all-variant-size-disabled-combinations) below.
 
 ## Disabled state
 
-Uses the native `disabled` attribute, not just a visual style — see Accessibility below.
-
-<Canvas of={ButtonStories.Disabled} />
+Uses the native `disabled` attribute, not just a visual style — see Accessibility below. See it
+live (every variant) in the
+[variant × size × disabled table](#all-variant-size-disabled-combinations) below.
 
 ## Sizes
 
