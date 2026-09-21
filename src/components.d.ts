@@ -240,6 +240,8 @@ export namespace Components {
      * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
      * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
      * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
+     * @prop --bs-button-padding-x-icon-side - Horizontal padding on an edge that's adjacent to a leading/trailing icon (tighter than the plain text-only edge). Aliased to `--bs-spacing-150`.
+     * @prop --bs-button-padding-x-label-side - Horizontal padding on the opposite edge, when an icon on the other side needs compensating extra space to keep the button optically balanced. Aliased to `--bs-spacing-250`.
      */
     interface BsButton {
         /**
@@ -1420,6 +1422,8 @@ declare global {
      * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
      * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
      * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
+     * @prop --bs-button-padding-x-icon-side - Horizontal padding on an edge that's adjacent to a leading/trailing icon (tighter than the plain text-only edge). Aliased to `--bs-spacing-150`.
+     * @prop --bs-button-padding-x-label-side - Horizontal padding on the opposite edge, when an icon on the other side needs compensating extra space to keep the button optically balanced. Aliased to `--bs-spacing-250`.
      */
     interface HTMLBsButtonElement extends Components.BsButton, HTMLStencilElement {
     }
@@ -2478,6 +2482,8 @@ declare namespace LocalJSX {
      * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
      * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
      * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
+     * @prop --bs-button-padding-x-icon-side - Horizontal padding on an edge that's adjacent to a leading/trailing icon (tighter than the plain text-only edge). Aliased to `--bs-spacing-150`.
+     * @prop --bs-button-padding-x-label-side - Horizontal padding on the opposite edge, when an icon on the other side needs compensating extra space to keep the button optically balanced. Aliased to `--bs-spacing-250`.
      */
     interface BsButton {
         /**
@@ -3886,6 +3892,8 @@ declare module "@stencil/core" {
              * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
              * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
              * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
+             * @prop --bs-button-padding-x-icon-side - Horizontal padding on an edge that's adjacent to a leading/trailing icon (tighter than the plain text-only edge). Aliased to `--bs-spacing-150`.
+             * @prop --bs-button-padding-x-label-side - Horizontal padding on the opposite edge, when an icon on the other side needs compensating extra space to keep the button optically balanced. Aliased to `--bs-spacing-250`.
              */
             "bs-button": LocalJSX.IntrinsicElements["bs-button"] & JSXBase.HTMLAttributes<HTMLBsButtonElement>;
             /**

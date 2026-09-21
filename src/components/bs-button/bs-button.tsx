@@ -34,6 +34,8 @@ export type BsButtonSize = 'sm' | 'md' | 'lg';
  * @prop --bs-button-neutral-border - Border color, `variant="neutral"`, default/disabled. Aliased to `--bs-border-neutral-container`.
  * @prop --bs-button-neutral-border-hover - Border color, `variant="neutral"`, hover. Aliased to `--bs-border-neutral-container-hover`.
  * @prop --bs-button-neutral-border-pressed - Border color, `variant="neutral"`, pressed. Aliased to `--bs-border-neutral-container-pressed`.
+ * @prop --bs-button-padding-x-icon-side - Horizontal padding on an edge that's adjacent to a leading/trailing icon (tighter than the plain text-only edge). Aliased to `--bs-spacing-150`.
+ * @prop --bs-button-padding-x-label-side - Horizontal padding on the opposite edge, when an icon on the other side needs compensating extra space to keep the button optically balanced. Aliased to `--bs-spacing-250`.
  */
 @Component({
   tag: 'bs-button',
@@ -131,7 +133,9 @@ export class BsButton {
     const iconOnly = (this.hasIcon || this.hasEndIcon) && !this.hasLabel;
     return (
       <button
-        class={`bs-button bs-button--${this.variant} bs-button--${this.size} ${iconOnly ? 'bs-button--icon-only' : ''}`}
+        class={`bs-button bs-button--${this.variant} bs-button--${this.size} ${iconOnly ? 'bs-button--icon-only' : ''} ${
+          this.hasIcon && !iconOnly ? 'bs-button--has-icon' : ''
+        } ${this.hasEndIcon && !iconOnly ? 'bs-button--has-end-icon' : ''}`}
         type={this.type}
         disabled={this.disabled}
         aria-label={this.ariaLabel}

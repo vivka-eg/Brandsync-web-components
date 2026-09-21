@@ -106,14 +106,20 @@ Three sizes — `sm`, `md`, `lg` — map to `brandsync-tokens`' spacing scale
 ## With icon
 
 An optional leading icon, slotted in before the label, for buttons where a visual cue reinforces
-the action (e.g. a checkmark for "Confirm").
+the action (e.g. a checkmark for "Confirm"). The edge next to the icon uses tighter padding
+(`--bs-button-padding-x-icon-side`, 12px) than the plain text-only edge, while the opposite edge
+(next to just the label) compensates with more padding (`--bs-button-padding-x-label-side`, 20px)
+to keep the button optically balanced -- the total horizontal padding stays the same as a
+plain-text button either way.
 
 <Canvas of={ButtonStories.WithIcon} />
 
 ## With end icon
 
 An optional trailing icon, slotted in after the label, for actions where the icon reinforces a
-direction or destination rather than the action itself (e.g. a chevron for "Next").
+direction or destination rather than the action itself (e.g. a chevron for "Next"). The same
+asymmetric padding as "With icon" applies, mirrored -- tighter next to the icon (now on the
+right), looser next to the label (now on the left).
 
 <Canvas of={ButtonStories.WithEndIcon} />
 
@@ -147,7 +153,8 @@ check across the full matrix at once.
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
 - Slots: default (label), `icon`, `end-icon`
 - Shadow parts: `::part(icon)`, `::part(label)`, `::part(end-icon)`
-- CSS Custom Properties: `--bs-button-radius`, `--bs-button-height-sm/md/lg`
+- CSS Custom Properties: `--bs-button-radius`, `--bs-button-height-sm/md/lg`,
+  `--bs-button-padding-x-icon-side`, `--bs-button-padding-x-label-side`
 - `variant` is one of `primary`, `neutral`, `subtle`, `outlined`, `success`, `warning`, `info`, `error`
 - `ariaLabel` prop reflects to the native `aria-label` attribute — required for icon-only usage
 

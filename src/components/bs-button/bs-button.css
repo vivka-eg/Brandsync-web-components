@@ -4,7 +4,9 @@
   --bs-button-height-md: var(--bs-spacing-600);
   --bs-button-height-lg: var(--bs-spacing-700);
   --bs-button-radius: var(--bs-border-radius-100);
-  
+  --bs-button-padding-x-icon-side: var(--bs-spacing-150);
+  --bs-button-padding-x-label-side: var(--bs-spacing-250);
+
   --bs-button-error-default: var(--bs-color-error-default);
   --bs-button-error-hover: var(--bs-color-error-hover);
   --bs-button-error-focus: var(--bs-border-error-focus);
@@ -277,4 +279,23 @@
 }
 .bs-button--icon-only .bs-button__end-icon--visible {
   margin-left: 0;
+}
+
+/* Verified against a Figma redline for the icon+label layout: the edge next to an icon is
+   tighter (spacing/150, 12px) than the plain text-only edge (16px), and the opposite edge -- next
+   to just the label, with an icon on the other side pulling the button off-balance -- compensates
+   with more padding (spacing/250, 20px), keeping the total horizontal padding budget the same as
+   the icon-less button (12+20 = 16+16 = 32px for size="md"). This is deliberately NOT
+   size-dependent, same as the icon/label gap above -- neither varies by size in the source spec. */
+.bs-button--has-icon:not(.bs-button--has-end-icon) {
+  padding-left: var(--bs-button-padding-x-icon-side);
+  padding-right: var(--bs-button-padding-x-label-side);
+}
+.bs-button--has-end-icon:not(.bs-button--has-icon) {
+  padding-left: var(--bs-button-padding-x-label-side);
+  padding-right: var(--bs-button-padding-x-icon-side);
+}
+.bs-button--has-icon.bs-button--has-end-icon {
+  padding-left: var(--bs-button-padding-x-icon-side);
+  padding-right: var(--bs-button-padding-x-icon-side);
 }

@@ -114,4 +114,48 @@ describe('bs-button', () => {
     const button = root.shadowRoot.querySelector('button');
     expect(button).toHaveClass('bs-button--icon-only');
   });
+
+  describe('asymmetric padding for icon + label layouts', () => {
+    it('applies bs-button--has-icon (not bs-button--has-end-icon) with a leading icon and a label', async () => {
+      const { root } = await render(
+        <bs-button>
+          <svg slot="icon" viewBox="0 0 16 16"></svg>
+          Click me
+        </bs-button>,
+      );
+      const button = root.shadowRoot.querySelector('button');
+      expect(button).toHaveClass('bs-button--has-icon');
+      expect(button).not.toHaveClass('bs-button--has-end-icon');
+    });
+
+    it('applies bs-button--has-end-icon (not bs-button--has-icon) with a trailing icon and a label', async () => {
+      const { root } = await render(
+        <bs-button>
+          Next
+          <svg slot="end-icon" viewBox="0 0 16 16"></svg>
+        </bs-button>,
+      );
+      const button = root.shadowRoot.querySelector('button');
+      expect(button).toHaveClass('bs-button--has-end-icon');
+      expect(button).not.toHaveClass('bs-button--has-icon');
+    });
+
+    it('applies neither class for an icon-only button (padding stays 0 via bs-button--icon-only)', async () => {
+      const { root } = await render(
+        <bs-button ariaLabel="Delete">
+          <svg slot="icon" viewBox="0 0 16 16"></svg>
+        </bs-button>,
+      );
+      const button = root.shadowRoot.querySelector('button');
+      expect(button).not.toHaveClass('bs-button--has-icon');
+      expect(button).not.toHaveClass('bs-button--has-end-icon');
+    });
+
+    it('applies neither class for a plain text-only button', async () => {
+      const { root } = await render(<bs-button>Click me</bs-button>);
+      const button = root.shadowRoot.querySelector('button');
+      expect(button).not.toHaveClass('bs-button--has-icon');
+      expect(button).not.toHaveClass('bs-button--has-end-icon');
+    });
+  });
 });
