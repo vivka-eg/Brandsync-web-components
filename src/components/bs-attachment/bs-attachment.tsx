@@ -77,7 +77,7 @@ export class BsAttachment {
       <div class={{ 'bs-attachment': true, 'bs-attachment--loading': this.loading }} aria-busy={this.loading ? 'true' : 'false'}>
         {isImage ? this.renderImage() : this.renderCard()}
         {this.removable && (
-          <button type="button" part="remove" class="bs-attachment__remove" aria-label="Remove attachment" onClick={this.onRemoveClick}>
+          <button type="button" part="remove" class="bs-attachment__remove" aria-label={`Remove attachment: ${this.fileName}`} onClick={this.onRemoveClick}>
             <CloseIcon />
           </button>
         )}
