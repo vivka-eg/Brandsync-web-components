@@ -81,4 +81,18 @@ describe('bs-navigation-header', () => {
       expect(header.firstElementChild).toEqualAttribute('part', 'skip-link');
     });
   });
+
+  describe('logoBackground', () => {
+    it('forwards the default "auto" background to the internal bs-logo', async () => {
+      const { root } = await render(<bs-navigation-header></bs-navigation-header>);
+      const logo = root.shadowRoot.querySelector('bs-logo') as HTMLElement & { background: string };
+      expect(logo.background).toBe('auto');
+    });
+
+    it('forwards logoBackground="dark" to the internal bs-logo', async () => {
+      const { root } = await render(<bs-navigation-header logoBackground="dark"></bs-navigation-header>);
+      const logo = root.shadowRoot.querySelector('bs-logo') as HTMLElement & { background: string };
+      expect(logo.background).toBe('dark');
+    });
+  });
 });

@@ -1,5 +1,4 @@
 import { Component, Prop, h } from '@stencil/core';
-import { BRANDSYNC_LOGO_SVG } from './brandsync-logo';
 
 export type BsNavigationHeaderAlignment = 'default' | 'center' | 'with-navigation-drawer';
 
@@ -26,7 +25,10 @@ export type BsNavigationHeaderAlignment = 'default' | 'center' | 'with-navigatio
  * @slot left - Menu/action content immediately after the logo (or, in `with-navigation-drawer`
  *   mode, at the bar's left edge). Typically one or more `bs-button`/`bs-icon-button` elements.
  * @slot right - Menu/action content pushed to the bar's far right.
- * @part logo - The BrandSync brand mark (inline SVG). Not rendered in `with-navigation-drawer` mode.
+ * @part logo - The BrandSync brand mark, rendered via a nested `bs-logo` element (`part="logo"` is
+ *   set directly on that element -- the same pattern `bs-attachment` uses for its own nested
+ *   `bs-icon-button`'s `remove` part -- so `bs-navigation-header::part(logo)` still targets it
+ *   directly, no forwarding needed). Not rendered in `with-navigation-drawer` mode.
  * @part left - The wrapper around the `left` slot.
  * @part right - The wrapper around the `right` slot.
  * @part skip-link - The "Skip to main content" link (only rendered when `skipToContentHref` is set).
@@ -61,6 +63,14 @@ export class BsNavigationHeader {
   /** Link text for the skip-to-content link. Only rendered when `skipToContentHref` is set. */
   @Prop() skipToContentLabel = 'Skip to main content';
 
+  /** Forwarded straight to the internal `bs-logo`'s own `background` prop. Defaults to `"auto"`,
+   * which follows the ambient `[data-theme="dark"]` state automatically (see `bs-logo`'s own
+   * docs) -- so if this bar ends up on a dark surface via the normal theming mechanism, the logo
+   * switches to its dedicated dark-background asset with no wiring needed. Set `"light"`/`"dark"`
+   * explicitly only if you've overridden `--bs-navigation-header-bg` to something dark yourself
+   * *without* setting `[data-theme="dark"]`, and need to pin the logo regardless of theme. */
+  @Prop() logoBackground: 'auto' | 'light' | 'dark' = 'auto';
+
   render() {
     const showLogo = this.alignment !== 'with-navigation-drawer';
     const rootClasses = `bs-navigation-header bs-navigation-header--${this.alignment}`;
@@ -73,7 +83,7 @@ export class BsNavigationHeader {
           </a>
         )}
         {showLogo && (
-          <div part="logo" class="bs-navigation-header__logo" role="img" aria-label="BrandSync" innerHTML={BRANDSYNC_LOGO_SVG}></div>
+          <bs-logo part="logo" class="bs-navigation-header__logo" variant="full" background={this.logoBackground}></bs-logo>
         )}
         <div part="left" class="bs-navigation-header__left">
           <slot name="left"></slot>

@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from '@storybook/web-components-vite';
 import { html } from 'lit';
 import { ifDefined } from 'lit/directives/if-defined.js';
-import { componentDescription, propDescription } from '../../stories-utils';
+import { componentDescription, propDescription } from '../../../../stories-utils';
 
 type BsNavigationHeaderAlignment = 'default' | 'center' | 'with-navigation-drawer';
 type LeftContentType = 'buttons' | 'tabs';
@@ -13,6 +13,7 @@ interface BsNavigationHeaderArgs {
   alignment: BsNavigationHeaderAlignment;
   skipToContentHref: string;
   leftContentType: LeftContentType;
+  logoBackground: 'auto' | 'light' | 'dark';
 }
 
 const searchIcon = html`
@@ -96,10 +97,14 @@ const RIGHT_SLOT = html`
 `;
 
 const meta: Meta<BsNavigationHeaderArgs> = {
-  title: 'Components/bs-navigation-header',
+  title: 'UI Shell/bs-navigation-header',
   parameters: { docs: { description: { component: componentDescription('bs-navigation-header') } }, layout: 'fullscreen' },
   render: args => html`
-    <bs-navigation-header alignment=${args.alignment} skip-to-content-href=${ifDefined(args.skipToContentHref || undefined)}>
+    <bs-navigation-header
+      alignment=${args.alignment}
+      skip-to-content-href=${ifDefined(args.skipToContentHref || undefined)}
+      logo-background=${args.logoBackground}
+    >
       <div slot="left" style="display: contents;">${leftSlotContent(args.leftContentType)}</div>
       <div slot="right" style="display: contents;">${RIGHT_SLOT}</div>
     </bs-navigation-header>
@@ -112,35 +117,90 @@ const meta: Meta<BsNavigationHeaderArgs> = {
       options: leftContentTypes,
       description: 'Storybook-only demo toggle: what to render in the `left` slot (not a real prop on bs-navigation-header -- the slot accepts anything).',
     },
+    logoBackground: { control: 'select', options: ['auto', 'light', 'dark'], description: propDescription('bs-navigation-header', 'logoBackground') },
   },
   args: {
     alignment: 'default',
     skipToContentHref: '',
     leftContentType: 'buttons',
+    logoBackground: 'auto',
   },
 };
 
 export default meta;
 type Story = StoryObj<BsNavigationHeaderArgs>;
 
-export const Default: Story = {};
+// Story naming follows the "Header Base [with X [and Y]]" convention: the bare bar first, then
+// each slot added on its own, then combined, then the alignment/content variants layered on top
+// of the fully-populated ("Navigation and Actions") bar.
 
-export const Center: Story = {
+export const HeaderBase: Story = {
+  name: 'Header Base',
+  render: args => html`<bs-navigation-header alignment=${args.alignment}></bs-navigation-header>`,
+};
+
+export const HeaderBaseWithNavigation: Story = {
+  name: 'Header Base with Navigation',
+  render: args => html`
+    <bs-navigation-header alignment=${args.alignment}>
+      <div slot="left" style="display: contents;">${leftSlotContent(args.leftContentType)}</div>
+    </bs-navigation-header>
+  `,
+};
+
+export const HeaderBaseWithActions: Story = {
+  name: 'Header Base with Actions',
+  render: args => html`
+    <bs-navigation-header alignment=${args.alignment}>
+      <div slot="right" style="display: contents;">${RIGHT_SLOT}</div>
+    </bs-navigation-header>
+  `,
+};
+
+export const HeaderBaseWithNavigationAndActions: Story = {
+  name: 'Header Base with Navigation and Actions',
+};
+
+export const HeaderBaseWithNavigationAndActionsCentered: Story = {
+  name: 'Header Base with Navigation and Actions, Centered',
   args: { alignment: 'center' },
 };
 
-export const WithNavigationDrawer: Story = {
-  name: 'With navigation drawer',
+export const HeaderBaseWithNavigationAndActionsNoLogo: Story = {
+  name: 'Header Base with Navigation and Actions (No Logo)',
   args: { alignment: 'with-navigation-drawer' },
 };
 
-export const WithTabs: Story = {
-  name: 'Left slot as tabs',
+export const HeaderBaseWithNavigationAndActionsTabs: Story = {
+  name: 'Header Base with Navigation and Actions, Tabs',
   args: { leftContentType: 'tabs' },
 };
 
-export const SkipToContent: Story = {
-  name: 'Skip to content',
+export const HeaderBaseDark: Story = {
+  name: 'Header Base with Navigation and Actions (Dark)',
+  // `data-theme="dark"` is set on a wrapper scoped to just this story, NOT via a globals override
+  // on the toolbar's Theme switch -- that switch's decorator (see .storybook/preview.ts) sets the
+  // attribute on the shared document root, which is fine in isolation but breaks down on this
+  // component's Docs page: every story renders together in one document there, so one story
+  // forcing a document-wide theme while its siblings render alongside it under the *other* theme
+  // causes exactly the kind of thrash/hang a shared mutable global produces. A local wrapper gets
+  // the identical CSS custom property cascade (tokens.css's dark block matches any
+  // `[data-theme="dark"]` element, not specifically <html>) without touching shared state.
+  // logoBackground is left at its "auto" default here deliberately -- this story demonstrates that
+  // no manual prop is needed for the logo to follow the theme; see logoBackground's own docs for
+  // the explicit-override case.
+  render: args => html`
+    <div data-theme="dark" style="background: var(--bs-surface-base);">
+      <bs-navigation-header alignment=${args.alignment} logo-background=${args.logoBackground}>
+        <div slot="left" style="display: contents;">${leftSlotContent(args.leftContentType)}</div>
+        <div slot="right" style="display: contents;">${RIGHT_SLOT}</div>
+      </bs-navigation-header>
+    </div>
+  `,
+};
+
+export const HeaderBaseWithSkipLink: Story = {
+  name: 'Header Base with Skip Link',
   // Press Tab from the top of this story to focus the (normally offscreen) skip link and see it
   // come into view, then Enter/Space to jump straight to the #main-content landmark below,
   // bypassing the left/right slot content in between.

@@ -10,3 +10,23 @@
 :root {
   font-family: var(--bs-typography-font-family-body), sans-serif;
 }
+
+/*
+ * Bridges the `[data-theme="dark"]` attribute (set by a consuming app, or this library's own
+ * Storybook "Theme" toolbar switch -- see .storybook/preview.ts) to bs-logo's asset-visibility
+ * custom properties, so bs-logo's `background="auto"` default (the default) can react to it via
+ * ordinary custom property inheritance across shadow DOM boundaries -- the same mechanism every
+ * other `--bs-*` token already uses to re-theme component internals, just for a fixed SVG asset
+ * that has no token of its own to read. Kept out of tokens.css since that file is vendored
+ * wholesale from the brandsync-tokens package and re-copied verbatim on every bump (see its own
+ * header comment) -- this is BrandSync-WC's own addition, not an upstream design token.
+ */
+:root {
+  --bs-logo-asset-light-display: block;
+  --bs-logo-asset-dark-display: none;
+}
+
+[data-theme='dark'] {
+  --bs-logo-asset-light-display: none;
+  --bs-logo-asset-dark-display: block;
+}

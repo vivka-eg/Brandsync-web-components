@@ -15,8 +15,9 @@ import { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-
 import { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 import { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-button/bs-icon-button/bs-icon-button";
+import { BsLogoBackground, BsLogoVariant } from "./components/bs-logo/bs-logo";
 import { BsModalSize } from "./components/bs-modal/bs-modal";
-import { BsNavigationHeaderAlignment } from "./components/bs-navigation-header/bs-navigation-header";
+import { BsNavigationHeaderAlignment } from "./components/ui-shell/bs-navigation-header/bs-navigation-header/bs-navigation-header";
 import { BsSliderType } from "./components/bs-slider/bs-slider";
 import { BsSwitchSize } from "./components/bs-switch/bs-switch";
 import { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
@@ -31,8 +32,9 @@ export { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-
 export { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
 export { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-button/bs-icon-button/bs-icon-button";
+export { BsLogoBackground, BsLogoVariant } from "./components/bs-logo/bs-logo";
 export { BsModalSize } from "./components/bs-modal/bs-modal";
-export { BsNavigationHeaderAlignment } from "./components/bs-navigation-header/bs-navigation-header";
+export { BsNavigationHeaderAlignment } from "./components/ui-shell/bs-navigation-header/bs-navigation-header/bs-navigation-header";
 export { BsSliderType } from "./components/bs-slider/bs-slider";
 export { BsSwitchSize } from "./components/bs-switch/bs-switch";
 export { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
@@ -957,6 +959,52 @@ export namespace Components {
         "value": string;
     }
     /**
+     * The BrandSync brand mark, as its own standalone component -- shared by `bs-navigation-header`
+     * and `bs-navigation-drawer`, which used to each render their own duplicated copy of this SVG
+     * (the drawer's collapsed state even faked an icon-only look by clipping the full wordmark asset
+     * down to a narrowed box, rather than using a real icon-only asset).
+     * ## When to use
+     * - Anywhere the BrandSync logo/icon needs to render: a navigation header, a nav drawer, etc.
+     * ## When not to use
+     * - The Genie AI chat panel's own brand mark -- that's a different logo (`bs-chatbot-header`'s
+     *   own inline Genie asset), not this one.
+     * `variant` mirrors Figma's "Logo" component set (node 10909:30421) `Device` property
+     * ("Desktop" / "Tab and mobile"), which was originally meant to distinguish the full lockup from
+     * the icon-only mark at different responsive breakpoints -- renamed here to
+     * `variant: 'full' | 'mark'` since that's what it actually controls (how much of the logo
+     * renders), not literally a device/breakpoint switch.
+     * `variant="custom"` is not a Figma variant at all -- it's an escape hatch for a consuming app
+     * that needs to show a DIFFERENT product's logo in the same slot (e.g. a white-labeled deployment,
+     * or a logo fetched at runtime from a service like brand.dev), via `src`/`alt`, instead of the
+     * built-in BrandSync assets. This component deliberately does NOT fetch that image itself --
+     * network calls, loading/error states, and caching are the consuming app's responsibility, same as
+     * every other component in this library (e.g. `bs-attachment` takes `imageSrc` rather than fetching
+     * an image on its own). `background` has no effect on `variant="custom"` -- a consumer's own image
+     * is already designed for whatever surface it's placed on.
+     */
+    interface BsLogo {
+        /**
+          * `variant="custom"` only: accessible alt text for the image -- a product logo is meaningful content (whose brand is this?), not decorative, so set this to something real (e.g. the product/company name). Falls back to `alt=""` (marking the image decorative to assistive tech) when unset, rather than omitting the `alt` attribute entirely -- an `<img>` with no `alt` attribute at all is a harder accessibility failure than one explicitly marked decorative, but an empty fallback is still worse than a real name, so don't rely on it. Ignored for `full`/`mark` (those already carry their own fixed `aria-label="BrandSync"`).
+          * @default null
+         */
+        "alt": string | null;
+        /**
+          * Which pre-built asset to use for `variant="full"` -- Figma ships a genuinely separate, differently-drawn dark-background asset (every wordmark path filled solid white, and the icon's outer shape a single solid-white path instead of the light version's two-path white-fill-plus-border-ring), not a CSS currentColor swap of identical paths.  `"auto"` (default) renders both assets and lets CSS pick one via `--bs-logo-asset-light-display`/`--bs-logo-asset-dark-display` (defined in `src/global/base.css`, flipped by the same `[data-theme="dark"]` attribute every other `--bs-*` token already reacts to) -- so the logo just follows the ambient theme with no wiring needed, the same way a consuming app's own dark mode already re-themes every other part of this library via ordinary CSS custom property inheritance. Set `"light"`/`"dark"` explicitly to pin one regardless of the ambient theme -- e.g. a dark sidebar that isn't otherwise dark-themed.  Has no effect on `variant="mark"`: Figma's component set only has one real designed instance of the icon-only mark (`Device="Tab and mobile"`, `Background="Default"`) -- there's no separate dark version of it, so the mark renders identically regardless of this prop.
+          * @default 'auto'
+         */
+        "background": BsLogoBackground;
+        /**
+          * `variant="custom"` only: the image URL to render (e.g. a URL your app already fetched from a logo API). Ignored for `full`/`mark`.
+          * @default null
+         */
+        "src": string | null;
+        /**
+          * How much of the logo to render. `full` is the icon + "EG BrandSync" wordmark (190.977x44 natural size); `mark` is just the icon (44x44 natural size), no wordmark; `custom` renders a consumer-supplied image via `src`/`alt` instead of a built-in BrandSync asset -- see the class doc above.
+          * @default 'full'
+         */
+        "variant": BsLogoVariant;
+    }
+    /**
      * A generic dropdown/popup menu container: a rounded, elevated list of items (typically
      * `bs-menu-item` elements).
      * ## When to use
@@ -1026,6 +1074,122 @@ export namespace Components {
         "size": BsModalSize;
     }
     /**
+     * A left-side persistent navigation sidebar: the BrandSync logo, a "Main Menu" title with a
+     * collapse toggle, a reserved slot for a search field, and a scrollable list of nav items.
+     * ## When to use
+     * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
+     *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
+     *   already renders one).
+     * ## When not to use
+     * - The top navigation bar itself -- use `bs-navigation-header` instead.
+     * This component renders a real `<nav>` landmark (no explicit `role` needed -- `<nav>` already
+     * carries the implicit `navigation` role), labeled via `aria-label={heading}` so the landmark
+     * still has a name even when collapsed (see below).
+     * `collapsed` narrows the drawer to a 96px icon-only rail, per Figma node 8028:135374
+     * ("Type=Collapsed"): the title text disappears, the logo swaps from the full "EG BrandSync"
+     * wordmark (`bs-logo variant="full"`) to the real icon-only mark (`bs-logo variant="mark"` -- a
+     * second, properly-designed asset, not a CSS crop of the full one) via CSS visibility toggling on
+     * both, the same `:host([collapsed])` attribute-selector pattern already used for the
+     * `search`/`search-trigger` swap below, the `search` slot is replaced by a compact built-in
+     * search-trigger button (this component can't meaningfully shrink arbitrary slotted search-field
+     * content down to icon size itself, so it emits `bsSearchClick` instead -- e.g. to open a full
+     * search overlay), and every top-level
+     * `bs-navigation-drawer-item`'s layout switches from icon-beside-label to icon-above-caption.
+     * That last part is real prop propagation, not a CSS trick: this component keeps each direct-child
+     * item's own `collapsed` prop in sync with its own (see `syncItemsCollapsed` below), the same
+     * direct-children-prop-sync approach `bs-tabs` already uses for coordinating `selected` across its
+     * `bs-tab` children. Clicking the toggle self-toggles `collapsed` (simple local UI state, not
+     * something needing cross-component coordination -- closer to `bs-switch`'s self-toggling
+     * `checked` than `bs-tab`'s non-self-toggling `selected`) and emits `bsCollapse` with the new
+     * value. The toggle's own caret icon does NOT rotate when collapsed -- Figma's collapsed mock
+     * reuses the identical left-pointing "CaretLeft" asset unchanged, confirmed by directly inspecting
+     * that state, so this deliberately does not add the same "flip on toggle" idiom the drawer item's
+     * own disclosure chevron does (that one really is an unconfirmed addition; this one was checked).
+     */
+    interface BsNavigationDrawer {
+        /**
+          * Narrows the drawer to a 96px icon-only rail (Figma node 8028:135374). Mutable and reflected -- clicking the collapse toggle toggles this directly (self-toggling, see the class doc above for why), and this component keeps every direct-child `bs-navigation-drawer-item`'s own `collapsed` prop synced to match (see `syncItemsCollapsed`).
+          * @default false
+         */
+        "collapsed": boolean;
+        /**
+          * Whether this drawer can be collapsed at all. `false` renders no collapse toggle/chevron -- a "fixed" side nav (Carbon's terminology: a `Fixed Side Nav` never collapses, as opposed to a rail-capable one) that's always fully expanded. `collapsed` is ignored while this is `false`.
+          * @default true
+         */
+        "collapsible": boolean;
+        /**
+          * Heading text shown next to the collapse toggle, and used as the `<nav>` landmark's `aria-label` (so the landmark keeps a name even when `collapsed` hides the visible text).
+          * @default 'Main Menu'
+         */
+        "heading": string;
+        /**
+          * Forwarded straight to both internal `bs-logo` elements' own `background` prop. Defaults to `"auto"`, which follows the ambient `[data-theme="dark"]` state automatically (see `bs-logo`'s own docs) -- so if this drawer ends up on a dark surface via the normal theming mechanism, the logo switches to its dedicated dark-background asset with no wiring needed. Set `"light"`/`"dark"` explicitly only if you've overridden `--bs-navigation-drawer-bg` to something dark yourself *without* setting `[data-theme="dark"]`, and need to pin the logo regardless of theme. Has no visible effect on the `variant="mark"` logo shown while `collapsed` (see `bs-logo`'s own docs -- there's only one real designed mark asset, it's background-agnostic).
+          * @default 'auto'
+         */
+        "logoBackground": 'auto' | 'light' | 'dark';
+    }
+    /**
+     * A single row within a `bs-navigation-drawer`'s item list -- either a plain leaf nav item, or an
+     * `expandable` group header that discloses nested `bs-navigation-drawer-item` children.
+     * ## When to use
+     * - Every row inside a `bs-navigation-drawer`'s default slot.
+     * ## When not to use
+     * - A standalone action outside a navigation drawer -- use `bs-button`/`bs-menu-item` instead.
+     * Click behavior is mutually exclusive, based on `expandable`:
+     * - `expandable = false` (a plain leaf item): clicking only emits `bsSelect`. `selected` is NOT
+     *   self-toggling -- same non-self-toggling precedent as `bs-tab`'s `selected` (see `bs-tab.tsx`'s
+     *   class doc): coordinating which sibling row is selected needs cross-item state a
+     *   consumer/wrapper owns, not something this component can reason about on its own.
+     * - `expandable = true` (a group header, never shown with a `selected` tint): clicking toggles
+     *   `this.expanded` directly and emits `bsToggle` with the new value, and does NOT emit
+     *   `bsSelect`. This IS self-toggling, unlike `selected` above -- it's simple local disclosure
+     *   state with no cross-item coordination needed, closer to `bs-switch`'s self-toggling `checked`
+     *   than `bs-tab`'s non-self-toggling `selected`.
+     * Nesting: put child `<bs-navigation-drawer-item nested>` elements inside a parent
+     * `<bs-navigation-drawer-item expandable>` with `slot="children"`. The parent shows/hides that
+     * slot's content based on its own `expanded` prop, via a pure-CSS attribute selector (no JS
+     * visibility toggling needed, since `expanded` is reflected).
+     * `collapsed` switches this row from its normal icon-beside-label row layout to a compact
+     * icon-above-caption column (per Figma node 8028:135374, the drawer's "Type=Collapsed" state) --
+     * you don't need to set this yourself on every item: a parent `bs-navigation-drawer` keeps its own
+     * top-level items' `collapsed` prop in sync with its own `collapsed` state automatically (see
+     * `bs-navigation-drawer.tsx`'s `syncItemsCollapsed`, the same direct-children-prop-sync approach
+     * `bs-tabs` uses for coordinating `selected` across its own `bs-tab` children). It's still a public
+     * prop so a standalone item (or this component's own stories) can be demoed without the parent.
+     */
+    interface BsNavigationDrawerItem {
+        /**
+          * Optional accessible name override. Not required for `collapsed` rows -- unlike an icon-only button, the label caption stays visible (just restyled smaller, under the icon) in that mode per Figma, so the button's default accessible-name computation (its own text content) already works. Set this if you want a fuller/different name than the visible caption (e.g. truncated captions, or matching `bs-switch`/`bs-slider`'s `ariaLabel` convention for consistency).
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Switches this row to the compact icon-above-caption column layout used when its parent `bs-navigation-drawer` is `collapsed` (see the class doc above). Reflected so `bs-navigation-drawer-item[collapsed]` is CSS-targetable. Also forces `expandable` rows' chevron and `children` slot to stay hidden regardless of `expanded` -- Figma's collapsed rail never shows a nested tree.
+          * @default false
+         */
+        "collapsed": boolean;
+        /**
+          * Renders this row as a disclosure/group header (trailing chevron, self-toggling `expanded`, `bsToggle` instead of `bsSelect` on click) instead of a plain navigable leaf item. See the class doc above for the full click-behavior split.
+          * @default false
+         */
+        "expandable": boolean;
+        /**
+          * Whether an `expandable` row's `children` slot is shown. Mutable and reflected -- clicking an `expandable` row toggles this directly (self-toggling, unlike `selected` above), and CSS shows/hides the `children` slot wrapper based on the reflected attribute. Ignored when `expandable` is false.
+          * @default false
+         */
+        "expanded": boolean;
+        /**
+          * Marks this as a child row nested under an `expandable` parent (via `slot="children"`) -- deepens the left indent and stops reserving `icon` slot space entirely (Figma's nested rows never have icons).
+          * @default false
+         */
+        "nested": boolean;
+        /**
+          * Tints the row's background/text to indicate it's the current destination. NOT self-toggling -- see the class doc above for why. Ignored (never applied) when `expandable` is true. Reflected so consumers/CSS can target `bs-navigation-drawer-item[selected]`.
+          * @default false
+         */
+        "selected": boolean;
+    }
+    /**
      * The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots
      * for menu/action content (e.g. `bs-button`/`bs-icon-button` elements).
      * ## When to use
@@ -1053,6 +1217,11 @@ export namespace Components {
           * @default null
          */
         "ariaLabel": string | null;
+        /**
+          * Forwarded straight to the internal `bs-logo`'s own `background` prop. Defaults to `"auto"`, which follows the ambient `[data-theme="dark"]` state automatically (see `bs-logo`'s own docs) -- so if this bar ends up on a dark surface via the normal theming mechanism, the logo switches to its dedicated dark-background asset with no wiring needed. Set `"light"`/`"dark"` explicitly only if you've overridden `--bs-navigation-header-bg` to something dark yourself *without* setting `[data-theme="dark"]`, and need to pin the logo regardless of theme.
+          * @default 'auto'
+         */
+        "logoBackground": 'auto' | 'light' | 'dark';
         /**
           * Fragment/URL to jump to when the "Skip to main content" link is activated (e.g. `#main-content`, matching an id on your page's main landmark). Unset by default -- the link is opt-in rather than pointing at a guessed default id, since a skip link to a target that doesn't exist on the consumer's page is worse than no skip link at all (it silently does nothing when activated). Set this to the same id your page's `<main>` (or equivalent) already has to enable it.
           * @default null
@@ -1409,6 +1578,14 @@ export interface BsMenuItemCustomEvent<T> extends CustomEvent<T> {
 export interface BsModalCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsModalElement;
+}
+export interface BsNavigationDrawerCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsNavigationDrawerElement;
+}
+export interface BsNavigationDrawerItemCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsNavigationDrawerItemElement;
 }
 export interface BsRadioCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -2208,6 +2385,36 @@ declare global {
         new (): HTMLBsInputElement;
     };
     /**
+     * The BrandSync brand mark, as its own standalone component -- shared by `bs-navigation-header`
+     * and `bs-navigation-drawer`, which used to each render their own duplicated copy of this SVG
+     * (the drawer's collapsed state even faked an icon-only look by clipping the full wordmark asset
+     * down to a narrowed box, rather than using a real icon-only asset).
+     * ## When to use
+     * - Anywhere the BrandSync logo/icon needs to render: a navigation header, a nav drawer, etc.
+     * ## When not to use
+     * - The Genie AI chat panel's own brand mark -- that's a different logo (`bs-chatbot-header`'s
+     *   own inline Genie asset), not this one.
+     * `variant` mirrors Figma's "Logo" component set (node 10909:30421) `Device` property
+     * ("Desktop" / "Tab and mobile"), which was originally meant to distinguish the full lockup from
+     * the icon-only mark at different responsive breakpoints -- renamed here to
+     * `variant: 'full' | 'mark'` since that's what it actually controls (how much of the logo
+     * renders), not literally a device/breakpoint switch.
+     * `variant="custom"` is not a Figma variant at all -- it's an escape hatch for a consuming app
+     * that needs to show a DIFFERENT product's logo in the same slot (e.g. a white-labeled deployment,
+     * or a logo fetched at runtime from a service like brand.dev), via `src`/`alt`, instead of the
+     * built-in BrandSync assets. This component deliberately does NOT fetch that image itself --
+     * network calls, loading/error states, and caching are the consuming app's responsibility, same as
+     * every other component in this library (e.g. `bs-attachment` takes `imageSrc` rather than fetching
+     * an image on its own). `background` has no effect on `variant="custom"` -- a consumer's own image
+     * is already designed for whatever surface it's placed on.
+     */
+    interface HTMLBsLogoElement extends Components.BsLogo, HTMLStencilElement {
+    }
+    var HTMLBsLogoElement: {
+        prototype: HTMLBsLogoElement;
+        new (): HTMLBsLogoElement;
+    };
+    /**
      * A generic dropdown/popup menu container: a rounded, elevated list of items (typically
      * `bs-menu-item` elements).
      * ## When to use
@@ -2294,6 +2501,104 @@ declare global {
     var HTMLBsModalElement: {
         prototype: HTMLBsModalElement;
         new (): HTMLBsModalElement;
+    };
+    interface HTMLBsNavigationDrawerElementEventMap {
+        "bsCollapse": boolean;
+        "bsSearchClick": void;
+    }
+    /**
+     * A left-side persistent navigation sidebar: the BrandSync logo, a "Main Menu" title with a
+     * collapse toggle, a reserved slot for a search field, and a scrollable list of nav items.
+     * ## When to use
+     * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
+     *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
+     *   already renders one).
+     * ## When not to use
+     * - The top navigation bar itself -- use `bs-navigation-header` instead.
+     * This component renders a real `<nav>` landmark (no explicit `role` needed -- `<nav>` already
+     * carries the implicit `navigation` role), labeled via `aria-label={heading}` so the landmark
+     * still has a name even when collapsed (see below).
+     * `collapsed` narrows the drawer to a 96px icon-only rail, per Figma node 8028:135374
+     * ("Type=Collapsed"): the title text disappears, the logo swaps from the full "EG BrandSync"
+     * wordmark (`bs-logo variant="full"`) to the real icon-only mark (`bs-logo variant="mark"` -- a
+     * second, properly-designed asset, not a CSS crop of the full one) via CSS visibility toggling on
+     * both, the same `:host([collapsed])` attribute-selector pattern already used for the
+     * `search`/`search-trigger` swap below, the `search` slot is replaced by a compact built-in
+     * search-trigger button (this component can't meaningfully shrink arbitrary slotted search-field
+     * content down to icon size itself, so it emits `bsSearchClick` instead -- e.g. to open a full
+     * search overlay), and every top-level
+     * `bs-navigation-drawer-item`'s layout switches from icon-beside-label to icon-above-caption.
+     * That last part is real prop propagation, not a CSS trick: this component keeps each direct-child
+     * item's own `collapsed` prop in sync with its own (see `syncItemsCollapsed` below), the same
+     * direct-children-prop-sync approach `bs-tabs` already uses for coordinating `selected` across its
+     * `bs-tab` children. Clicking the toggle self-toggles `collapsed` (simple local UI state, not
+     * something needing cross-component coordination -- closer to `bs-switch`'s self-toggling
+     * `checked` than `bs-tab`'s non-self-toggling `selected`) and emits `bsCollapse` with the new
+     * value. The toggle's own caret icon does NOT rotate when collapsed -- Figma's collapsed mock
+     * reuses the identical left-pointing "CaretLeft" asset unchanged, confirmed by directly inspecting
+     * that state, so this deliberately does not add the same "flip on toggle" idiom the drawer item's
+     * own disclosure chevron does (that one really is an unconfirmed addition; this one was checked).
+     */
+    interface HTMLBsNavigationDrawerElement extends Components.BsNavigationDrawer, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsNavigationDrawerElementEventMap>(type: K, listener: (this: HTMLBsNavigationDrawerElement, ev: BsNavigationDrawerCustomEvent<HTMLBsNavigationDrawerElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsNavigationDrawerElementEventMap>(type: K, listener: (this: HTMLBsNavigationDrawerElement, ev: BsNavigationDrawerCustomEvent<HTMLBsNavigationDrawerElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsNavigationDrawerElement: {
+        prototype: HTMLBsNavigationDrawerElement;
+        new (): HTMLBsNavigationDrawerElement;
+    };
+    interface HTMLBsNavigationDrawerItemElementEventMap {
+        "bsSelect": void;
+        "bsToggle": boolean;
+    }
+    /**
+     * A single row within a `bs-navigation-drawer`'s item list -- either a plain leaf nav item, or an
+     * `expandable` group header that discloses nested `bs-navigation-drawer-item` children.
+     * ## When to use
+     * - Every row inside a `bs-navigation-drawer`'s default slot.
+     * ## When not to use
+     * - A standalone action outside a navigation drawer -- use `bs-button`/`bs-menu-item` instead.
+     * Click behavior is mutually exclusive, based on `expandable`:
+     * - `expandable = false` (a plain leaf item): clicking only emits `bsSelect`. `selected` is NOT
+     *   self-toggling -- same non-self-toggling precedent as `bs-tab`'s `selected` (see `bs-tab.tsx`'s
+     *   class doc): coordinating which sibling row is selected needs cross-item state a
+     *   consumer/wrapper owns, not something this component can reason about on its own.
+     * - `expandable = true` (a group header, never shown with a `selected` tint): clicking toggles
+     *   `this.expanded` directly and emits `bsToggle` with the new value, and does NOT emit
+     *   `bsSelect`. This IS self-toggling, unlike `selected` above -- it's simple local disclosure
+     *   state with no cross-item coordination needed, closer to `bs-switch`'s self-toggling `checked`
+     *   than `bs-tab`'s non-self-toggling `selected`.
+     * Nesting: put child `<bs-navigation-drawer-item nested>` elements inside a parent
+     * `<bs-navigation-drawer-item expandable>` with `slot="children"`. The parent shows/hides that
+     * slot's content based on its own `expanded` prop, via a pure-CSS attribute selector (no JS
+     * visibility toggling needed, since `expanded` is reflected).
+     * `collapsed` switches this row from its normal icon-beside-label row layout to a compact
+     * icon-above-caption column (per Figma node 8028:135374, the drawer's "Type=Collapsed" state) --
+     * you don't need to set this yourself on every item: a parent `bs-navigation-drawer` keeps its own
+     * top-level items' `collapsed` prop in sync with its own `collapsed` state automatically (see
+     * `bs-navigation-drawer.tsx`'s `syncItemsCollapsed`, the same direct-children-prop-sync approach
+     * `bs-tabs` uses for coordinating `selected` across its own `bs-tab` children). It's still a public
+     * prop so a standalone item (or this component's own stories) can be demoed without the parent.
+     */
+    interface HTMLBsNavigationDrawerItemElement extends Components.BsNavigationDrawerItem, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsNavigationDrawerItemElementEventMap>(type: K, listener: (this: HTMLBsNavigationDrawerItemElement, ev: BsNavigationDrawerItemCustomEvent<HTMLBsNavigationDrawerItemElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsNavigationDrawerItemElementEventMap>(type: K, listener: (this: HTMLBsNavigationDrawerItemElement, ev: BsNavigationDrawerItemCustomEvent<HTMLBsNavigationDrawerItemElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsNavigationDrawerItemElement: {
+        prototype: HTMLBsNavigationDrawerItemElement;
+        new (): HTMLBsNavigationDrawerItemElement;
     };
     /**
      * The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots
@@ -2560,9 +2865,12 @@ declare global {
         "bs-icon-button": HTMLBsIconButtonElement;
         "bs-inline-tab": HTMLBsInlineTabElement;
         "bs-input": HTMLBsInputElement;
+        "bs-logo": HTMLBsLogoElement;
         "bs-menu": HTMLBsMenuElement;
         "bs-menu-item": HTMLBsMenuItemElement;
         "bs-modal": HTMLBsModalElement;
+        "bs-navigation-drawer": HTMLBsNavigationDrawerElement;
+        "bs-navigation-drawer-item": HTMLBsNavigationDrawerItemElement;
         "bs-navigation-header": HTMLBsNavigationHeaderElement;
         "bs-radio": HTMLBsRadioElement;
         "bs-slider": HTMLBsSliderElement;
@@ -3629,6 +3937,52 @@ declare namespace LocalJSX {
         "value"?: string;
     }
     /**
+     * The BrandSync brand mark, as its own standalone component -- shared by `bs-navigation-header`
+     * and `bs-navigation-drawer`, which used to each render their own duplicated copy of this SVG
+     * (the drawer's collapsed state even faked an icon-only look by clipping the full wordmark asset
+     * down to a narrowed box, rather than using a real icon-only asset).
+     * ## When to use
+     * - Anywhere the BrandSync logo/icon needs to render: a navigation header, a nav drawer, etc.
+     * ## When not to use
+     * - The Genie AI chat panel's own brand mark -- that's a different logo (`bs-chatbot-header`'s
+     *   own inline Genie asset), not this one.
+     * `variant` mirrors Figma's "Logo" component set (node 10909:30421) `Device` property
+     * ("Desktop" / "Tab and mobile"), which was originally meant to distinguish the full lockup from
+     * the icon-only mark at different responsive breakpoints -- renamed here to
+     * `variant: 'full' | 'mark'` since that's what it actually controls (how much of the logo
+     * renders), not literally a device/breakpoint switch.
+     * `variant="custom"` is not a Figma variant at all -- it's an escape hatch for a consuming app
+     * that needs to show a DIFFERENT product's logo in the same slot (e.g. a white-labeled deployment,
+     * or a logo fetched at runtime from a service like brand.dev), via `src`/`alt`, instead of the
+     * built-in BrandSync assets. This component deliberately does NOT fetch that image itself --
+     * network calls, loading/error states, and caching are the consuming app's responsibility, same as
+     * every other component in this library (e.g. `bs-attachment` takes `imageSrc` rather than fetching
+     * an image on its own). `background` has no effect on `variant="custom"` -- a consumer's own image
+     * is already designed for whatever surface it's placed on.
+     */
+    interface BsLogo {
+        /**
+          * `variant="custom"` only: accessible alt text for the image -- a product logo is meaningful content (whose brand is this?), not decorative, so set this to something real (e.g. the product/company name). Falls back to `alt=""` (marking the image decorative to assistive tech) when unset, rather than omitting the `alt` attribute entirely -- an `<img>` with no `alt` attribute at all is a harder accessibility failure than one explicitly marked decorative, but an empty fallback is still worse than a real name, so don't rely on it. Ignored for `full`/`mark` (those already carry their own fixed `aria-label="BrandSync"`).
+          * @default null
+         */
+        "alt"?: string | null;
+        /**
+          * Which pre-built asset to use for `variant="full"` -- Figma ships a genuinely separate, differently-drawn dark-background asset (every wordmark path filled solid white, and the icon's outer shape a single solid-white path instead of the light version's two-path white-fill-plus-border-ring), not a CSS currentColor swap of identical paths.  `"auto"` (default) renders both assets and lets CSS pick one via `--bs-logo-asset-light-display`/`--bs-logo-asset-dark-display` (defined in `src/global/base.css`, flipped by the same `[data-theme="dark"]` attribute every other `--bs-*` token already reacts to) -- so the logo just follows the ambient theme with no wiring needed, the same way a consuming app's own dark mode already re-themes every other part of this library via ordinary CSS custom property inheritance. Set `"light"`/`"dark"` explicitly to pin one regardless of the ambient theme -- e.g. a dark sidebar that isn't otherwise dark-themed.  Has no effect on `variant="mark"`: Figma's component set only has one real designed instance of the icon-only mark (`Device="Tab and mobile"`, `Background="Default"`) -- there's no separate dark version of it, so the mark renders identically regardless of this prop.
+          * @default 'auto'
+         */
+        "background"?: BsLogoBackground;
+        /**
+          * `variant="custom"` only: the image URL to render (e.g. a URL your app already fetched from a logo API). Ignored for `full`/`mark`.
+          * @default null
+         */
+        "src"?: string | null;
+        /**
+          * How much of the logo to render. `full` is the icon + "EG BrandSync" wordmark (190.977x44 natural size); `mark` is just the icon (44x44 natural size), no wordmark; `custom` renders a consumer-supplied image via `src`/`alt` instead of a built-in BrandSync asset -- see the class doc above.
+          * @default 'full'
+         */
+        "variant"?: BsLogoVariant;
+    }
+    /**
      * A generic dropdown/popup menu container: a rounded, elevated list of items (typically
      * `bs-menu-item` elements).
      * ## When to use
@@ -3703,6 +4057,138 @@ declare namespace LocalJSX {
         "size"?: BsModalSize;
     }
     /**
+     * A left-side persistent navigation sidebar: the BrandSync logo, a "Main Menu" title with a
+     * collapse toggle, a reserved slot for a search field, and a scrollable list of nav items.
+     * ## When to use
+     * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
+     *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
+     *   already renders one).
+     * ## When not to use
+     * - The top navigation bar itself -- use `bs-navigation-header` instead.
+     * This component renders a real `<nav>` landmark (no explicit `role` needed -- `<nav>` already
+     * carries the implicit `navigation` role), labeled via `aria-label={heading}` so the landmark
+     * still has a name even when collapsed (see below).
+     * `collapsed` narrows the drawer to a 96px icon-only rail, per Figma node 8028:135374
+     * ("Type=Collapsed"): the title text disappears, the logo swaps from the full "EG BrandSync"
+     * wordmark (`bs-logo variant="full"`) to the real icon-only mark (`bs-logo variant="mark"` -- a
+     * second, properly-designed asset, not a CSS crop of the full one) via CSS visibility toggling on
+     * both, the same `:host([collapsed])` attribute-selector pattern already used for the
+     * `search`/`search-trigger` swap below, the `search` slot is replaced by a compact built-in
+     * search-trigger button (this component can't meaningfully shrink arbitrary slotted search-field
+     * content down to icon size itself, so it emits `bsSearchClick` instead -- e.g. to open a full
+     * search overlay), and every top-level
+     * `bs-navigation-drawer-item`'s layout switches from icon-beside-label to icon-above-caption.
+     * That last part is real prop propagation, not a CSS trick: this component keeps each direct-child
+     * item's own `collapsed` prop in sync with its own (see `syncItemsCollapsed` below), the same
+     * direct-children-prop-sync approach `bs-tabs` already uses for coordinating `selected` across its
+     * `bs-tab` children. Clicking the toggle self-toggles `collapsed` (simple local UI state, not
+     * something needing cross-component coordination -- closer to `bs-switch`'s self-toggling
+     * `checked` than `bs-tab`'s non-self-toggling `selected`) and emits `bsCollapse` with the new
+     * value. The toggle's own caret icon does NOT rotate when collapsed -- Figma's collapsed mock
+     * reuses the identical left-pointing "CaretLeft" asset unchanged, confirmed by directly inspecting
+     * that state, so this deliberately does not add the same "flip on toggle" idiom the drawer item's
+     * own disclosure chevron does (that one really is an unconfirmed addition; this one was checked).
+     */
+    interface BsNavigationDrawer {
+        /**
+          * Narrows the drawer to a 96px icon-only rail (Figma node 8028:135374). Mutable and reflected -- clicking the collapse toggle toggles this directly (self-toggling, see the class doc above for why), and this component keeps every direct-child `bs-navigation-drawer-item`'s own `collapsed` prop synced to match (see `syncItemsCollapsed`).
+          * @default false
+         */
+        "collapsed"?: boolean;
+        /**
+          * Whether this drawer can be collapsed at all. `false` renders no collapse toggle/chevron -- a "fixed" side nav (Carbon's terminology: a `Fixed Side Nav` never collapses, as opposed to a rail-capable one) that's always fully expanded. `collapsed` is ignored while this is `false`.
+          * @default true
+         */
+        "collapsible"?: boolean;
+        /**
+          * Heading text shown next to the collapse toggle, and used as the `<nav>` landmark's `aria-label` (so the landmark keeps a name even when `collapsed` hides the visible text).
+          * @default 'Main Menu'
+         */
+        "heading"?: string;
+        /**
+          * Forwarded straight to both internal `bs-logo` elements' own `background` prop. Defaults to `"auto"`, which follows the ambient `[data-theme="dark"]` state automatically (see `bs-logo`'s own docs) -- so if this drawer ends up on a dark surface via the normal theming mechanism, the logo switches to its dedicated dark-background asset with no wiring needed. Set `"light"`/`"dark"` explicitly only if you've overridden `--bs-navigation-drawer-bg` to something dark yourself *without* setting `[data-theme="dark"]`, and need to pin the logo regardless of theme. Has no visible effect on the `variant="mark"` logo shown while `collapsed` (see `bs-logo`'s own docs -- there's only one real designed mark asset, it's background-agnostic).
+          * @default 'auto'
+         */
+        "logoBackground"?: 'auto' | 'light' | 'dark';
+        /**
+          * Fires with the new `collapsed` value when the collapse toggle button is clicked.
+         */
+        "onBsCollapse"?: (event: BsNavigationDrawerCustomEvent<boolean>) => void;
+        /**
+          * Fires when the compact search-trigger button (shown instead of the `search` slot while `collapsed`) is clicked -- e.g. to open a full search overlay. This component has no visibility into what the `search` slot actually contains, so it can't drive a real search itself once shrunk to icon size.
+         */
+        "onBsSearchClick"?: (event: BsNavigationDrawerCustomEvent<void>) => void;
+    }
+    /**
+     * A single row within a `bs-navigation-drawer`'s item list -- either a plain leaf nav item, or an
+     * `expandable` group header that discloses nested `bs-navigation-drawer-item` children.
+     * ## When to use
+     * - Every row inside a `bs-navigation-drawer`'s default slot.
+     * ## When not to use
+     * - A standalone action outside a navigation drawer -- use `bs-button`/`bs-menu-item` instead.
+     * Click behavior is mutually exclusive, based on `expandable`:
+     * - `expandable = false` (a plain leaf item): clicking only emits `bsSelect`. `selected` is NOT
+     *   self-toggling -- same non-self-toggling precedent as `bs-tab`'s `selected` (see `bs-tab.tsx`'s
+     *   class doc): coordinating which sibling row is selected needs cross-item state a
+     *   consumer/wrapper owns, not something this component can reason about on its own.
+     * - `expandable = true` (a group header, never shown with a `selected` tint): clicking toggles
+     *   `this.expanded` directly and emits `bsToggle` with the new value, and does NOT emit
+     *   `bsSelect`. This IS self-toggling, unlike `selected` above -- it's simple local disclosure
+     *   state with no cross-item coordination needed, closer to `bs-switch`'s self-toggling `checked`
+     *   than `bs-tab`'s non-self-toggling `selected`.
+     * Nesting: put child `<bs-navigation-drawer-item nested>` elements inside a parent
+     * `<bs-navigation-drawer-item expandable>` with `slot="children"`. The parent shows/hides that
+     * slot's content based on its own `expanded` prop, via a pure-CSS attribute selector (no JS
+     * visibility toggling needed, since `expanded` is reflected).
+     * `collapsed` switches this row from its normal icon-beside-label row layout to a compact
+     * icon-above-caption column (per Figma node 8028:135374, the drawer's "Type=Collapsed" state) --
+     * you don't need to set this yourself on every item: a parent `bs-navigation-drawer` keeps its own
+     * top-level items' `collapsed` prop in sync with its own `collapsed` state automatically (see
+     * `bs-navigation-drawer.tsx`'s `syncItemsCollapsed`, the same direct-children-prop-sync approach
+     * `bs-tabs` uses for coordinating `selected` across its own `bs-tab` children). It's still a public
+     * prop so a standalone item (or this component's own stories) can be demoed without the parent.
+     */
+    interface BsNavigationDrawerItem {
+        /**
+          * Optional accessible name override. Not required for `collapsed` rows -- unlike an icon-only button, the label caption stays visible (just restyled smaller, under the icon) in that mode per Figma, so the button's default accessible-name computation (its own text content) already works. Set this if you want a fuller/different name than the visible caption (e.g. truncated captions, or matching `bs-switch`/`bs-slider`'s `ariaLabel` convention for consistency).
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Switches this row to the compact icon-above-caption column layout used when its parent `bs-navigation-drawer` is `collapsed` (see the class doc above). Reflected so `bs-navigation-drawer-item[collapsed]` is CSS-targetable. Also forces `expandable` rows' chevron and `children` slot to stay hidden regardless of `expanded` -- Figma's collapsed rail never shows a nested tree.
+          * @default false
+         */
+        "collapsed"?: boolean;
+        /**
+          * Renders this row as a disclosure/group header (trailing chevron, self-toggling `expanded`, `bsToggle` instead of `bsSelect` on click) instead of a plain navigable leaf item. See the class doc above for the full click-behavior split.
+          * @default false
+         */
+        "expandable"?: boolean;
+        /**
+          * Whether an `expandable` row's `children` slot is shown. Mutable and reflected -- clicking an `expandable` row toggles this directly (self-toggling, unlike `selected` above), and CSS shows/hides the `children` slot wrapper based on the reflected attribute. Ignored when `expandable` is false.
+          * @default false
+         */
+        "expanded"?: boolean;
+        /**
+          * Marks this as a child row nested under an `expandable` parent (via `slot="children"`) -- deepens the left indent and stops reserving `icon` slot space entirely (Figma's nested rows never have icons).
+          * @default false
+         */
+        "nested"?: boolean;
+        /**
+          * Fires on click, only when `expandable` is false. See the class doc above.
+         */
+        "onBsSelect"?: (event: BsNavigationDrawerItemCustomEvent<void>) => void;
+        /**
+          * Fires with the new `expanded` value on click, only when `expandable` is true. See the class doc above.
+         */
+        "onBsToggle"?: (event: BsNavigationDrawerItemCustomEvent<boolean>) => void;
+        /**
+          * Tints the row's background/text to indicate it's the current destination. NOT self-toggling -- see the class doc above for why. Ignored (never applied) when `expandable` is true. Reflected so consumers/CSS can target `bs-navigation-drawer-item[selected]`.
+          * @default false
+         */
+        "selected"?: boolean;
+    }
+    /**
      * The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots
      * for menu/action content (e.g. `bs-button`/`bs-icon-button` elements).
      * ## When to use
@@ -3730,6 +4216,11 @@ declare namespace LocalJSX {
           * @default null
          */
         "ariaLabel"?: string | null;
+        /**
+          * Forwarded straight to the internal `bs-logo`'s own `background` prop. Defaults to `"auto"`, which follows the ambient `[data-theme="dark"]` state automatically (see `bs-logo`'s own docs) -- so if this bar ends up on a dark surface via the normal theming mechanism, the logo switches to its dedicated dark-background asset with no wiring needed. Set `"light"`/`"dark"` explicitly only if you've overridden `--bs-navigation-header-bg` to something dark yourself *without* setting `[data-theme="dark"]`, and need to pin the logo regardless of theme.
+          * @default 'auto'
+         */
+        "logoBackground"?: 'auto' | 'light' | 'dark';
         /**
           * Fragment/URL to jump to when the "Skip to main content" link is activated (e.g. `#main-content`, matching an id on your page's main landmark). Unset by default -- the link is opt-in rather than pointing at a guessed default id, since a skip link to a target that doesn't exist on the consumer's page is worse than no skip link at all (it silently does nothing when activated). Set this to the same id your page's `<main>` (or equivalent) already has to enable it.
           * @default null
@@ -4181,6 +4672,12 @@ declare namespace LocalJSX {
         "length": number;
         "open": boolean;
     }
+    interface BsLogoAttributes {
+        "variant": BsLogoVariant;
+        "background": BsLogoBackground;
+        "src": string | null;
+        "alt": string | null;
+    }
     interface BsMenuItemAttributes {
         "disabled": boolean;
     }
@@ -4189,11 +4686,26 @@ declare namespace LocalJSX {
         "heading": string;
         "size": BsModalSize;
     }
+    interface BsNavigationDrawerAttributes {
+        "heading": string;
+        "collapsible": boolean;
+        "collapsed": boolean;
+        "logoBackground": 'auto' | 'light' | 'dark';
+    }
+    interface BsNavigationDrawerItemAttributes {
+        "selected": boolean;
+        "expandable": boolean;
+        "expanded": boolean;
+        "nested": boolean;
+        "ariaLabel": string | null;
+        "collapsed": boolean;
+    }
     interface BsNavigationHeaderAttributes {
         "alignment": BsNavigationHeaderAlignment;
         "ariaLabel": string | null;
         "skipToContentHref": string | null;
         "skipToContentLabel": string;
+        "logoBackground": 'auto' | 'light' | 'dark';
     }
     interface BsRadioAttributes {
         "name": string;
@@ -4264,9 +4776,12 @@ declare namespace LocalJSX {
         "bs-icon-button": Omit<BsIconButton, keyof BsIconButtonAttributes> & { [K in keyof BsIconButton & keyof BsIconButtonAttributes]?: BsIconButton[K] } & { [K in keyof BsIconButton & keyof BsIconButtonAttributes as `attr:${K}`]?: BsIconButtonAttributes[K] } & { [K in keyof BsIconButton & keyof BsIconButtonAttributes as `prop:${K}`]?: BsIconButton[K] };
         "bs-inline-tab": Omit<BsInlineTab, keyof BsInlineTabAttributes> & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes]?: BsInlineTab[K] } & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes as `attr:${K}`]?: BsInlineTabAttributes[K] } & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes as `prop:${K}`]?: BsInlineTab[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
+        "bs-logo": Omit<BsLogo, keyof BsLogoAttributes> & { [K in keyof BsLogo & keyof BsLogoAttributes]?: BsLogo[K] } & { [K in keyof BsLogo & keyof BsLogoAttributes as `attr:${K}`]?: BsLogoAttributes[K] } & { [K in keyof BsLogo & keyof BsLogoAttributes as `prop:${K}`]?: BsLogo[K] };
         "bs-menu": BsMenu;
         "bs-menu-item": Omit<BsMenuItem, keyof BsMenuItemAttributes> & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes]?: BsMenuItem[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `attr:${K}`]?: BsMenuItemAttributes[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `prop:${K}`]?: BsMenuItem[K] };
         "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
+        "bs-navigation-drawer": Omit<BsNavigationDrawer, keyof BsNavigationDrawerAttributes> & { [K in keyof BsNavigationDrawer & keyof BsNavigationDrawerAttributes]?: BsNavigationDrawer[K] } & { [K in keyof BsNavigationDrawer & keyof BsNavigationDrawerAttributes as `attr:${K}`]?: BsNavigationDrawerAttributes[K] } & { [K in keyof BsNavigationDrawer & keyof BsNavigationDrawerAttributes as `prop:${K}`]?: BsNavigationDrawer[K] };
+        "bs-navigation-drawer-item": Omit<BsNavigationDrawerItem, keyof BsNavigationDrawerItemAttributes> & { [K in keyof BsNavigationDrawerItem & keyof BsNavigationDrawerItemAttributes]?: BsNavigationDrawerItem[K] } & { [K in keyof BsNavigationDrawerItem & keyof BsNavigationDrawerItemAttributes as `attr:${K}`]?: BsNavigationDrawerItemAttributes[K] } & { [K in keyof BsNavigationDrawerItem & keyof BsNavigationDrawerItemAttributes as `prop:${K}`]?: BsNavigationDrawerItem[K] };
         "bs-navigation-header": Omit<BsNavigationHeader, keyof BsNavigationHeaderAttributes> & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes]?: BsNavigationHeader[K] } & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes as `attr:${K}`]?: BsNavigationHeaderAttributes[K] } & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes as `prop:${K}`]?: BsNavigationHeader[K] };
         "bs-radio": Omit<BsRadio, keyof BsRadioAttributes> & { [K in keyof BsRadio & keyof BsRadioAttributes]?: BsRadio[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `attr:${K}`]?: BsRadioAttributes[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `prop:${K}`]?: BsRadio[K] };
         "bs-slider": Omit<BsSlider, keyof BsSliderAttributes> & { [K in keyof BsSlider & keyof BsSliderAttributes]?: BsSlider[K] } & { [K in keyof BsSlider & keyof BsSliderAttributes as `attr:${K}`]?: BsSliderAttributes[K] } & { [K in keyof BsSlider & keyof BsSliderAttributes as `prop:${K}`]?: BsSlider[K] };
@@ -4796,6 +5311,31 @@ declare module "@stencil/core" {
              */
             "bs-input": LocalJSX.IntrinsicElements["bs-input"] & JSXBase.HTMLAttributes<HTMLBsInputElement>;
             /**
+             * The BrandSync brand mark, as its own standalone component -- shared by `bs-navigation-header`
+             * and `bs-navigation-drawer`, which used to each render their own duplicated copy of this SVG
+             * (the drawer's collapsed state even faked an icon-only look by clipping the full wordmark asset
+             * down to a narrowed box, rather than using a real icon-only asset).
+             * ## When to use
+             * - Anywhere the BrandSync logo/icon needs to render: a navigation header, a nav drawer, etc.
+             * ## When not to use
+             * - The Genie AI chat panel's own brand mark -- that's a different logo (`bs-chatbot-header`'s
+             *   own inline Genie asset), not this one.
+             * `variant` mirrors Figma's "Logo" component set (node 10909:30421) `Device` property
+             * ("Desktop" / "Tab and mobile"), which was originally meant to distinguish the full lockup from
+             * the icon-only mark at different responsive breakpoints -- renamed here to
+             * `variant: 'full' | 'mark'` since that's what it actually controls (how much of the logo
+             * renders), not literally a device/breakpoint switch.
+             * `variant="custom"` is not a Figma variant at all -- it's an escape hatch for a consuming app
+             * that needs to show a DIFFERENT product's logo in the same slot (e.g. a white-labeled deployment,
+             * or a logo fetched at runtime from a service like brand.dev), via `src`/`alt`, instead of the
+             * built-in BrandSync assets. This component deliberately does NOT fetch that image itself --
+             * network calls, loading/error states, and caching are the consuming app's responsibility, same as
+             * every other component in this library (e.g. `bs-attachment` takes `imageSrc` rather than fetching
+             * an image on its own). `background` has no effect on `variant="custom"` -- a consumer's own image
+             * is already designed for whatever surface it's placed on.
+             */
+            "bs-logo": LocalJSX.IntrinsicElements["bs-logo"] & JSXBase.HTMLAttributes<HTMLBsLogoElement>;
+            /**
              * A generic dropdown/popup menu container: a rounded, elevated list of items (typically
              * `bs-menu-item` elements).
              * ## When to use
@@ -4846,6 +5386,70 @@ declare module "@stencil/core" {
              *   modal that just gets taller and taller.
              */
             "bs-modal": LocalJSX.IntrinsicElements["bs-modal"] & JSXBase.HTMLAttributes<HTMLBsModalElement>;
+            /**
+             * A left-side persistent navigation sidebar: the BrandSync logo, a "Main Menu" title with a
+             * collapse toggle, a reserved slot for a search field, and a scrollable list of nav items.
+             * ## When to use
+             * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
+             *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
+             *   already renders one).
+             * ## When not to use
+             * - The top navigation bar itself -- use `bs-navigation-header` instead.
+             * This component renders a real `<nav>` landmark (no explicit `role` needed -- `<nav>` already
+             * carries the implicit `navigation` role), labeled via `aria-label={heading}` so the landmark
+             * still has a name even when collapsed (see below).
+             * `collapsed` narrows the drawer to a 96px icon-only rail, per Figma node 8028:135374
+             * ("Type=Collapsed"): the title text disappears, the logo swaps from the full "EG BrandSync"
+             * wordmark (`bs-logo variant="full"`) to the real icon-only mark (`bs-logo variant="mark"` -- a
+             * second, properly-designed asset, not a CSS crop of the full one) via CSS visibility toggling on
+             * both, the same `:host([collapsed])` attribute-selector pattern already used for the
+             * `search`/`search-trigger` swap below, the `search` slot is replaced by a compact built-in
+             * search-trigger button (this component can't meaningfully shrink arbitrary slotted search-field
+             * content down to icon size itself, so it emits `bsSearchClick` instead -- e.g. to open a full
+             * search overlay), and every top-level
+             * `bs-navigation-drawer-item`'s layout switches from icon-beside-label to icon-above-caption.
+             * That last part is real prop propagation, not a CSS trick: this component keeps each direct-child
+             * item's own `collapsed` prop in sync with its own (see `syncItemsCollapsed` below), the same
+             * direct-children-prop-sync approach `bs-tabs` already uses for coordinating `selected` across its
+             * `bs-tab` children. Clicking the toggle self-toggles `collapsed` (simple local UI state, not
+             * something needing cross-component coordination -- closer to `bs-switch`'s self-toggling
+             * `checked` than `bs-tab`'s non-self-toggling `selected`) and emits `bsCollapse` with the new
+             * value. The toggle's own caret icon does NOT rotate when collapsed -- Figma's collapsed mock
+             * reuses the identical left-pointing "CaretLeft" asset unchanged, confirmed by directly inspecting
+             * that state, so this deliberately does not add the same "flip on toggle" idiom the drawer item's
+             * own disclosure chevron does (that one really is an unconfirmed addition; this one was checked).
+             */
+            "bs-navigation-drawer": LocalJSX.IntrinsicElements["bs-navigation-drawer"] & JSXBase.HTMLAttributes<HTMLBsNavigationDrawerElement>;
+            /**
+             * A single row within a `bs-navigation-drawer`'s item list -- either a plain leaf nav item, or an
+             * `expandable` group header that discloses nested `bs-navigation-drawer-item` children.
+             * ## When to use
+             * - Every row inside a `bs-navigation-drawer`'s default slot.
+             * ## When not to use
+             * - A standalone action outside a navigation drawer -- use `bs-button`/`bs-menu-item` instead.
+             * Click behavior is mutually exclusive, based on `expandable`:
+             * - `expandable = false` (a plain leaf item): clicking only emits `bsSelect`. `selected` is NOT
+             *   self-toggling -- same non-self-toggling precedent as `bs-tab`'s `selected` (see `bs-tab.tsx`'s
+             *   class doc): coordinating which sibling row is selected needs cross-item state a
+             *   consumer/wrapper owns, not something this component can reason about on its own.
+             * - `expandable = true` (a group header, never shown with a `selected` tint): clicking toggles
+             *   `this.expanded` directly and emits `bsToggle` with the new value, and does NOT emit
+             *   `bsSelect`. This IS self-toggling, unlike `selected` above -- it's simple local disclosure
+             *   state with no cross-item coordination needed, closer to `bs-switch`'s self-toggling `checked`
+             *   than `bs-tab`'s non-self-toggling `selected`.
+             * Nesting: put child `<bs-navigation-drawer-item nested>` elements inside a parent
+             * `<bs-navigation-drawer-item expandable>` with `slot="children"`. The parent shows/hides that
+             * slot's content based on its own `expanded` prop, via a pure-CSS attribute selector (no JS
+             * visibility toggling needed, since `expanded` is reflected).
+             * `collapsed` switches this row from its normal icon-beside-label row layout to a compact
+             * icon-above-caption column (per Figma node 8028:135374, the drawer's "Type=Collapsed" state) --
+             * you don't need to set this yourself on every item: a parent `bs-navigation-drawer` keeps its own
+             * top-level items' `collapsed` prop in sync with its own `collapsed` state automatically (see
+             * `bs-navigation-drawer.tsx`'s `syncItemsCollapsed`, the same direct-children-prop-sync approach
+             * `bs-tabs` uses for coordinating `selected` across its own `bs-tab` children). It's still a public
+             * prop so a standalone item (or this component's own stories) can be demoed without the parent.
+             */
+            "bs-navigation-drawer-item": LocalJSX.IntrinsicElements["bs-navigation-drawer-item"] & JSXBase.HTMLAttributes<HTMLBsNavigationDrawerItemElement>;
             /**
              * The top-level navigation bar for a page: the BrandSync logo plus two consumer-provided slots
              * for menu/action content (e.g. `bs-button`/`bs-icon-button` elements).

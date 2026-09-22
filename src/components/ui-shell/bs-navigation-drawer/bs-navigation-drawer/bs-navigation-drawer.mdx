@@ -1,0 +1,151 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as NavigationDrawerStories from './bs-navigation-drawer.stories';
+
+<Meta of={NavigationDrawerStories} />
+
+# Navigation Drawer
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Fixed Side Nav with Divider](#fixed-side-nav-with-divider)
+- [Fixed Side Nav with Icons](#fixed-side-nav-with-icons)
+- [Collapsed](#collapsed)
+- [Dark background](#dark-background)
+- [Without a search slot](#without-a-search-slot)
+- [Empty items list](#empty-items-list)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A left-side persistent navigation sidebar: the BrandSync logo, a "Main Menu" title with an
+optional collapse toggle, a reserved slot for a search field, and a scrollable list of nav items.
+
+**When to use**
+- The primary in-app navigation, shown alongside `bs-navigation-header` (typically that header's
+  `with-navigation-drawer` alignment, which omits its own logo since this component already
+  renders one).
+
+**When not to use**
+- The top navigation bar itself -- use `bs-navigation-header` instead.
+
+`collapsible` (default `true`) controls whether the collapse toggle/chevron renders at all. Set it
+`false` for a "Fixed Side Nav" (Carbon's own terminology) that's always fully expanded and can
+never collapse -- the stories below default to this, matching Carbon's own naming convention where
+"Fixed Side Nav" specifically means non-collapsible.
+
+<Canvas of={NavigationDrawerStories.FixedSideNav} />
+
+## Fixed Side Nav with Divider
+
+A plain `<hr>`-style divider between item groups -- not a Figma-specified element in this design
+system, just plain story markup styled with existing tokens (`--bs-border-default`), following
+Carbon's `cds-side-nav-divider` as a naming/pattern reference only.
+
+<Canvas of={NavigationDrawerStories.FixedSideNavWithDivider} />
+
+## Fixed Side Nav with Icons
+
+Each top-level item's optional `icon` slot populated -- the icon wrapper only reserves layout
+space when it's actually populated (see `bs-navigation-drawer-item`'s own docs).
+
+<Canvas of={NavigationDrawerStories.FixedSideNavWithIcons} />
+
+## Collapsed
+
+Click the collapse toggle (the caret button next to the heading) to narrow the drawer to a 96px
+icon-only rail, per Figma node 8028:135374 ("Type=Collapsed"). `collapsed` is mutable and
+self-toggling -- clicking it flips the state directly and emits `bsCollapse` with the new value, no
+extra wiring needed.
+
+- The logo swaps from the full "EG BrandSync" wordmark (`bs-logo variant="full"`) to the icon-only
+  mark (`bs-logo variant="mark"` -- a real second, properly-designed asset, not a CSS crop of the
+  full one).
+- The `search` slot is replaced by a compact built-in search-trigger button (this component can't
+  meaningfully shrink arbitrary slotted search content to icon size itself) -- emits
+  `bsSearchClick` so you can react (e.g. open a full search overlay).
+- Every direct-child `bs-navigation-drawer-item` switches to its own compact icon-above-caption
+  layout. This is real prop propagation, not a CSS trick: this component keeps each item's
+  `collapsed` prop in sync with its own, the same direct-children-prop-sync approach `bs-tabs` uses
+  for `selected` across its `bs-tab` children -- you don't need to set `collapsed` on each item
+  yourself. Nested/expanded children never show in this mode regardless of their own `expanded`
+  state.
+- The collapse toggle's own caret icon does **not** rotate -- Figma's collapsed mock reuses the
+  identical left-pointing asset unrotated (confirmed by directly inspecting that state, unlike the
+  drawer item's own disclosure chevron rotation, which is an unconfirmed convention this library
+  adds on its own).
+
+<Canvas of={NavigationDrawerStories.Collapsed} />
+
+## Dark background
+
+This story wraps the drawer in a `data-theme="dark"` element, which flips
+`--bs-navigation-drawer-bg`/`--bs-navigation-drawer-border` and every title/item text-color token
+this drawer relies on, all via ordinary CSS custom property inheritance -- no per-component changes
+needed. (This library also exposes a global "Theme" switch in Storybook's own toolbar for browsing
+every component under one ambient theme -- but a single story can't use that switch itself without
+also flipping every *other* story on this same Docs page, since they all share one document.)
+`logoBackground` defaults to `"auto"`, which reacts to the same `data-theme` attribute via a small
+CSS bridge (see `bs-logo`'s own docs), so the logo automatically swaps to a real separate
+white-wordmark asset too -- this story doesn't set `logoBackground` at all. Only set it to
+`"light"`/`"dark"` explicitly if you've put the drawer on a dark surface WITHOUT setting
+`[data-theme="dark"]` (e.g. a hardcoded dark background), so the logo has no ambient theme to
+follow. Has no visible effect on the `variant="mark"` logo shown while `collapsed` -- there's only
+one real designed mark asset, it's background-agnostic.
+
+<Canvas of={NavigationDrawerStories.Dark} />
+
+## Without a search slot
+
+The `search` slot is optional -- when empty, no space is reserved for it (a plain empty `<div>`
+collapses to zero height on its own, no extra CSS needed).
+
+<Canvas of={NavigationDrawerStories.WithoutSearch} />
+
+## Empty items list
+
+The default (items) slot can also be empty, e.g. while a consumer's nav data is still loading.
+
+<Canvas of={NavigationDrawerStories.EmptyItems} />
+
+## Component API
+
+<Controls of={NavigationDrawerStories.FixedSideNav} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Props: `heading`, `collapsible`, `collapsed`, `logoBackground` (forwarded to both internal
+  `bs-logo` elements' own `background` prop -- see "Dark background" above)
+- Slots: `search`, default (the items list)
+- Shadow parts: `::part(logo)`, `::part(title)`, `::part(collapse)`, `::part(search)`,
+  `::part(search-trigger)`, `::part(items)`
+- CSS custom properties: `--bs-navigation-drawer-bg`, `--bs-navigation-drawer-border`,
+  `--bs-navigation-drawer-padding-y`, `--bs-navigation-drawer-padding-left`,
+  `--bs-navigation-drawer-padding-right`, `--bs-navigation-drawer-gap`,
+  `--bs-navigation-drawer-width`, `--bs-navigation-drawer-collapsed-width`,
+  `--bs-navigation-drawer-title-font-family`, `--bs-navigation-drawer-title-font-weight`,
+  `--bs-navigation-drawer-title-font-size`, `--bs-navigation-drawer-title-line-height`,
+  `--bs-navigation-drawer-title-color`, `--bs-navigation-drawer-collapse-size`,
+  `--bs-navigation-drawer-collapse-radius`, `--bs-navigation-drawer-collapse-hover`,
+  `--bs-navigation-drawer-collapse-pressed`, `--bs-navigation-drawer-collapse-icon`,
+  `--bs-navigation-drawer-items-gap`, `--bs-navigation-drawer-search-trigger-size`,
+  `--bs-navigation-drawer-search-trigger-bg`, `--bs-navigation-drawer-search-trigger-border`,
+  `--bs-navigation-drawer-search-trigger-icon`
+
+## Events
+
+| Event           | Fires when                                                      | Payload   | Cancelable |
+| --------------- | ----------------------------------------------------------------- | --------- | ---------- |
+| `bsCollapse`    | The collapse toggle is clicked, with the new `collapsed` value    | `boolean` | No         |
+| `bsSearchClick` | The search-trigger button (shown only while `collapsed`) is clicked | `void`  | No         |
+
+## Accessibility
+
+- Renders a real `<nav>` element -- no explicit `role` is set, since `<nav>` already carries the
+  implicit `navigation` landmark role. `aria-label` is set from `heading`, so the landmark keeps a
+  name even when `collapsed` hides the visible title text.
+- The collapse toggle is a real `<button type="button">` with `aria-label`/`aria-pressed` that
+  track the current state (`"Collapse"`/`false` when expanded, `"Expand"`/`true` when collapsed).
+- Each `bs-navigation-drawer-item`'s label stays visible (just restyled) while `collapsed`, so
+  `ariaLabel` is not required in that mode -- see `bs-navigation-drawer-item.mdx`.

@@ -1,0 +1,325 @@
+/**
+ * @prop --bs-navigation-drawer-item-gap: Gap between the icon, label, and chevron within the row.
+ *   Aliased to --bs-spacing-100.
+ * @prop --bs-navigation-drawer-item-radius: Corner radius of the row. Aliased to
+ *   --bs-border-radius-100.
+ * @prop --bs-navigation-drawer-item-padding-y: Top/bottom padding of the row. Aliased to
+ *   --bs-spacing-150.
+ * @prop --bs-navigation-drawer-item-padding-x: Left/right padding of a top-level (non-`nested`)
+ *   row. Aliased to --bs-spacing-100 -- note this is the HORIZONTAL padding while
+ *   --bs-navigation-drawer-item-padding-y (above) is VERTICAL, the reverse of this value's own
+ *   relative size (12px vertical / 8px horizontal), per the Figma spec.
+ * @prop --bs-navigation-drawer-item-padding-left-nested: Left padding of a `nested` row. Aliased
+ *   to --bs-spacing-600 (48px) -- deep indent under an expanded parent, replacing
+ *   --bs-navigation-drawer-item-padding-x on the left side only (right padding stays the same).
+ * @prop --bs-navigation-drawer-item-font-weight: Label font weight. Aliased to
+ *   --bs-font-weight-medium.
+ * @prop --bs-navigation-drawer-item-font-size: Label font size. Aliased to --bs-font-size-md.
+ * @prop --bs-navigation-drawer-item-line-height: Label line height. Aliased to
+ *   --bs-line-height-body-md.
+ * @prop --bs-navigation-drawer-item-color: Resting (unselected) text/icon color. Aliased to
+ *   --bs-text-muted.
+ * @prop --bs-navigation-drawer-item-color-selected: `selected` text/icon color. Aliased to
+ *   --bs-text-default.
+ * @prop --bs-navigation-drawer-item-bg-selected: `selected` row background, resting. Aliased to
+ *   --bs-surface-selected.
+ * @prop --bs-navigation-drawer-item-bg-hover: Unselected row background on hover. Aliased to
+ *   --bs-surface-hover, per Figma node 13472:7172 (the full Enabled/Hovered/Focused/Pressed/
+ *   Disabled state matrix for this component).
+ * @prop --bs-navigation-drawer-item-bg-pressed: Unselected row background while pressed
+ *   (`:active`). Aliased to --bs-surface-pressed, per the same Figma node.
+ * @prop --bs-navigation-drawer-item-bg-focus: Unselected row background while focused
+ *   (`:focus-visible`) -- shown together with, not instead of, the focus ring below. Aliased to
+ *   --bs-surface-focus, per the same Figma node (identical value to --bs-surface-hover there).
+ * @prop --bs-navigation-drawer-item-bg-selected-hover: `selected` row background on hover.
+ *   Aliased to --bs-surface-selected-hover, per the same Figma node.
+ * @prop --bs-navigation-drawer-item-bg-selected-pressed: `selected` row background while pressed.
+ *   Aliased to --bs-surface-selected-pressed, per the same Figma node.
+ * @prop --bs-navigation-drawer-item-bg-selected-focus: `selected` row background while focused.
+ *   Aliased to --bs-surface-selected-focus, per the same Figma node.
+ * @prop --bs-navigation-drawer-item-color-hover: Unselected row text/icon color on hover, focus,
+ *   or pressed (all three share this color in Figma, distinct from the muted resting color).
+ *   Aliased to --bs-text-secondary. `selected` rows keep --bs-navigation-drawer-item-color-selected
+ *   across all of these states instead -- Figma never changes a selected row's text color.
+ * @prop --bs-navigation-drawer-item-focus-ring-color: Focus ring color. Aliased to
+ *   --bs-border-neutral-focus.
+ * @prop --bs-navigation-drawer-item-children-gap: Gap between nested child rows. Aliased to
+ *   --bs-spacing-100.
+ * @prop --bs-navigation-drawer-item-collapsed-gap: Gap between the icon and caption when
+ *   `collapsed`. Aliased to --bs-spacing-100.
+ * @prop --bs-navigation-drawer-item-collapsed-padding: Padding of a `collapsed` row. Aliased to
+ *   --bs-spacing-100 (8px, all sides -- Figma node 8028:135374's "Container").
+ * @prop --bs-navigation-drawer-item-collapsed-icon-padding-x: Left/right padding of the small
+ *   rounded chip behind a `collapsed` row's icon (the `selected` tint applies to just this chip,
+ *   not the full column). Aliased to --bs-spacing-100.
+ * @prop --bs-navigation-drawer-item-collapsed-icon-padding-y: Top/bottom padding of that chip.
+ *   Aliased to --bs-spacing-50.
+ * @prop --bs-navigation-drawer-item-collapsed-font-size: Caption font size when `collapsed`.
+ *   Aliased to --bs-fontsize-caption-sm (12px).
+ * @prop --bs-navigation-drawer-item-collapsed-line-height: Caption line height when `collapsed`.
+ *   Aliased to --bs-line-height-caption-sm.
+ */
+:host {
+  display: block;
+
+  --bs-navigation-drawer-item-gap: var(--bs-spacing-100);
+  --bs-navigation-drawer-item-radius: var(--bs-border-radius-100);
+  --bs-navigation-drawer-item-padding-y: var(--bs-spacing-150);
+  --bs-navigation-drawer-item-padding-x: var(--bs-spacing-100);
+  --bs-navigation-drawer-item-padding-left-nested: var(--bs-spacing-600);
+
+  --bs-navigation-drawer-item-font-weight: var(--bs-font-weight-medium);
+  --bs-navigation-drawer-item-font-size: var(--bs-font-size-md);
+  --bs-navigation-drawer-item-line-height: var(--bs-line-height-body-md);
+
+  --bs-navigation-drawer-item-color: var(--bs-text-muted);
+  --bs-navigation-drawer-item-color-selected: var(--bs-text-default);
+  --bs-navigation-drawer-item-color-hover: var(--bs-text-secondary);
+  --bs-navigation-drawer-item-bg-selected: var(--bs-surface-selected);
+  --bs-navigation-drawer-item-bg-hover: var(--bs-surface-hover);
+  --bs-navigation-drawer-item-bg-pressed: var(--bs-surface-pressed);
+  --bs-navigation-drawer-item-bg-focus: var(--bs-surface-focus);
+  --bs-navigation-drawer-item-bg-selected-hover: var(--bs-surface-selected-hover);
+  --bs-navigation-drawer-item-bg-selected-pressed: var(--bs-surface-selected-pressed);
+  --bs-navigation-drawer-item-bg-selected-focus: var(--bs-surface-selected-focus);
+  --bs-navigation-drawer-item-focus-ring-color: var(--bs-border-neutral-focus);
+
+  --bs-navigation-drawer-item-children-gap: var(--bs-spacing-100);
+
+  --bs-navigation-drawer-item-collapsed-gap: var(--bs-spacing-100);
+  --bs-navigation-drawer-item-collapsed-padding: var(--bs-spacing-100);
+  --bs-navigation-drawer-item-collapsed-icon-padding-x: var(--bs-spacing-100);
+  --bs-navigation-drawer-item-collapsed-icon-padding-y: var(--bs-spacing-50);
+  --bs-navigation-drawer-item-collapsed-font-size: var(--bs-fontsize-caption-sm);
+  --bs-navigation-drawer-item-collapsed-line-height: var(--bs-line-height-caption-sm);
+}
+
+/* Purely a JSX-single-root-node wrapper (see bs-navigation-drawer-item.tsx's render() comment) --
+   display: contents removes it from layout/box generation entirely, so it doesn't affect the
+   button/children-wrapper stacking at all. */
+.bs-navigation-drawer-item__root {
+  display: contents;
+}
+
+.bs-navigation-drawer-item {
+  box-sizing: border-box;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--bs-navigation-drawer-item-gap);
+  border: none;
+  border-radius: var(--bs-navigation-drawer-item-radius);
+  padding: var(--bs-navigation-drawer-item-padding-y) var(--bs-navigation-drawer-item-padding-x);
+  background: transparent;
+  color: var(--bs-navigation-drawer-item-color);
+  font-family: inherit;
+  font-weight: var(--bs-navigation-drawer-item-font-weight);
+  font-size: var(--bs-navigation-drawer-item-font-size);
+  line-height: calc(var(--bs-navigation-drawer-item-line-height) * 1px);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color var(--bs-duration-fast) var(--bs-easing-standard),
+    background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+/* Interaction states (hover/focus/pressed), expanded (non-collapsed) rows -- per Figma node
+   13472:7172's full Enabled/Hovered/Focused/Pressed/Disabled matrix. Each pair below is scoped to
+   :host(:not([collapsed])) explicitly (collapsed rows get their own icon-chip-only versions
+   further down) and to :not(.bs-navigation-drawer-item--selected) for the unselected variant --
+   without that guard, :hover/:focus-visible/:active (each a pseudo-class, so same specificity
+   contribution as a class) would win over the plain .bs-navigation-drawer-item--selected class
+   rule below and incorrectly replace the selected tint. Unselected rows also darken their text
+   color on all three of these states (Figma: --bs-text-secondary, distinct from the muted resting
+   color) -- selected rows never change text color across any state, only their background shade. */
+:host(:not([collapsed])) .bs-navigation-drawer-item:hover:not(.bs-navigation-drawer-item--selected) {
+  background: var(--bs-navigation-drawer-item-bg-hover);
+  color: var(--bs-navigation-drawer-item-color-hover);
+}
+
+:host(:not([collapsed])) .bs-navigation-drawer-item:active:not(.bs-navigation-drawer-item--selected) {
+  background: var(--bs-navigation-drawer-item-bg-pressed);
+  color: var(--bs-navigation-drawer-item-color-hover);
+}
+
+:host(:not([collapsed])) .bs-navigation-drawer-item:focus-visible:not(.bs-navigation-drawer-item--selected) {
+  background: var(--bs-navigation-drawer-item-bg-focus);
+  color: var(--bs-navigation-drawer-item-color-hover);
+}
+
+:host(:not([collapsed])) .bs-navigation-drawer-item--selected:hover {
+  background: var(--bs-navigation-drawer-item-bg-selected-hover);
+}
+
+:host(:not([collapsed])) .bs-navigation-drawer-item--selected:active {
+  background: var(--bs-navigation-drawer-item-bg-selected-pressed);
+}
+
+:host(:not([collapsed])) .bs-navigation-drawer-item--selected:focus-visible {
+  background: var(--bs-navigation-drawer-item-bg-selected-focus);
+}
+
+.bs-navigation-drawer-item:focus-visible {
+  outline: 2px solid var(--bs-navigation-drawer-item-focus-ring-color);
+  outline-offset: -2px;
+}
+
+/* nested: same vertical padding, deeper left indent, right padding unchanged -- and no icon slot
+   at all (see the render()'s `!this.nested` guard), so there's no icon gap to worry about here. */
+.bs-navigation-drawer-item--nested {
+  padding-left: var(--bs-navigation-drawer-item-padding-left-nested);
+}
+
+.bs-navigation-drawer-item--selected {
+  background: var(--bs-navigation-drawer-item-bg-selected);
+  color: var(--bs-navigation-drawer-item-color-selected);
+}
+
+.bs-navigation-drawer-item--selected .bs-navigation-drawer-item__icon--has-content {
+  color: var(--bs-navigation-drawer-item-color-selected);
+}
+
+/* collapsed: icon-above-caption column instead of icon-beside-label row, per Figma node
+   8028:135374 ("Type=Collapsed"). `selected`'s background moves from the whole row onto just the
+   icon chip below (see .bs-navigation-drawer-item__icon's :host([collapsed]) rule) -- matching
+   the design file, where the tint never spans the caption underneath it. */
+:host([collapsed]) .bs-navigation-drawer-item {
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--bs-navigation-drawer-item-collapsed-gap);
+  padding: var(--bs-navigation-drawer-item-collapsed-padding);
+  background: transparent;
+}
+
+.bs-navigation-drawer-item__icon {
+  display: none;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.bs-navigation-drawer-item__icon--has-content {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.bs-navigation-drawer-item__icon ::slotted(svg) {
+  width: 24px;
+  height: 24px;
+}
+
+/* collapsed: the icon sits in its own small rounded chip (Figma's "State layer") so a `selected`
+   tint applies to just this chip, not the whole column -- see the plain (non-collapsed)
+   .bs-navigation-drawer-item--selected rule above for the row-wide version instead. */
+:host([collapsed]) .bs-navigation-drawer-item__icon--has-content {
+  padding: var(--bs-navigation-drawer-item-collapsed-icon-padding-y) var(--bs-navigation-drawer-item-collapsed-icon-padding-x);
+  border-radius: var(--bs-navigation-drawer-item-radius);
+}
+
+:host([collapsed][selected]) .bs-navigation-drawer-item__icon--has-content {
+  background: var(--bs-navigation-drawer-item-bg-selected);
+}
+
+/* collapsed: hover/pressed/focus tint just the icon chip too, same reasoning as `selected` above
+   -- and the same :not([selected]) guard, so interacting with a selected collapsed row swaps
+   between the *-selected-* backgrounds below instead of these plain ones. */
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:hover .bs-navigation-drawer-item__icon--has-content {
+  background: var(--bs-navigation-drawer-item-bg-hover);
+}
+
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:active .bs-navigation-drawer-item__icon--has-content {
+  background: var(--bs-navigation-drawer-item-bg-pressed);
+}
+
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:focus-visible .bs-navigation-drawer-item__icon--has-content {
+  background: var(--bs-navigation-drawer-item-bg-focus);
+}
+
+:host([collapsed][selected]) .bs-navigation-drawer-item:hover .bs-navigation-drawer-item__icon--has-content {
+  background: var(--bs-navigation-drawer-item-bg-selected-hover);
+}
+
+:host([collapsed][selected]) .bs-navigation-drawer-item:active .bs-navigation-drawer-item__icon--has-content {
+  background: var(--bs-navigation-drawer-item-bg-selected-pressed);
+}
+
+:host([collapsed][selected]) .bs-navigation-drawer-item:focus-visible .bs-navigation-drawer-item__icon--has-content {
+  background: var(--bs-navigation-drawer-item-bg-selected-focus);
+}
+
+/* collapsed unselected caption + icon: same secondary-color darkening on hover/pressed/focus as
+   the expanded label (both __label and __icon--has-content need this set explicitly here, since
+   neither the row's own `color` nor a `color: inherit` chain changes for collapsed rows the way it
+   does for expanded ones -- expanded rows change `color` directly on the row itself instead).
+   Selected captions/icons stay --bs-navigation-drawer-item-color-selected always, matching Figma. */
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:hover .bs-navigation-drawer-item__label,
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:active .bs-navigation-drawer-item__label,
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:focus-visible .bs-navigation-drawer-item__label,
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:hover .bs-navigation-drawer-item__icon--has-content,
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:active .bs-navigation-drawer-item__icon--has-content,
+:host([collapsed]:not([selected])) .bs-navigation-drawer-item:focus-visible .bs-navigation-drawer-item__icon--has-content {
+  color: var(--bs-navigation-drawer-item-color-hover);
+}
+
+.bs-navigation-drawer-item__label {
+  flex: 1;
+  min-width: 0;
+  text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* collapsed: small centered caption below the icon instead of the flex-1 label beside it. */
+:host([collapsed]) .bs-navigation-drawer-item__label {
+  flex: none;
+  width: 100%;
+  text-align: center;
+  font-size: var(--bs-navigation-drawer-item-collapsed-font-size);
+  line-height: calc(var(--bs-navigation-drawer-item-collapsed-line-height) * 1px);
+}
+
+.bs-navigation-drawer-item__chevron {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  color: inherit;
+  transition: transform var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-navigation-drawer-item__chevron svg {
+  width: 16px;
+  height: 16px;
+}
+
+/* Rotating on `expanded` is a conventional accordion idiom this component adds on its own --
+   Figma's static mock reuses the identical chevron asset for both states without visually
+   rotating it, so this isn't pixel-confirmed against the design file, just a reasonable default. */
+.bs-navigation-drawer-item__chevron--expanded {
+  transform: rotate(180deg);
+}
+
+/* The `children` slot wrapper is a sibling of the row button (see the render() comment in
+   bs-navigation-drawer-item.tsx for why), shown/hidden purely via the `expanded` attribute
+   (reflected) -- no JS visibility toggling needed. */
+.bs-navigation-drawer-item__children {
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-navigation-drawer-item-children-gap);
+}
+
+:host(:not([expanded])) .bs-navigation-drawer-item__children {
+  display: none;
+}
+
+/* collapsed rows never show a chevron or nested children, regardless of `expanded` -- Figma's
+   collapsed rail (node 8028:135374) has no disclosure affordance at all. */
+:host([collapsed]) .bs-navigation-drawer-item__chevron,
+:host([collapsed]) .bs-navigation-drawer-item__children {
+  display: none;
+}

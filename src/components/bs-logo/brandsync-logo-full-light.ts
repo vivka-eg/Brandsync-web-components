@@ -1,10 +1,18 @@
-// BrandSync brand mark (icon + "EG BrandSync" wordmark), exported directly from Figma (node
-// 10909:30453, 'Logo') and inlined as a self-contained SVG string -- same pattern as
-// bs-chatbot-header's GENIE_LOGO_SVG. The mark and wordmark were exported as two separate flat
-// SVGs (Figma's own source splits them into several layered clip-path/mask groups that don't
-// matter once flattened) and composited here into one <svg>, since combining them in markup
-// avoids a second HTTP request and keeps the logo a single atomic asset.
-export const BRANDSYNC_LOGO_SVG = `<svg width="222.992" height="44" viewBox="0 0 222.992 44" fill="none" xmlns="http://www.w3.org/2000/svg">
+// BrandSync brand mark (icon + "EG BrandSync" wordmark) on a light background, exported directly
+// from Figma's "Logo" component set (node 10909:30421, Device=Desktop, Background=Light) and
+// inlined as a self-contained SVG string -- same pattern as bs-chatbot-header's GENIE_LOGO_SVG.
+// The mark and wordmark were exported as two separate flat SVGs (Figma's own source splits them
+// into several layered clip-path/mask groups that don't matter once flattened) and composited
+// here into one <svg>, since combining them in markup avoids a second HTTP request and keeps the
+// logo a single atomic asset.
+//
+// The icon-to-wordmark gap was tightened from Figma's own exported spacing (a ~48px gap, i.e. the
+// word group translated to x=92.015 against a 44px-wide icon) to 16px (translate-x=60) at the
+// user's request after seeing it rendered -- the original gap read as too much empty space
+// between the mark and the text. Not a Figma re-measurement -- a deliberate deviation. Word group
+// itself (130.977 wide, vertically centered at translate-y=11.3308 against the 44px-tall icon) is
+// unchanged, so the total width is just 60 + 130.977 = 190.977.
+export const BRANDSYNC_LOGO_FULL_LIGHT_SVG = `<svg width="190.977" height="44" viewBox="0 0 190.977 44" fill="none" xmlns="http://www.w3.org/2000/svg">
 <g id="Group">
 <path id="Vector" d="M35.2 0.128906H8.8C4.01109 0.128906 0.128905 4.01109 0.128905 8.8V35.2C0.128905 39.9889 4.01109 43.8711 8.8 43.8711H35.2C39.9889 43.8711 43.8711 39.9889 43.8711 35.2V8.8C43.8711 4.01109 39.9889 0.128906 35.2 0.128906Z" fill="white"/>
 <path id="Vector_2" d="M35.2 0.257812C39.9094 0.257812 43.7422 4.08891 43.7422 8.8V35.2C43.7422 39.9094 39.9111 43.7422 35.2 43.7422H8.8C4.09063 43.7422 0.257812 39.9111 0.257812 35.2V8.8C0.257812 4.08891 4.08891 0.257812 8.8 0.257812H35.2ZM35.2 0H8.8C3.93938 0 0 3.93938 0 8.8V35.2C0 40.0606 3.93938 44 8.8 44H35.2C40.0606 44 44 40.0606 44 35.2V8.8C44 3.93938 40.0606 0 35.2 0Z" fill="#E8EAEE"/>
@@ -14,7 +22,7 @@ export const BRANDSYNC_LOGO_SVG = `<svg width="222.992" height="44" viewBox="0 0
 <path id="Vector_6" d="M28.3577 12.6586L37.2075 21.5084C37.4756 21.7766 37.4756 22.2114 37.2075 22.4813L34.1722 25.5166C33.9041 25.7847 33.4692 25.7847 33.1994 25.5166L24.3495 16.6667C24.0814 16.3986 24.0814 15.962 24.3495 15.6939L27.3848 12.6586C27.653 12.3905 28.0895 12.3905 28.3577 12.6586Z" fill="#1B85FF"/>
 <path id="Vector_7" d="M15.6441 31.3414L6.7839 22.4813C6.51578 22.2131 6.51578 21.7766 6.7839 21.5084L9.81922 18.4731C10.0873 18.205 10.5222 18.205 10.792 18.4731L19.6522 27.3333C19.9203 27.6014 19.9203 28.038 19.6522 28.3061L16.6169 31.3414C16.3487 31.6095 15.9122 31.6095 15.6441 31.3414Z" fill="#1B85FF"/>
 </g>
-<g transform="translate(92.015, 11.3308)">
+<g transform="translate(60, 11.3308)">
 <g id="Group">
 <path id="Vector" d="M116.841 4.455C116.21 4.455 115.605 4.5375 115.043 4.7025C114.587 4.83485 114.087 5.04969 113.48 5.37282V5.18547C113.48 5.00328 113.412 4.88641 113.343 4.79532C113.252 4.675 113.104 4.60797 112.925 4.60797H111.825C111.664 4.60797 111.54 4.66125 111.42 4.77985C111.287 4.91219 111.27 5.05313 111.27 5.18547V16.4038C111.27 16.5653 111.323 16.6891 111.442 16.8094C111.559 16.9263 111.681 16.9813 111.825 16.9813H112.903C113.065 16.9813 113.188 16.928 113.309 16.8094C113.42 16.6977 113.48 16.555 113.48 16.4038V7.20672C114.568 6.67219 115.521 6.40063 116.313 6.40063C117.105 6.40063 117.707 6.6 118.057 6.99188C118.408 7.38375 118.594 8.13656 118.594 9.1661V16.402C118.594 16.5636 118.647 16.6873 118.766 16.8077C118.884 16.9263 119.01 16.9795 119.171 16.9795H120.227C120.388 16.9795 120.512 16.9263 120.632 16.8077C120.751 16.6891 120.804 16.5636 120.804 16.402V9.1661C120.804 6.03969 119.47 4.45328 116.839 4.45328" fill="#363C47"/>
 <path id="Vector_2" d="M52.0747 4.455C51.0555 4.455 50.0827 4.76094 49.1116 5.39V5.18547C49.1116 5.02391 49.0583 4.90016 48.9397 4.77985C48.8314 4.67156 48.7334 4.60797 48.5564 4.60797H47.5234C47.3619 4.60797 47.2381 4.66125 47.1178 4.77985C46.9855 4.91219 46.9683 5.05313 46.9683 5.18547V16.4038C46.9683 16.5653 47.0216 16.6891 47.1402 16.8094C47.257 16.9263 47.3791 16.9813 47.5234 16.9813H48.6011C48.7627 16.9813 48.8864 16.928 49.0067 16.8094C49.1184 16.6994 49.1786 16.555 49.1786 16.4038V7.26688C50.1634 6.69281 51.138 6.40235 52.0764 6.40235C52.6178 6.40235 52.6763 6.04485 52.6763 5.89016V4.98781C52.6763 4.64922 52.458 4.455 52.0764 4.455" fill="#363C47"/>

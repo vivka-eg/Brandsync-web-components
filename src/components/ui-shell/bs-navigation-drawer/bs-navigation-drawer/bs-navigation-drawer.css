@@ -1,0 +1,257 @@
+/**
+ * @prop --bs-navigation-drawer-bg: Background of the drawer. Aliased to --bs-surface-base.
+ * @prop --bs-navigation-drawer-border: Right border color. Aliased to --bs-border-neutral-container.
+ * @prop --bs-navigation-drawer-padding-y: Top/bottom padding. Aliased to --bs-spacing-300.
+ * @prop --bs-navigation-drawer-padding-left: Left padding. Aliased to --bs-spacing-300 -- note
+ *   this is deliberately different from --bs-navigation-drawer-padding-right (below), per the
+ *   Figma spec. Both are ignored (set to 0) while `collapsed` -- see Figma node 8028:135374, which
+ *   uses `px-0` for the collapsed rail.
+ * @prop --bs-navigation-drawer-padding-right: Right padding. Aliased to --bs-spacing-200.
+ * @prop --bs-navigation-drawer-gap: Gap between the logo, title row, search slot, and items list.
+ *   Aliased to --bs-spacing-300 (24px, matching the drawer's own top/bottom padding for an even
+ *   rhythm) -- bumped up from the originally Figma-measured --bs-spacing-150 (12px) at the user's
+ *   request after seeing it rendered (felt cramped in practice), not a Figma re-measurement.
+ * @prop --bs-navigation-drawer-width: Default width of the drawer. 280px, matching Figma's own
+ *   frame -- overridable by a consumer that needs a different fixed width.
+ * @prop --bs-navigation-drawer-title-font-family: Title text font family. Aliased to
+ *   --bs-typography-font-family-heading.
+ * @prop --bs-navigation-drawer-title-font-weight: Title text font weight. Aliased to
+ *   --bs-font-weight-bold.
+ * @prop --bs-navigation-drawer-title-font-size: Title text font size. The Figma spec calls this
+ *   style "heading h7", but src/global/tokens.css only defines heading tokens through h6
+ *   (--bs-fontsize-heading-h6: 16px, --bs-line-height-heading-h6: 20) -- there is no h7 tier. h6
+ *   is the smallest/closest defined tier, so this aliases to the plain --bs-font-size-md token
+ *   (also 16px, the same value as --bs-fontsize-heading-h6) rather than inventing a new h7 token.
+ *   Flagged here as a judgment call, not a pixel-confirmed h7 value.
+ * @prop --bs-navigation-drawer-title-line-height: Title text line height. Aliased to
+ *   --bs-line-height-heading-h6, for the same reason as the font-size prop above.
+ * @prop --bs-navigation-drawer-title-color: Title text color. Aliased to --bs-text-default.
+ * @prop --bs-navigation-drawer-collapse-size: Width/height of the collapse toggle button. 48px.
+ * @prop --bs-navigation-drawer-collapse-radius: Corner radius of the collapse toggle button.
+ *   Aliased to --bs-border-radius-100.
+ * @prop --bs-navigation-drawer-collapse-hover: Collapse toggle background on hover. Aliased to
+ *   --bs-color-neutral-container.
+ * @prop --bs-navigation-drawer-collapse-pressed: Collapse toggle background when pressed.
+ *   Aliased to --bs-color-neutral-container-pressed.
+ * @prop --bs-navigation-drawer-collapse-icon: Collapse toggle icon color. Aliased to
+ *   --bs-icon-default.
+ * @prop --bs-navigation-drawer-items-gap: Gap between top-level item rows in the items list.
+ *   Aliased to --bs-spacing-100.
+ * @prop --bs-navigation-drawer-collapsed-width: Width of the drawer when `collapsed`. 96px, per
+ *   Figma node 8028:135374's own frame ("Type=Collapsed").
+ * @prop --bs-navigation-drawer-search-trigger-size: Width/height of the compact search-trigger
+ *   button shown instead of the `search` slot while `collapsed`. 44px, per Figma.
+ * @prop --bs-navigation-drawer-search-trigger-bg: Search-trigger background. Aliased to
+ *   --bs-color-neutral-container (Figma's "button/neutral-container" tonal fill).
+ * @prop --bs-navigation-drawer-search-trigger-border: Search-trigger border color. Aliased to
+ *   --bs-border-neutral-container (same border color as the drawer's own right edge).
+ * @prop --bs-navigation-drawer-search-trigger-icon: Search-trigger icon color. Aliased to
+ *   --bs-icon-default.
+ */
+:host {
+  display: block;
+
+  --bs-navigation-drawer-bg: var(--bs-surface-base);
+  --bs-navigation-drawer-border: var(--bs-border-neutral-container);
+  --bs-navigation-drawer-padding-y: var(--bs-spacing-300);
+  --bs-navigation-drawer-padding-left: var(--bs-spacing-300);
+  --bs-navigation-drawer-padding-right: var(--bs-spacing-200);
+  --bs-navigation-drawer-gap: var(--bs-spacing-300);
+  --bs-navigation-drawer-width: 280px;
+
+  --bs-navigation-drawer-title-font-family: var(--bs-typography-font-family-heading);
+  --bs-navigation-drawer-title-font-weight: var(--bs-font-weight-bold);
+  --bs-navigation-drawer-title-font-size: var(--bs-font-size-md);
+  --bs-navigation-drawer-title-line-height: var(--bs-line-height-heading-h6);
+  --bs-navigation-drawer-title-color: var(--bs-text-default);
+
+  --bs-navigation-drawer-collapse-size: 48px;
+  --bs-navigation-drawer-collapse-radius: var(--bs-border-radius-100);
+  --bs-navigation-drawer-collapse-hover: var(--bs-color-neutral-container);
+  --bs-navigation-drawer-collapse-pressed: var(--bs-color-neutral-container-pressed);
+  --bs-navigation-drawer-collapse-icon: var(--bs-icon-default);
+
+  --bs-navigation-drawer-items-gap: var(--bs-spacing-100);
+
+  --bs-navigation-drawer-collapsed-width: 96px;
+
+  --bs-navigation-drawer-search-trigger-size: 44px;
+  --bs-navigation-drawer-search-trigger-bg: var(--bs-color-neutral-container);
+  --bs-navigation-drawer-search-trigger-border: var(--bs-border-neutral-container);
+  --bs-navigation-drawer-search-trigger-icon: var(--bs-icon-default);
+}
+
+.bs-navigation-drawer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-navigation-drawer-gap);
+  width: var(--bs-navigation-drawer-width);
+  height: 100%;
+  background: var(--bs-navigation-drawer-bg);
+  border-right: 1px solid var(--bs-navigation-drawer-border);
+  padding: var(--bs-navigation-drawer-padding-y) var(--bs-navigation-drawer-padding-right) var(--bs-navigation-drawer-padding-y)
+    var(--bs-navigation-drawer-padding-left);
+  font-family: inherit;
+  transition:
+    width var(--bs-duration-fast) var(--bs-easing-standard),
+    padding var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+/* Figma's collapsed rail is `px-0` (no horizontal padding at all) and horizontally centers every
+   child -- logo/collapse button/search trigger all have less width than the 96px rail and center
+   within it; the items list stays full-width since collapsed items lay themselves out centered
+   internally instead (see bs-navigation-drawer-item.css). */
+:host([collapsed]) .bs-navigation-drawer {
+  width: var(--bs-navigation-drawer-collapsed-width);
+  padding-left: 0;
+  padding-right: 0;
+  align-items: center;
+}
+
+.bs-navigation-drawer__logo {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+}
+
+/* The full-wordmark logo shows by default; the icon-only mark (a real second bs-logo asset, not a
+   CSS crop of the full one) takes over while collapsed -- see the :host([collapsed]) rules below,
+   the same visibility-toggle pattern already used for .bs-navigation-drawer__search /
+   .bs-navigation-drawer__search-trigger further down. */
+.bs-navigation-drawer__logo--mark {
+  display: none;
+}
+
+:host([collapsed]) .bs-navigation-drawer__logo--full {
+  display: none;
+}
+
+:host([collapsed]) .bs-navigation-drawer__logo--mark {
+  display: flex;
+}
+
+.bs-navigation-drawer__title-row {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--bs-navigation-drawer-gap);
+}
+
+.bs-navigation-drawer__title {
+  flex: 1;
+  min-width: 0;
+  font-family: var(--bs-navigation-drawer-title-font-family);
+  font-weight: var(--bs-navigation-drawer-title-font-weight);
+  font-size: var(--bs-navigation-drawer-title-font-size);
+  line-height: calc(var(--bs-navigation-drawer-title-line-height) * 1px);
+  color: var(--bs-navigation-drawer-title-color);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The heading text is purely visual here -- the <nav> itself carries the same text as its own
+   aria-label (see bs-navigation-drawer.tsx), so the landmark stays named even with this hidden. */
+:host([collapsed]) .bs-navigation-drawer__title {
+  display: none;
+}
+
+.bs-navigation-drawer__collapse {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--bs-navigation-drawer-collapse-size);
+  height: var(--bs-navigation-drawer-collapse-size);
+  border: none;
+  border-radius: var(--bs-navigation-drawer-collapse-radius);
+  padding: 0;
+  background: transparent;
+  color: var(--bs-navigation-drawer-collapse-icon);
+  cursor: pointer;
+  transition: background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-navigation-drawer__collapse svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Deliberately no rotation on `collapsed`, unlike bs-navigation-drawer-item's own disclosure
+   chevron -- Figma's collapsed mock (node 8028:135374) reuses the identical left-pointing
+   "CaretLeft" asset unrotated, confirmed by directly inspecting that state, not assumed. */
+
+.bs-navigation-drawer__collapse:hover {
+  background: var(--bs-navigation-drawer-collapse-hover);
+}
+
+.bs-navigation-drawer__collapse:active {
+  background: var(--bs-navigation-drawer-collapse-pressed);
+}
+
+.bs-navigation-drawer__collapse:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+
+.bs-navigation-drawer__search {
+  flex-shrink: 0;
+  width: 100%;
+}
+
+:host([collapsed]) .bs-navigation-drawer__search {
+  display: none;
+}
+
+/* Compact search-trigger button, shown only while `collapsed` (Figma's second "Icon Button" in
+   the collapsed rail, a tonal/neutral-container 44x44 button) -- replaces the `search` slot,
+   which this component can't meaningfully shrink to icon size on its own since it doesn't know
+   what's actually slotted there. See bs-navigation-drawer.tsx's bsSearchClick doc. */
+.bs-navigation-drawer__search-trigger {
+  display: none;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  width: var(--bs-navigation-drawer-search-trigger-size);
+  height: var(--bs-navigation-drawer-search-trigger-size);
+  border: 1px solid var(--bs-navigation-drawer-search-trigger-border);
+  border-radius: var(--bs-navigation-drawer-collapse-radius);
+  background: var(--bs-navigation-drawer-search-trigger-bg);
+  color: var(--bs-navigation-drawer-search-trigger-icon);
+  cursor: pointer;
+  transition: background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+.bs-navigation-drawer__search-trigger svg {
+  width: 24px;
+  height: 24px;
+}
+
+.bs-navigation-drawer__search-trigger:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+
+:host([collapsed]) .bs-navigation-drawer__search-trigger {
+  display: inline-flex;
+}
+
+.bs-navigation-drawer__items {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: var(--bs-navigation-drawer-items-gap);
+  /* Scrolling stays fully functional (overflow-y: auto above) -- only the scrollbar's own visual
+     chrome is hidden, cross-browser: scrollbar-width for Firefox, ::-webkit-scrollbar for
+     Chromium/Safari (no standard property covers both). */
+  scrollbar-width: none;
+}
+
+.bs-navigation-drawer__items::-webkit-scrollbar {
+  display: none;
+}

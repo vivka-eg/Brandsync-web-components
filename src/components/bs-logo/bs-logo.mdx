@@ -1,0 +1,91 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as LogoStories from './bs-logo.stories';
+
+<Meta of={LogoStories} />
+
+# Logo
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Full (auto, dark theme)](#full-auto-dark-theme)
+- [Full (dark, explicit)](#full-dark-explicit)
+- [Mark](#mark)
+- [Custom (consumer-supplied image)](#custom-consumer-supplied-image)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+The BrandSync brand mark. Shared by `bs-navigation-header` and `bs-navigation-drawer`, which both
+render it instead of duplicating their own copy of the logo SVG.
+
+**When to use**
+- Anywhere the BrandSync logo/icon needs to render: a navigation header, a nav drawer, etc.
+
+**When not to use**
+- The Genie AI chat panel's own brand mark -- that's a different logo (`bs-chatbot-header`'s own
+  inline Genie asset), not this one.
+
+<Canvas of={LogoStories.Full} />
+
+## Full (auto, dark theme)
+
+`background` defaults to `"auto"`: this component always renders both the light and dark
+full-wordmark assets (a genuinely separate, differently-drawn dark asset with solid white fills
+throughout, not a CSS currentColor swap of the light asset's paths) and picks one via CSS, reading
+`--bs-logo-asset-light-display`/`--bs-logo-asset-dark-display` -- two custom properties defined in
+`src/global/base.css` and flipped by the same `[data-theme="dark"]` attribute every other `--bs-*`
+token already reacts to. This story doesn't set `background` at all -- it wraps the logo in a
+`data-theme="dark"` element, which is what flips it, exactly like it would in a consuming app that
+sets `[data-theme="dark"]` for its own dark mode. (Storybook's toolbar also has a global "Theme"
+switch for browsing every component under one ambient theme, but a single story can't use that
+switch itself without also flipping every other story on this same Docs page.)
+
+<Canvas of={LogoStories.FullAutoDark} />
+
+## Full (dark, explicit)
+
+Set `background="dark"` (or `"light"`) to pin one asset regardless of the ambient theme -- e.g. a
+consumer that places this on a dark surface without using `[data-theme="dark"]` at all. Shown here
+on a `--bs-surface-inverse` canvas (not the theme switch) to prove the pin doesn't depend on it.
+Has no effect on `variant="mark"` (see Component API below).
+
+<Canvas of={LogoStories.FullDark} />
+
+## Mark
+
+`variant="mark"` renders just the 44x44 icon, no wordmark -- Figma only has one real designed
+instance of it, so it renders identically regardless of `background`.
+
+<Canvas of={LogoStories.Mark} />
+
+## Custom (consumer-supplied image)
+
+`variant="custom"` renders a plain `<img src={src} alt={alt}>` instead of a built-in BrandSync
+asset -- for a different product's logo (e.g. a white-labeled deployment, or a logo fetched at
+runtime from a service like brand.dev). This component never fetches that image itself: network
+calls, loading/error states, and caching are the consuming app's job, same as `bs-attachment`'s
+`imageSrc`. `background` has no effect in this mode. The image keeps its natural aspect ratio --
+only its height is constrained (`--bs-logo-height-custom`, default 44px, matching `full`/`mark`).
+
+<Canvas of={LogoStories.Custom} />
+
+## Component API
+
+<Controls of={LogoStories.Full} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- CSS Custom Properties: `--bs-logo-width-full`, `--bs-logo-height-full`, `--bs-logo-width-mark`,
+  `--bs-logo-height-mark`, `--bs-logo-height-custom`
+- Slots: none
+- Shadow parts: `::part(logo)`
+
+## Accessibility
+
+- `full`/`mark` render with `role="img"` and a plain `aria-label="BrandSync"` -- neither is a link
+  back to the homepage by itself; wrap it yourself (e.g. an `<a>` around the `bs-logo` element, or
+  via the `logo` shadow part) if your app needs that behavior.
+- `custom` renders a real `<img>`. Set `alt` to something real (e.g. the product/company name) --
+  it's meaningful content, not decorative. Left unset, it falls back to `alt=""` (decorative to
+  assistive tech) rather than omitting the attribute entirely, but don't rely on that fallback.

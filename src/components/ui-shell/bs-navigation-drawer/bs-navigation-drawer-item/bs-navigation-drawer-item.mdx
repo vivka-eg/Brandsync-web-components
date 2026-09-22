@@ -1,0 +1,134 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as NavigationDrawerItemStories from './bs-navigation-drawer-item.stories';
+
+<Meta of={NavigationDrawerItemStories} />
+
+# Navigation Drawer Item
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Selected](#selected)
+- [Expandable (group header)](#expandable-group-header)
+- [Expandable with nested children](#expandable-with-nested-children)
+- [Nested (child row)](#nested-child-row)
+- [No icon (space not reserved)](#no-icon-space-not-reserved)
+- [Collapsed](#collapsed)
+- [Component API](#component-api)
+- [Events](#events)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A single row within a `bs-navigation-drawer`'s item list -- either a plain leaf nav item, or an
+`expandable` group header that discloses nested `bs-navigation-drawer-item` children.
+
+**When to use**
+- Every row inside a `bs-navigation-drawer`'s default slot.
+
+**When not to use**
+- A standalone action outside a navigation drawer -- use `bs-button`/`bs-menu-item` instead.
+
+<Canvas of={NavigationDrawerItemStories.Default} />
+
+## Selected
+
+`selected` tints the row's background (`--bs-surface-selected`) and darkens its text/icon color.
+It is **not** self-toggling -- clicking only emits `bsSelect`, it does not set its own `selected`
+prop. Same non-self-toggling precedent as `bs-tab`'s `selected` -- coordinating which sibling row
+is selected needs cross-item state a consumer/wrapper owns.
+
+<Canvas of={NavigationDrawerItemStories.Selected} />
+
+## Expandable (group header)
+
+`expandable` renders a trailing chevron instead of a `selected` treatment. Clicking toggles
+`this.expanded` directly (self-toggling, unlike `selected` above -- this is simple local disclosure
+state, closer to `bs-switch`'s self-toggling `checked`) and emits `bsToggle` with the new value,
+instead of `bsSelect`.
+
+<Canvas of={NavigationDrawerItemStories.Expandable} />
+
+## Expandable with nested children
+
+Nested child rows are placed inside the parent via `slot="children"`, with `nested` set on each
+child. The parent shows/hides that slot's content based on its own `expanded` prop, via a pure-CSS
+attribute selector -- no JS visibility toggling. The chevron rotates 180deg when expanded, a
+conventional accordion idiom added on top of the design file (Figma's own static mock reuses the
+identical chevron asset for both states without rotating it).
+
+<Canvas of={NavigationDrawerItemStories.ExpandableWithChildren} />
+
+## Nested (child row)
+
+`nested` rows get a deeper left indent (`--bs-navigation-drawer-item-padding-left-nested`, 48px)
+and never render an icon slot at all -- not even reserved, empty space -- since Figma's nested rows
+never have icons.
+
+<Canvas of={NavigationDrawerItemStories.Nested} />
+
+## No icon (space not reserved)
+
+For top-level (non-`nested`) rows, the `icon` slot only reserves layout space when populated --
+same "only take up space if slotted" pattern as `bs-tab`'s `icon` slot.
+
+<Canvas of={NavigationDrawerItemStories.IconOnlyLabelSpace} />
+
+## Collapsed
+
+`collapsed` switches this row from its normal icon-beside-label row to a compact icon-above-caption
+column, per Figma node 8028:135374 (the drawer's "Type=Collapsed" state): the label restyles to a
+small centered caption below the icon instead of disappearing, `selected`'s tint moves onto just
+the icon's own rounded chip (not the whole row), and the chevron/`children` slot are forced hidden
+regardless of `expanded` -- a collapsed rail never shows a nested tree. You won't usually set this
+directly: a parent `bs-navigation-drawer` keeps every direct-child item's `collapsed` in sync with
+its own automatically.
+
+<Canvas of={NavigationDrawerItemStories.Collapsed} />
+
+## Component API
+
+<Controls of={NavigationDrawerItemStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (label text), `icon`, `children`
+- Shadow parts: `::part(item)`, `::part(icon)`, `::part(label)`, `::part(chevron)`, `::part(children)`
+- CSS custom properties: `--bs-navigation-drawer-item-gap`, `--bs-navigation-drawer-item-radius`,
+  `--bs-navigation-drawer-item-padding-y`, `--bs-navigation-drawer-item-padding-x`,
+  `--bs-navigation-drawer-item-padding-left-nested`, `--bs-navigation-drawer-item-font-weight`,
+  `--bs-navigation-drawer-item-font-size`, `--bs-navigation-drawer-item-line-height`,
+  `--bs-navigation-drawer-item-color`, `--bs-navigation-drawer-item-color-selected`,
+  `--bs-navigation-drawer-item-bg-selected`, `--bs-navigation-drawer-item-focus-ring-color`,
+  `--bs-navigation-drawer-item-children-gap`, `--bs-navigation-drawer-item-collapsed-gap`,
+  `--bs-navigation-drawer-item-collapsed-padding`,
+  `--bs-navigation-drawer-item-collapsed-icon-padding-x`,
+  `--bs-navigation-drawer-item-collapsed-icon-padding-y`,
+  `--bs-navigation-drawer-item-collapsed-font-size`,
+  `--bs-navigation-drawer-item-collapsed-line-height`
+
+## Events
+
+| Event      | Fires when                                                    | Payload   | Cancelable |
+| ---------- | -------------------------------------------------------------- | --------- | ---------- |
+| `bsSelect` | The row is clicked, only when `expandable` is `false`           | `void`    | No         |
+| `bsToggle` | The row is clicked, only when `expandable` is `true`, with the new `expanded` value | `boolean` | No         |
+
+`bsSelect` and `bsToggle` are mutually exclusive per click -- never both fire for the same click.
+
+## Accessibility
+
+- Renders a real `<button type="button">` for the row itself, so it participates correctly in tab
+  order and native click/keyboard activation.
+- **Known gap:** this component does not coordinate `selected` across sibling rows itself --
+  clicking only emits `bsSelect`, `selected` is not mutable and does not self-toggle. A consumer
+  must listen for `bsSelect` and set `selected` on the clicked item (and `false` on its siblings)
+  itself, same requirement as `bs-tab.mdx` documents for `bs-tab`'s identical gap.
+- `expanded` (for `expandable` rows) does self-toggle, so no extra wiring is needed for the
+  expand/collapse behavior itself. The row also carries `aria-expanded` (kept in sync with
+  `expanded`) when `expandable` is set, so its disclosure state is announced.
+- **Known gap:** no `aria-controls` links an `expandable` row to its `children` slot content --
+  slotted children aren't a single id-referenceable element from this component's own shadow DOM,
+  so this isn't wired up yet.
+- `ariaLabel` is optional, including inside a `collapsed` drawer -- unlike an icon-only button, the
+  label caption stays visible (just restyled smaller) in that mode, so the button's default
+  accessible-name computation (its own text content) already works without it.

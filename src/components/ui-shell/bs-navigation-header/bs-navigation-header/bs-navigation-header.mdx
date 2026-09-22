@@ -8,9 +8,14 @@ import * as NavigationHeaderStories from './bs-navigation-header.stories';
 ## Table of Contents
 
 - [Overview](#overview)
-- [Center alignment](#center-alignment)
-- [With navigation drawer](#with-navigation-drawer)
-- [Left slot as tabs](#left-slot-as-tabs)
+- [Header Base](#header-base)
+- [Header Base with Navigation](#header-base-with-navigation)
+- [Header Base with Actions](#header-base-with-actions)
+- [Header Base with Navigation and Actions](#header-base-with-navigation-and-actions)
+- [Centered](#centered)
+- [No logo](#no-logo)
+- [Tabs](#tabs)
+- [Dark background](#dark-background)
 - [Skip to content](#skip-to-content)
 - [Component API](#component-api)
 - [Accessibility](#accessibility)
@@ -27,29 +32,68 @@ menu/action content.
 - The header of a Genie AI chat panel -- use `bs-chatbot-header` instead, which is purpose-built
   for that narrower layout and its own fixed action buttons.
 
-<Canvas of={NavigationHeaderStories.Default} />
+## Header Base
 
-## Center alignment
+The bare bar on its own -- just the logo, no `left`/`right` slot content.
+
+<Canvas of={NavigationHeaderStories.HeaderBase} />
+
+## Header Base with Navigation
+
+`left` slot content only.
+
+<Canvas of={NavigationHeaderStories.HeaderBaseWithNavigation} />
+
+## Header Base with Actions
+
+`right` slot content only.
+
+<Canvas of={NavigationHeaderStories.HeaderBaseWithActions} />
+
+## Header Base with Navigation and Actions
+
+Both slots populated -- the typical real-world shape of this component.
+
+<Canvas of={NavigationHeaderStories.HeaderBaseWithNavigationAndActions} />
+
+## Centered
 
 The logo and `right` slot both grow equally, which centers the `left` slot content in the middle
 of the bar.
 
-<Canvas of={NavigationHeaderStories.Center} />
+<Canvas of={NavigationHeaderStories.HeaderBaseWithNavigationAndActionsCentered} />
 
-## With navigation drawer
+## No logo
 
 No logo at all -- this variant assumes a nav-drawer toggle is the leftmost thing on the page
 instead, so `left` slot content starts flush at the bar's own left edge.
 
-<Canvas of={NavigationHeaderStories.WithNavigationDrawer} />
+<Canvas of={NavigationHeaderStories.HeaderBaseWithNavigationAndActionsNoLogo} />
 
-## Left slot as tabs
+## Tabs
 
 The `left`/`right` slots aren't limited to buttons -- any content works, e.g. a `<bs-tabs
 type="bs-tab">` group for primary page navigation instead of a row of `subtle`-variant
 `bs-button`s.
 
-<Canvas of={NavigationHeaderStories.WithTabs} />
+<Canvas of={NavigationHeaderStories.HeaderBaseWithNavigationAndActionsTabs} />
+
+## Dark background
+
+This story wraps the bar in a `data-theme="dark"` element, which flips
+`--bs-navigation-header-bg`/`--bs-navigation-header-border` and every text-color token this bar's
+slotted content relies on, all via ordinary CSS custom property inheritance -- no per-component
+changes needed. (This library also exposes a global "Theme" switch in Storybook's own toolbar for
+browsing every component under one ambient theme -- but a single story can't use that switch itself
+without also flipping every *other* story on this same Docs page, since they all share one
+document.) `logoBackground` defaults to `"auto"`, which reacts to the same `data-theme` attribute
+via a small CSS bridge (see `bs-logo`'s own docs), so the logo automatically swaps to a real
+separate white-wordmark asset too -- this story doesn't set `logoBackground` at all. Only set it to
+`"light"`/`"dark"` explicitly if you've put the bar on a dark surface WITHOUT setting
+`[data-theme="dark"]` (e.g. a hardcoded dark background), so the logo has no ambient theme to
+follow.
+
+<Canvas of={NavigationHeaderStories.HeaderBaseDark} />
 
 ## Skip to content
 
@@ -59,11 +103,11 @@ matching the standard skip-link pattern (Carbon's UI Shell calls this `cds-skip-
 opt-in rather than pointing at a guessed default id, since a skip link to a target that doesn't
 exist on your page silently does nothing when activated. Tab into the story below to see it.
 
-<Canvas of={NavigationHeaderStories.SkipToContent} />
+<Canvas of={NavigationHeaderStories.HeaderBaseWithSkipLink} />
 
 ## Component API
 
-<Controls of={NavigationHeaderStories.Default} />
+<Controls of={NavigationHeaderStories.HeaderBaseWithNavigationAndActions} />
 
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
 - CSS Custom Properties: `--bs-navigation-header-bg`, `--bs-navigation-header-border`,
@@ -71,6 +115,8 @@ exist on your page silently does nothing when activated. Tab into the story belo
   `--bs-navigation-header-padding-x`, `--bs-navigation-header-max-width`,
   `--bs-navigation-header-item-gap`, `--bs-navigation-header-slot-gap`,
   `--bs-navigation-header-skip-link-bg`, `--bs-navigation-header-skip-link-color`
+- Props: `alignment`, `ariaLabel`, `skipToContentHref`, `skipToContentLabel`, `logoBackground`
+  (forwarded to the internal `bs-logo`'s own `background` prop -- see "Dark background" above)
 - Slots: `left`, `right`
 - Shadow parts: `::part(logo)`, `::part(left)`, `::part(right)`, `::part(skip-link)`
 

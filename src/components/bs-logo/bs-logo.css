@@ -1,0 +1,79 @@
+/**
+ * @prop --bs-logo-width-full: Width of the rendered logo when variant="full". 190.977px -- the
+ *   light asset's natural width after its icon-to-wordmark gap was tightened from Figma's own
+ *   exported spacing (see brandsync-logo-full-light.ts) -- a literal size, not a brandsync-tokens
+ *   alias, since this is a fixed asset's natural dimensions rather than a themeable design token.
+ * @prop --bs-logo-height-full: Height of the rendered logo when variant="full". 44px.
+ * @prop --bs-logo-width-mark: Width of the rendered logo when variant="mark". 44px.
+ * @prop --bs-logo-height-mark: Height of the rendered logo when variant="mark". 44px.
+ * @prop --bs-logo-height-custom: Height of the rendered image when variant="custom". Width is
+ *   `auto` (not a fixed custom property) so a consumer's own logo keeps its natural aspect ratio --
+ *   only the height is constrained, matching `full`/`mark`'s shared 44px height. Defaults to 44px.
+ * @prop --bs-logo-asset-light-display: Only read when background="auto" (the default). Defined in
+ *   src/global/base.css, not here -- that's this library's own bridge from the ambient
+ *   [data-theme="dark"] attribute to which full-wordmark asset shows, not a per-component override
+ *   point most consumers need to touch directly.
+ * @prop --bs-logo-asset-dark-display: The background="auto" counterpart to
+ *   --bs-logo-asset-light-display above -- see that entry.
+ */
+:host {
+  display: inline-block;
+
+  --bs-logo-width-full: 190.977px;
+  --bs-logo-height-full: 44px;
+  --bs-logo-width-mark: 44px;
+  --bs-logo-height-mark: 44px;
+  --bs-logo-height-custom: 44px;
+}
+
+.bs-logo {
+  display: block;
+}
+
+.bs-logo--full {
+  width: var(--bs-logo-width-full);
+  height: var(--bs-logo-height-full);
+}
+
+.bs-logo--mark {
+  width: var(--bs-logo-width-mark);
+  height: var(--bs-logo-height-mark);
+}
+
+.bs-logo svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* variant="full" renders both the light and dark assets at once (see bs-logo.tsx) and picks one
+   via these display toggles -- "auto" reacts to --bs-logo-asset-light-display/-dark-display
+   (defined in src/global/base.css, flipped by [data-theme="dark"]); "light"/"dark" pin one
+   directly regardless of that ambient token. */
+.bs-logo__asset {
+  display: none;
+  width: 100%;
+  height: 100%;
+}
+
+.bs-logo--bg-auto .bs-logo__asset--light {
+  display: var(--bs-logo-asset-light-display, block);
+}
+
+.bs-logo--bg-auto .bs-logo__asset--dark {
+  display: var(--bs-logo-asset-dark-display, none);
+}
+
+.bs-logo--bg-light .bs-logo__asset--light {
+  display: block;
+}
+
+.bs-logo--bg-dark .bs-logo__asset--dark {
+  display: block;
+}
+
+.bs-logo--custom {
+  width: auto;
+  height: var(--bs-logo-height-custom);
+  object-fit: contain;
+}
