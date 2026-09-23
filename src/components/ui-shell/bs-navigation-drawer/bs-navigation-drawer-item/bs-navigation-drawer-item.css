@@ -97,9 +97,6 @@
   --bs-navigation-drawer-item-collapsed-line-height: var(--bs-line-height-caption-sm);
 }
 
-/* Purely a JSX-single-root-node wrapper (see bs-navigation-drawer-item.tsx's render() comment) --
-   display: contents removes it from layout/box generation entirely, so it doesn't affect the
-   button/children-wrapper stacking at all. */
 .bs-navigation-drawer-item__root {
   display: contents;
 }
