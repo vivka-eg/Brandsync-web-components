@@ -51,7 +51,10 @@
  *   --bs-spacing-100 (8px, all sides -- Figma node 8028:135374's "Container").
  * @prop --bs-navigation-drawer-item-collapsed-icon-padding-x: Left/right padding of the small
  *   rounded chip behind a `collapsed` row's icon (the `selected` tint applies to just this chip,
- *   not the full column). Aliased to --bs-spacing-100.
+ *   not the full column). Aliased to --bs-spacing-300 -- widened from the original
+ *   Figma-node-8028:135374 value (--bs-spacing-100) at the user's request after seeing the chip
+ *   rendered too narrow relative to the rail's own width. Not a Figma re-measurement -- a
+ *   deliberate deviation, same as bs-logo's icon-to-wordmark gap earlier this session.
  * @prop --bs-navigation-drawer-item-collapsed-icon-padding-y: Top/bottom padding of that chip.
  *   Aliased to --bs-spacing-50.
  * @prop --bs-navigation-drawer-item-collapsed-font-size: Caption font size when `collapsed`.
@@ -88,7 +91,7 @@
 
   --bs-navigation-drawer-item-collapsed-gap: var(--bs-spacing-100);
   --bs-navigation-drawer-item-collapsed-padding: var(--bs-spacing-100);
-  --bs-navigation-drawer-item-collapsed-icon-padding-x: var(--bs-spacing-100);
+  --bs-navigation-drawer-item-collapsed-icon-padding-x: var(--bs-spacing-300);
   --bs-navigation-drawer-item-collapsed-icon-padding-y: var(--bs-spacing-50);
   --bs-navigation-drawer-item-collapsed-font-size: var(--bs-fontsize-caption-sm);
   --bs-navigation-drawer-item-collapsed-line-height: var(--bs-line-height-caption-sm);

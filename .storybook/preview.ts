@@ -64,9 +64,23 @@ setCustomElementsManifest(customElementsManifest);
 // Storybook is itself a "consuming app" -- per CONVENTIONS.md / README.md, loading the Roboto
 // font file is the consuming app's job, not the library's. Weights match brandsync-tokens'
 // --bs-font-weight-* scale (thin/regular/medium/semibold/bold/black).
+//
+// Loaded as `rel="preload"` + swapped to `rel="stylesheet"` on load, NOT a plain
+// `rel="stylesheet"` -- a plain stylesheet link is render-blocking, and this specific Google
+// Fonts request has been observed to hang indefinitely from within Storybook's Docs page (a
+// component's Docs view renders every one of its stories in one document, generating far more
+// concurrent same-origin requests than a single story's canvas -- that appears to be enough to
+// starve this one cross-origin request in this dev environment), which froze the entire Docs
+// page since it was stuck waiting on this render-blocking link. `preload` never blocks paint
+// regardless of whether the request ever resolves, so a slow/stuck font fetch now degrades to
+// system fonts instead of hanging the page.
 const robotoLink = document.createElement('link');
-robotoLink.rel = 'stylesheet';
+robotoLink.rel = 'preload';
+robotoLink.as = 'style';
 robotoLink.href = 'https://fonts.googleapis.com/css2?family=Roboto:wght@100;400;500;600;700;900&display=swap';
+robotoLink.onload = () => {
+  robotoLink.rel = 'stylesheet';
+};
 document.head.appendChild(robotoLink);
 
 // brandsync-tokens themes via a `[data-theme="dark"]` attribute selector in tokens.css -- CSS
@@ -136,9 +150,22 @@ function applyPartsDebug(root: Document | ShadowRoot | Element, enabled: boolean
   else root.querySelectorAll('*').forEach(walk);
 }
 
+// Tracks whether the "Show parts" toggle has ever been switched on this session -- lets the
+// decorator below skip its walk entirely on the (overwhelmingly common) default-off case, instead
+// of re-walking the whole document.body -- including every nested shadow root -- from scratch on
+// every single story render. That unconditional full-document walk was cheap enough for one story
+// in isolation, but a component's Docs page renders every one of its stories in the same document
+// at once (~9-10 for bs-navigation-header), and each of THOSE story renders re-walked the entire
+// body again (including all previously-mounted stories' shadow trees, not just its own) -- an
+// unbounded-looking main-thread hang was traced back to exactly this: it pegged the tab so hard
+// that even a trivial `document.querySelectorAll` from outside the page never got a turn to run.
+let partsDebugEverEnabled = false;
+
 const withPartsDebug: Decorator = (story, context) => {
   const enabled = Boolean(context.globals.showParts);
+  if (enabled) partsDebugEverEnabled = true;
   const result = story();
+  if (!partsDebugEverEnabled) return result;
   // Run after the story's custom elements have actually rendered/hydrated their shadow roots
   // (Stencil hydration is async), and again shortly after to catch anything that was still
   // upgrading on the first pass.

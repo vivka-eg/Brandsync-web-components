@@ -1079,7 +1079,8 @@ export namespace Components {
      * ## When to use
      * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
      *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
-     *   already renders one).
+     *   already renders one -- or the reverse pairing, this drawer's own `showLogo={false}` alongside
+     *   a header that keeps its logo instead, see that prop's own docs).
      * ## When not to use
      * - The top navigation bar itself -- use `bs-navigation-header` instead.
      * This component renders a real `<nav>` landmark (no explicit `role` needed -- `<nav>` already
@@ -1127,6 +1128,11 @@ export namespace Components {
           * @default 'auto'
          */
         "logoBackground": 'auto' | 'light' | 'dark';
+        /**
+          * Whether to render the BrandSync logo at all. Defaults to `true`. This drawer is normally the one that owns the logo when paired with a `bs-navigation-header` (that header's own `with-navigation-drawer` alignment omits its logo for exactly this reason) -- but the reverse pairing works too: a header that keeps its own logo (`alignment="default"`) paired with this drawer set to `showLogo={false}`, so the brand mark only ever appears once.
+          * @default true
+         */
+        "showLogo": boolean;
     }
     /**
      * A single row within a `bs-navigation-drawer`'s item list -- either a plain leaf nav item, or an
@@ -2512,7 +2518,8 @@ declare global {
      * ## When to use
      * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
      *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
-     *   already renders one).
+     *   already renders one -- or the reverse pairing, this drawer's own `showLogo={false}` alongside
+     *   a header that keeps its logo instead, see that prop's own docs).
      * ## When not to use
      * - The top navigation bar itself -- use `bs-navigation-header` instead.
      * This component renders a real `<nav>` landmark (no explicit `role` needed -- `<nav>` already
@@ -4062,7 +4069,8 @@ declare namespace LocalJSX {
      * ## When to use
      * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
      *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
-     *   already renders one).
+     *   already renders one -- or the reverse pairing, this drawer's own `showLogo={false}` alongside
+     *   a header that keeps its logo instead, see that prop's own docs).
      * ## When not to use
      * - The top navigation bar itself -- use `bs-navigation-header` instead.
      * This component renders a real `<nav>` landmark (no explicit `role` needed -- `<nav>` already
@@ -4118,6 +4126,11 @@ declare namespace LocalJSX {
           * Fires when the compact search-trigger button (shown instead of the `search` slot while `collapsed`) is clicked -- e.g. to open a full search overlay. This component has no visibility into what the `search` slot actually contains, so it can't drive a real search itself once shrunk to icon size.
          */
         "onBsSearchClick"?: (event: BsNavigationDrawerCustomEvent<void>) => void;
+        /**
+          * Whether to render the BrandSync logo at all. Defaults to `true`. This drawer is normally the one that owns the logo when paired with a `bs-navigation-header` (that header's own `with-navigation-drawer` alignment omits its logo for exactly this reason) -- but the reverse pairing works too: a header that keeps its own logo (`alignment="default"`) paired with this drawer set to `showLogo={false}`, so the brand mark only ever appears once.
+          * @default true
+         */
+        "showLogo"?: boolean;
     }
     /**
      * A single row within a `bs-navigation-drawer`'s item list -- either a plain leaf nav item, or an
@@ -4691,6 +4704,7 @@ declare namespace LocalJSX {
         "collapsible": boolean;
         "collapsed": boolean;
         "logoBackground": 'auto' | 'light' | 'dark';
+        "showLogo": boolean;
     }
     interface BsNavigationDrawerItemAttributes {
         "selected": boolean;
@@ -5392,7 +5406,8 @@ declare module "@stencil/core" {
              * ## When to use
              * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
              *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
-             *   already renders one).
+             *   already renders one -- or the reverse pairing, this drawer's own `showLogo={false}` alongside
+             *   a header that keeps its logo instead, see that prop's own docs).
              * ## When not to use
              * - The top navigation bar itself -- use `bs-navigation-header` instead.
              * This component renders a real `<nav>` landmark (no explicit `role` needed -- `<nav>` already

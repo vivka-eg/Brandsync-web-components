@@ -10,10 +10,12 @@ import * as NavigationDrawerStories from './bs-navigation-drawer.stories';
 - [Overview](#overview)
 - [Fixed Side Nav with Divider](#fixed-side-nav-with-divider)
 - [Fixed Side Nav with Icons](#fixed-side-nav-with-icons)
-- [Collapsed](#collapsed)
+- [Side Nav Rail](#side-nav-rail)
+- [Side Nav Rail with Header](#side-nav-rail-with-header)
 - [Dark background](#dark-background)
 - [Without a search slot](#without-a-search-slot)
 - [Empty items list](#empty-items-list)
+- [Side Nav with Large Side Nav Items](#side-nav-with-large-side-nav-items)
 - [Component API](#component-api)
 - [Events](#events)
 - [Accessibility](#accessibility)
@@ -53,7 +55,7 @@ space when it's actually populated (see `bs-navigation-drawer-item`'s own docs).
 
 <Canvas of={NavigationDrawerStories.FixedSideNavWithIcons} />
 
-## Collapsed
+## Side Nav Rail
 
 Click the collapse toggle (the caret button next to the heading) to narrow the drawer to a 96px
 icon-only rail, per Figma node 8028:135374 ("Type=Collapsed"). `collapsed` is mutable and
@@ -78,6 +80,14 @@ extra wiring needed.
   adds on its own).
 
 <Canvas of={NavigationDrawerStories.Collapsed} />
+
+## Side Nav Rail with Header
+
+The rail (collapsed) drawer composed alongside `bs-navigation-header` (`alignment="with-navigation-drawer"`),
+forming the same app-shell layout as `bs-navigation-header`'s own "with Side Nav" stories, but
+starting from the drawer's collapsed/icon-only rail state instead of fully expanded.
+
+<Canvas of={NavigationDrawerStories.CollapsedWithHeader} />
 
 ## Dark background
 
@@ -110,13 +120,24 @@ The default (items) slot can also be empty, e.g. while a consumer's nav data is 
 
 <Canvas of={NavigationDrawerStories.EmptyItems} />
 
+## Side Nav with Large Side Nav Items
+
+A longer, deeper item list than the other stories above -- more top-level groups, more nested
+children per group, all expanded at once -- demonstrating this component's own scroll behavior
+inside a fixed-height drawer rather than a distinct "large" item size (`bs-navigation-drawer-item`
+has no size prop).
+
+<Canvas of={NavigationDrawerStories.LargeItemList} />
+
 ## Component API
 
 <Controls of={NavigationDrawerStories.FixedSideNav} />
 
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
 - Props: `heading`, `collapsible`, `collapsed`, `logoBackground` (forwarded to both internal
-  `bs-logo` elements' own `background` prop -- see "Dark background" above)
+  `bs-logo` elements' own `background` prop -- see "Dark background" above), `showLogo` (default
+  `true`; set `false` when pairing this drawer with a `bs-navigation-header` that keeps its own
+  logo instead -- see `bs-navigation-header`'s own "With side nav (header owns logo)" story)
 - Slots: `search`, default (the items list)
 - Shadow parts: `::part(logo)`, `::part(title)`, `::part(collapse)`, `::part(search)`,
   `::part(search-trigger)`, `::part(items)`

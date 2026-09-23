@@ -7,7 +7,8 @@ import { Component, Element, Prop, Watch, Event, EventEmitter, h } from '@stenci
  * ## When to use
  * - The primary in-app navigation, shown alongside `bs-navigation-header` (typically that
  *   header's `with-navigation-drawer` alignment, which omits its own logo since this component
- *   already renders one).
+ *   already renders one -- or the reverse pairing, this drawer's own `showLogo={false}` alongside
+ *   a header that keeps its logo instead, see that prop's own docs).
  *
  * ## When not to use
  * - The top navigation bar itself -- use `bs-navigation-header` instead.
@@ -42,10 +43,11 @@ import { Component, Element, Prop, Watch, Event, EventEmitter, h } from '@stenci
  * @slot - Default slot: the scrollable list of nav items, typically one or more
  *   `bs-navigation-drawer-item` elements.
  * @part logo - The wrapper around the BrandSync brand mark. Two of these exist in the shadow DOM
- *   at once (one wrapping a `bs-logo variant="full"`, one wrapping a `bs-logo variant="mark"`),
- *   both carrying this same part name (the same "multiple elements, one shared part name"
- *   approach `bs-attachment`'s `star` part uses) -- only one is visible at a time, toggled by
- *   plain CSS on `collapsed` (see above), so `::part(logo)` always reaches whichever is showing.
+ *   at once while `showLogo` is `true` (one wrapping a `bs-logo variant="full"`, one wrapping a
+ *   `bs-logo variant="mark"`), both carrying this same part name (the same "multiple elements, one
+ *   shared part name" approach `bs-attachment`'s `star` part uses) -- only one is visible at a
+ *   time, toggled by plain CSS on `collapsed` (see above), so `::part(logo)` always reaches
+ *   whichever is showing. Neither renders at all while `showLogo` is `false`.
  * @part title - The "Main Menu" heading text wrapper.
  * @part collapse - The collapse toggle button.
  * @part search - The wrapper around the `search` slot.
@@ -97,6 +99,13 @@ export class BsNavigationDrawer {
    * background-agnostic). */
   @Prop() logoBackground: 'auto' | 'light' | 'dark' = 'auto';
 
+  /** Whether to render the BrandSync logo at all. Defaults to `true`. This drawer is normally the
+   * one that owns the logo when paired with a `bs-navigation-header` (that header's own
+   * `with-navigation-drawer` alignment omits its logo for exactly this reason) -- but the reverse
+   * pairing works too: a header that keeps its own logo (`alignment="default"`) paired with this
+   * drawer set to `showLogo={false}`, so the brand mark only ever appears once. */
+  @Prop() showLogo = true;
+
   @Watch('collapsed')
   onCollapsedChange(collapsed: boolean) {
     this.syncItemsCollapsed(collapsed);
@@ -130,12 +139,16 @@ export class BsNavigationDrawer {
   render() {
     return (
       <nav class="bs-navigation-drawer" aria-label={this.heading}>
-        <div part="logo" class="bs-navigation-drawer__logo bs-navigation-drawer__logo--full">
-          <bs-logo variant="full" background={this.logoBackground}></bs-logo>
-        </div>
-        <div part="logo" class="bs-navigation-drawer__logo bs-navigation-drawer__logo--mark">
-          <bs-logo variant="mark" background={this.logoBackground}></bs-logo>
-        </div>
+        {this.showLogo && (
+          <div part="logo" class="bs-navigation-drawer__logo bs-navigation-drawer__logo--full">
+            <bs-logo variant="full" background={this.logoBackground}></bs-logo>
+          </div>
+        )}
+        {this.showLogo && (
+          <div part="logo" class="bs-navigation-drawer__logo bs-navigation-drawer__logo--mark">
+            <bs-logo variant="mark" background={this.logoBackground}></bs-logo>
+          </div>
+        )}
         <div class="bs-navigation-drawer__title-row">
           <span part="title" class="bs-navigation-drawer__title">
             {this.heading}

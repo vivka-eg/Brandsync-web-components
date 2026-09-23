@@ -173,4 +173,18 @@ describe('bs-navigation-drawer', () => {
       logos.forEach(logo => expect(logo.background).toBe('dark'));
     });
   });
+
+  describe('showLogo', () => {
+    it('renders both internal bs-logo elements by default', async () => {
+      const { root } = await render(<bs-navigation-drawer></bs-navigation-drawer>);
+      expect(root.shadowRoot.querySelectorAll('bs-logo')).toHaveLength(2);
+      expect(root.shadowRoot.querySelector('[part="logo"]')).not.toBeNull();
+    });
+
+    it('renders no bs-logo elements at all when showLogo is false', async () => {
+      const { root } = await render(<bs-navigation-drawer showLogo={false}></bs-navigation-drawer>);
+      expect(root.shadowRoot.querySelectorAll('bs-logo')).toHaveLength(0);
+      expect(root.shadowRoot.querySelector('[part="logo"]')).toBeNull();
+    });
+  });
 });

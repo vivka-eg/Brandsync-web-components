@@ -6,6 +6,7 @@ interface BsNavigationDrawerArgs {
   heading: string;
   collapsible: boolean;
   logoBackground: 'auto' | 'light' | 'dark';
+  showLogo: boolean;
 }
 
 const bookIcon = html`
@@ -102,6 +103,41 @@ const ITEMS_WITH_DIVIDER = html`
   </bs-navigation-drawer-item>
 `;
 
+// A longer, deeper item list than the other demo lists above -- more top-level groups, more
+// nested children per group, and every group expanded at once -- for demonstrating this
+// component's own scroll behavior (a fixed-height drawer with a naturally-taller-than-viewport
+// item list) rather than a distinct "large" item size/prop, which bs-navigation-drawer-item
+// doesn't have.
+const LARGE_ITEMS = html`
+  <bs-navigation-drawer-item selected ariaLabel="Introduction">${accessibilityIcon} Introduction</bs-navigation-drawer-item>
+  <bs-navigation-drawer-item ariaLabel="Accessibility">${bookIcon} Accessibility</bs-navigation-drawer-item>
+  <bs-navigation-drawer-item expandable expanded ariaLabel="Foundation">
+    ${gridIcon} Foundation
+    <bs-navigation-drawer-item slot="children" nested>Colors</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Typography</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Spacing</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Elevation</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Iconography</bs-navigation-drawer-item>
+  </bs-navigation-drawer-item>
+  <bs-navigation-drawer-item expandable expanded ariaLabel="Components">
+    ${gridIcon} Components
+    <bs-navigation-drawer-item slot="children" nested>Button</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Checkbox</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Switch</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Radio</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Slider</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Modal</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Tooltip</bs-navigation-drawer-item>
+  </bs-navigation-drawer-item>
+  <bs-navigation-drawer-item expandable expanded ariaLabel="Patterns">
+    ${gridIcon} Patterns
+    <bs-navigation-drawer-item slot="children" nested>Dashboard</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Filter Table</bs-navigation-drawer-item>
+    <bs-navigation-drawer-item slot="children" nested>Empty State</bs-navigation-drawer-item>
+  </bs-navigation-drawer-item>
+  <bs-navigation-drawer-item ariaLabel="Settings">${bookIcon} Settings</bs-navigation-drawer-item>
+`;
+
 const meta: Meta<BsNavigationDrawerArgs> = {
   title: 'UI Shell/bs-navigation-drawer/bs-navigation-drawer',
   parameters: { docs: { description: { component: componentDescription('bs-navigation-drawer') } }, layout: 'fullscreen' },
@@ -116,7 +152,12 @@ const meta: Meta<BsNavigationDrawerArgs> = {
   // bug found and fixed in bs-slider's showLabel earlier this session.
   render: args => html`
     <div style="height: 100vh; display: flex;">
-      <bs-navigation-drawer heading=${args.heading} collapsible=${args.collapsible} logo-background=${args.logoBackground}>
+      <bs-navigation-drawer
+        heading=${args.heading}
+        collapsible=${args.collapsible}
+        logo-background=${args.logoBackground}
+        show-logo=${args.showLogo}
+      >
         <bs-input slot="search" type="search" placeholder="Search"></bs-input>
         ${ITEMS_NO_ICONS}
       </bs-navigation-drawer>
@@ -126,11 +167,13 @@ const meta: Meta<BsNavigationDrawerArgs> = {
     heading: { control: 'text', description: propDescription('bs-navigation-drawer', 'heading') },
     collapsible: { control: 'boolean', description: propDescription('bs-navigation-drawer', 'collapsible') },
     logoBackground: { control: 'select', options: ['auto', 'light', 'dark'], description: propDescription('bs-navigation-drawer', 'logoBackground') },
+    showLogo: { control: 'boolean', description: propDescription('bs-navigation-drawer', 'showLogo') },
   },
   args: {
     heading: 'Main Menu',
     collapsible: false,
     logoBackground: 'auto',
+    showLogo: true,
   },
 };
 
@@ -170,7 +213,7 @@ export const FixedSideNavWithIcons: Story = {
 };
 
 export const Collapsed: Story = {
-  name: 'Collapsed',
+  name: 'Side Nav Rail',
   // Click the collapse toggle (the caret button next to the heading) to see it expand back --
   // `collapsed` is mutable/self-toggling, so this works with no extra story wiring.
   render: args => html`
@@ -179,6 +222,27 @@ export const Collapsed: Story = {
         <bs-input slot="search" type="search" placeholder="Search"></bs-input>
         ${ITEMS}
       </bs-navigation-drawer>
+    </div>
+  `,
+};
+
+export const CollapsedWithHeader: Story = {
+  name: 'Side Nav Rail with Header',
+  // The rail (collapsed) drawer composed alongside bs-navigation-header, forming the same
+  // app-shell layout as bs-navigation-header's own "with Side Nav" stories, but with the drawer
+  // starting in its collapsed/icon-only rail state instead of fully expanded.
+  render: args => html`
+    <div style="height: 100vh; display: flex; flex-direction: column;">
+      <bs-navigation-header alignment="with-navigation-drawer"></bs-navigation-header>
+      <div style="flex: 1; min-height: 0; display: flex;">
+        <bs-navigation-drawer heading=${args.heading} collapsed>
+          <bs-input slot="search" type="search" placeholder="Search"></bs-input>
+          ${ITEMS}
+        </bs-navigation-drawer>
+        <main style="flex: 1; min-width: 0; overflow: auto; padding: var(--bs-spacing-400); font-family: sans-serif; color: var(--bs-text-muted);">
+          Page content
+        </main>
+      </div>
     </div>
   `,
 };
@@ -221,6 +285,18 @@ export const EmptyItems: Story = {
     <div style="height: 100vh; display: flex;">
       <bs-navigation-drawer heading=${args.heading}>
         <bs-input slot="search" type="search" placeholder="Search"></bs-input>
+      </bs-navigation-drawer>
+    </div>
+  `,
+};
+
+export const LargeItemList: Story = {
+  name: 'Side Nav with Large Side Nav Items',
+  render: args => html`
+    <div style="height: 100vh; display: flex;">
+      <bs-navigation-drawer heading=${args.heading} collapsible=${args.collapsible}>
+        <bs-input slot="search" type="search" placeholder="Search"></bs-input>
+        ${LARGE_ITEMS}
       </bs-navigation-drawer>
     </div>
   `,

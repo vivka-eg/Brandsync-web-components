@@ -17,6 +17,10 @@ import * as NavigationHeaderStories from './bs-navigation-header.stories';
 - [Tabs](#tabs)
 - [Dark background](#dark-background)
 - [Skip to content](#skip-to-content)
+- [Actions and switcher](#actions-and-switcher)
+- [With side nav](#with-side-nav)
+- [With navigation, actions and side nav](#with-navigation-actions-and-side-nav)
+- [With side nav (header owns logo)](#with-side-nav-header-owns-logo)
 - [Component API](#component-api)
 - [Accessibility](#accessibility)
 
@@ -104,6 +108,41 @@ opt-in rather than pointing at a guessed default id, since a skip link to a targ
 exist on your page silently does nothing when activated. Tab into the story below to see it.
 
 <Canvas of={NavigationHeaderStories.HeaderBaseWithSkipLink} />
+
+## Actions and switcher
+
+`left`/`right` slot content isn't limited to buttons/tabs/tooltips -- click the grid icon (next to
+Notifications) to open a workspace/account "switcher" panel sliding in from the right edge of the
+viewport. This isn't a real `bs-*` component (no generic slide-in-from-right panel exists in this
+library yet -- `bs-modal` is a centered dialog, not this), so it's plain story-only markup
+demonstrating what a consumer can build with the `right` slot's freedom.
+
+<Canvas of={NavigationHeaderStories.HeaderBaseWithActionsAndSwitcher} />
+
+## With side nav
+
+The real app-shell composition: this header (`alignment="with-navigation-drawer"`, so it renders
+no logo of its own -- the drawer's logo already covers that) alongside a full,
+expanded `bs-navigation-drawer`, spanning just the content column rather than the whole viewport
+width.
+
+<Canvas of={NavigationHeaderStories.HeaderBaseWithSideNav} />
+
+## With navigation, actions and side nav
+
+The same app-shell composition, with the header's own `left`/`right` slots populated too -- the
+fully-assembled real-world shape of a page using both components together.
+
+<Canvas of={NavigationHeaderStories.HeaderBaseWithNavigationActionsAndSideNav} />
+
+## With side nav (header owns logo)
+
+The inverse pairing: this header keeps its own logo (`alignment="default"`, not
+`with-navigation-drawer`) and the drawer's is turned off instead
+(`bs-navigation-drawer`'s `showLogo={false}`) -- so the brand mark still only ever appears once,
+just carried by the header side of the pairing instead of the drawer.
+
+<Canvas of={NavigationHeaderStories.HeaderBaseWithSideNavHeaderLogo} />
 
 ## Component API
 
