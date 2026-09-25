@@ -1,0 +1,29 @@
+/**
+ * @prop --bs-stepper-edge-padding: Horizontal padding, direction="horizontal" only. Aliased to
+ * --bs-spacing-800. Every step's name/description centers under its own icon (see
+ * bs-stepper-step.css), including the first and last steps -- whose icons sit flush against this
+ * container's own edges. Without this padding, a first/last step's centered text has room to
+ * overflow in only one direction and clips against the container edge (confirmed by measuring a
+ * real render: a description clipped to a negative x position). This padding exists purely to give
+ * that overflow somewhere to go; it isn't a general "breathing room" affordance for content that
+ * fits.
+ */
+/* This container renders a bare <slot> with no wrapping element (see bs-stepper.tsx), so :host
+   itself is what establishes the flex row/column context each slotted bs-stepper-step's own
+   `:host(.bs-stepper-step--horizontal) { flex: 1 1 0; }` (etc.) expects from its parent. */
+:host {
+  display: flex;
+  width: 100%;
+
+  --bs-stepper-edge-padding: var(--bs-spacing-800);
+}
+
+:host([direction='vertical']) {
+  flex-direction: column;
+}
+
+:host(:not([direction='vertical'])) {
+  flex-direction: row;
+  align-items: flex-start;
+  padding: 0 var(--bs-stepper-edge-padding);
+}

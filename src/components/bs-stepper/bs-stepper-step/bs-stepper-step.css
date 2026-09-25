@@ -1,0 +1,258 @@
+/**
+ * @prop --bs-stepper-step-gap: Gap between the icon/connector row (or column) and the label. Aliased to --bs-spacing-100.
+ * @prop --bs-stepper-step-icon-size: Width/height of the icon/indicator circle. 24px, matching Figma exactly.
+ * @prop --bs-stepper-step-icon-border-width: Border width of the icon circle. 1.5px, matching Figma exactly.
+ * @prop --bs-stepper-step-connector-color: Rail color to the next step. Aliased to --bs-border-default. Figma's spec shows one static rail color regardless of adjacent steps' state -- completion is conveyed by the icons, not the rail.
+ * @prop --bs-stepper-step-connector-thickness: Rail line thickness. 2px, matching Figma exactly.
+ * @prop --bs-stepper-step-icon-border-enabled: Icon border, state="enabled" (not yet reached). Aliased to --bs-border-default.
+ * @prop --bs-stepper-step-icon-border-current: Icon border, state="current". Aliased to --bs-color-primary-default.
+ * @prop --bs-stepper-step-icon-dot-current: Inner filled dot color, state="current". Aliased to --bs-color-primary-default.
+ * @prop --bs-stepper-step-icon-bg-done: Icon background, state="done". Aliased to --bs-color-primary-default.
+ * @prop --bs-stepper-step-icon-color-done: Checkmark icon color, state="done". Aliased to --bs-text-on-action.
+ * @prop --bs-stepper-step-icon-border-error: Icon border, state="error". Aliased to --bs-border-error.
+ * @prop --bs-stepper-step-icon-color-error: Exclamation icon color, state="error". Aliased to --bs-border-error.
+ * @prop --bs-stepper-step-icon-border-disabled: Icon border, state="disabled". Aliased to --bs-border-neutral-disabled.
+ * @prop --bs-stepper-step-text-enabled: Name/description color, state="enabled"/"error". Aliased to --bs-text-muted.
+ * @prop --bs-stepper-step-text-active: Name/description color, state="current"/"done". Aliased to --bs-text-default.
+ * @prop --bs-stepper-step-text-disabled: Name/description color, state="disabled". Aliased to --bs-text-on-disabled.
+ * @prop --bs-stepper-step-font-size: Aliased to --bs-font-size-md.
+ * @prop --bs-stepper-step-line-height: Aliased to --bs-line-height-body-md.
+ * @prop --bs-stepper-step-name-font-weight: Aliased to --bs-font-weight-semibold.
+ * @prop --bs-stepper-step-description-font-weight: Aliased to --bs-font-weight-regular.
+ */
+:host {
+  display: flex;
+  font-family: inherit;
+  font-size: var(--bs-stepper-step-font-size);
+  line-height: calc(var(--bs-stepper-step-line-height) * 1px);
+
+  --bs-stepper-step-gap: var(--bs-spacing-100);
+  --bs-stepper-step-icon-size: 24px;
+  --bs-stepper-step-icon-border-width: 1.5px;
+  --bs-stepper-step-connector-color: var(--bs-border-default);
+  --bs-stepper-step-connector-thickness: 2px;
+
+  --bs-stepper-step-icon-border-enabled: var(--bs-border-default);
+  --bs-stepper-step-icon-border-current: var(--bs-color-primary-default);
+  --bs-stepper-step-icon-dot-current: var(--bs-color-primary-default);
+  --bs-stepper-step-icon-bg-done: var(--bs-color-primary-default);
+  --bs-stepper-step-icon-color-done: var(--bs-text-on-action);
+  --bs-stepper-step-icon-border-error: var(--bs-border-error);
+  --bs-stepper-step-icon-color-error: var(--bs-border-error);
+  --bs-stepper-step-icon-border-disabled: var(--bs-border-neutral-disabled);
+
+  --bs-stepper-step-text-enabled: var(--bs-text-muted);
+  --bs-stepper-step-text-active: var(--bs-text-default);
+  --bs-stepper-step-text-disabled: var(--bs-text-on-disabled);
+
+  --bs-stepper-step-font-size: var(--bs-font-size-md);
+  --bs-stepper-step-line-height: var(--bs-line-height-body-md);
+  --bs-stepper-step-name-font-weight: var(--bs-font-weight-semibold);
+  --bs-stepper-step-description-font-weight: var(--bs-font-weight-regular);
+}
+
+/* Each step lays out and grows evenly across the row (horizontal) or stacks full-width (vertical)
+   -- the parent <bs-stepper> just renders a plain <slot>, it doesn't wrap children in any list/flex
+   scaffolding of its own. */
+:host(.bs-stepper-step--horizontal) {
+  flex: 1 1 0;
+  flex-direction: column;
+}
+
+:host(.bs-stepper-step--vertical) {
+  width: 100%;
+  flex-direction: row;
+  /* Same reasoning as above, just on the cross axis: default `stretch` makes .top match .label's
+     height, which the connector inside .top needs (via flex-grow) to visually reach the next step's
+     icon regardless of how many lines the label wraps to. */
+}
+
+/* The icon+connector pairing: a row in horizontal mode (icon left, rail extends right to the next
+   step), a column in vertical mode (icon on top, rail extends down to the next step). */
+.bs-stepper-step__top {
+  display: flex;
+  align-items: center;
+}
+
+/* Stretches to the step's full width (default `stretch`, from .top having no explicit width/
+   align-self) -- the icon (flex-shrink: 0, first child) stays pinned to its left edge, and the
+   connector below fills whatever's left via flex: 1 1 auto. This means every step's icon sits at
+   the same relative x (its own step's left edge), regardless of the step's role -- only .label's
+   *text* alignment (see below) needs to vary by first/middle/last, not the icon/connector row. */
+:host(.bs-stepper-step--horizontal) .bs-stepper-step__top {
+  flex-direction: row;
+}
+
+:host(.bs-stepper-step--vertical) .bs-stepper-step__top {
+  flex-direction: column;
+}
+
+.bs-stepper-step__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  width: var(--bs-stepper-step-icon-size);
+  height: var(--bs-stepper-step-icon-size);
+  border-radius: 50%;
+  box-sizing: border-box;
+}
+
+.bs-stepper-step__icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.bs-stepper-step__icon--enabled {
+  border: var(--bs-stepper-step-icon-border-width) solid var(--bs-stepper-step-icon-border-enabled);
+}
+
+.bs-stepper-step__icon--current {
+  border: var(--bs-stepper-step-icon-border-width) solid var(--bs-stepper-step-icon-border-current);
+}
+
+.bs-stepper-step__icon-dot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--bs-stepper-step-icon-dot-current);
+}
+
+.bs-stepper-step__icon--done {
+  background: var(--bs-stepper-step-icon-bg-done);
+  color: var(--bs-stepper-step-icon-color-done);
+}
+
+.bs-stepper-step__icon--error {
+  border: var(--bs-stepper-step-icon-border-width) solid var(--bs-stepper-step-icon-border-error);
+  color: var(--bs-stepper-step-icon-color-error);
+}
+
+.bs-stepper-step__icon--disabled {
+  border: var(--bs-stepper-step-icon-border-width) solid var(--bs-stepper-step-icon-border-disabled);
+}
+
+.bs-stepper-step__connector {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* A normal flex child of .top, growing to fill whatever's left after the icon's fixed width --
+   NOT absolutely positioned. An earlier attempt anchored this to :host with a fixed left offset
+   assuming every icon sits at the step's left edge, which broke the moment .top's own alignment
+   varied (a centered/end-aligned icon no longer started where the connector assumed) -- the line
+   rendered straight through the icon on every middle/last step. Since .top (and therefore the icon)
+   is now always left-pinned (see .top's own comment above), a plain flex: 1 1 auto here reaches from
+   the icon's own right edge to .top's right edge with no positioning assumptions to get wrong. */
+:host(.bs-stepper-step--horizontal) .bs-stepper-step__connector {
+  flex: 1 1 auto;
+  margin-left: var(--bs-stepper-step-gap);
+}
+
+:host(.bs-stepper-step--vertical) .bs-stepper-step__connector {
+  /* Unlike horizontal mode above, vertical's connector stays in normal flex flow (inside .top,
+     which is itself flex-direction: column here) rather than switching to absolute positioning --
+     it doesn't have the same bug, since a taller icon+connector column doesn't shift .label's
+     horizontal position the way a wider one did for horizontal mode's centered/right-aligned text.
+     flex: 1 1 auto (grow to fill), not a percentage size -- a percentage only resolves against a
+     parent with a *definite* size along that axis, which .top doesn't reliably have (it's sized by
+     stretch/content, not an explicit value). flex-direction: column -- without this, the wrapper
+     stays row-direction (the base rule's default), so the line's own `flex: 1 1 auto` below tries
+     to grow WIDTH (the row's main axis) instead of height, while an explicit width: 2px pins it
+     right back down -- net effect, confirmed via a real measurement, was the line collapsing to 0
+     height. Also gives the wrapper an explicit width matching the icon, rather than shrinking to
+     the 2px-wide line's own size (which left the line off-center under the icon above it). */
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-items: center;
+  width: var(--bs-stepper-step-icon-size);
+  margin: var(--bs-stepper-step-gap) 0;
+  min-height: var(--bs-stepper-step-icon-size);
+}
+
+.bs-stepper-step__connector-line {
+  display: block;
+  border-radius: calc(var(--bs-stepper-step-connector-thickness) / 2);
+  background: var(--bs-stepper-step-connector-color);
+}
+
+:host(.bs-stepper-step--horizontal) .bs-stepper-step__connector-line {
+  width: 100%;
+  height: var(--bs-stepper-step-connector-thickness);
+}
+
+:host(.bs-stepper-step--vertical) .bs-stepper-step__connector-line {
+  flex: 1 1 auto;
+  width: var(--bs-stepper-step-connector-thickness);
+}
+
+/* This step is visually last -- pure DOM position (:last-child, not :last-of-type), so it works
+   correctly even if something other than bs-stepper-step is ever mixed in as a sibling. Hides the
+   trailing rail entirely; the icon/label content is unaffected. */
+:host(:last-child) .bs-stepper-step__connector {
+  visibility: hidden;
+}
+
+.bs-stepper-step__label {
+  display: flex;
+  flex-direction: column;
+}
+
+/* width: icon-size (not the step's full width) + align-self: flex-start pins this box under the
+   icon specifically -- the icon is always at the step's own left edge (see .top's comment above),
+   so anchoring .label there too, then letting its *content* overflow via align-items/text-align
+   below, centers the actual text relative to the icon regardless of how wide the trailing connector
+   is. (A flex item with an explicit cross-size doesn't stretch to fill the column's width the way
+   an auto-sized one would, so this needs align-self spelled out rather than relying on the host's
+   default `stretch`.) Every step centers the same way, including the first/last -- no
+   :first-child/:last-child override to left/right-align those two, unlike .connector's
+   :last-child rule below (which is unrelated: that one hides the trailing rail, not text
+   alignment). */
+:host(.bs-stepper-step--horizontal) .bs-stepper-step__label {
+  margin-top: var(--bs-stepper-step-gap);
+  width: var(--bs-stepper-step-icon-size);
+  align-self: flex-start;
+  align-items: center;
+  text-align: center;
+}
+
+:host(.bs-stepper-step--vertical) .bs-stepper-step__label {
+  margin-left: var(--bs-stepper-step-gap);
+  text-align: left;
+}
+
+/* white-space: nowrap -- .label is deliberately narrowed to just the icon's width (see .label's own
+   comment above) so its *box* anchors under the icon while the *text* overflows past it. Without
+   this, a multi-word name/description doesn't overflow as one line -- a flex item's cross-axis
+   sizing (here, width, since .label is a column flex container) still wraps text word-by-word to
+   fit within the parent's available width before falling back to overflow, so e.g. "Review items"
+   split into "Review" / "items" onto two lines instead of extending past the 24px box as intended. */
+.bs-stepper-step__name {
+  font-weight: var(--bs-stepper-step-name-font-weight);
+  white-space: nowrap;
+}
+
+.bs-stepper-step__description {
+  font-weight: var(--bs-stepper-step-description-font-weight);
+  white-space: nowrap;
+}
+
+.bs-stepper-step__label--enabled .bs-stepper-step__name,
+.bs-stepper-step__label--enabled .bs-stepper-step__description,
+.bs-stepper-step__label--error .bs-stepper-step__name,
+.bs-stepper-step__label--error .bs-stepper-step__description {
+  color: var(--bs-stepper-step-text-enabled);
+}
+
+.bs-stepper-step__label--current .bs-stepper-step__name,
+.bs-stepper-step__label--current .bs-stepper-step__description,
+.bs-stepper-step__label--done .bs-stepper-step__name,
+.bs-stepper-step__label--done .bs-stepper-step__description {
+  color: var(--bs-stepper-step-text-active);
+}
+
+.bs-stepper-step__label--disabled .bs-stepper-step__name,
+.bs-stepper-step__label--disabled .bs-stepper-step__description {
+  color: var(--bs-stepper-step-text-disabled);
+}

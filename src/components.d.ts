@@ -25,6 +25,8 @@ import { BsLogoBackground, BsLogoVariant } from "./components/bs-logo/bs-logo";
 import { BsNavigationHeaderAlignment } from "./components/ui-shell/bs-navigation-header/bs-navigation-header/bs-navigation-header";
 import { BsSliderType } from "./components/bs-slider/bs-slider";
 import { BsSnackbarVariant } from "./components/bs-snackbar/bs-snackbar";
+import { BsStepperDirection } from "./components/bs-stepper/bs-stepper-step/bs-stepper-step";
+import { BsStepperDirection as BsStepperDirection1, BsStepperStepComputedState } from "./components/bs-stepper/bs-stepper-step/bs-stepper-step";
 import { BsSwitchSize } from "./components/bs-switch/bs-switch";
 import { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 import { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
@@ -48,6 +50,8 @@ export { BsLogoBackground, BsLogoVariant } from "./components/bs-logo/bs-logo";
 export { BsNavigationHeaderAlignment } from "./components/ui-shell/bs-navigation-header/bs-navigation-header/bs-navigation-header";
 export { BsSliderType } from "./components/bs-slider/bs-slider";
 export { BsSnackbarVariant } from "./components/bs-snackbar/bs-snackbar";
+export { BsStepperDirection } from "./components/bs-stepper/bs-stepper-step/bs-stepper-step";
+export { BsStepperDirection as BsStepperDirection1, BsStepperStepComputedState } from "./components/bs-stepper/bs-stepper-step/bs-stepper-step";
 export { BsSwitchSize } from "./components/bs-switch/bs-switch";
 export { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 export { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
@@ -1683,6 +1687,98 @@ export namespace Components {
         "version"?: string;
     }
     /**
+     * A sequence of named steps showing overall progress through a multi-step flow (e.g. a checkout,
+     * an onboarding wizard) -- each step reads as enabled (not yet reached), current, done, error, or
+     * disabled, connected by a rail between them.
+     * This container is intentionally thin: it renders a `<slot>` for `<bs-stepper-step>` children and
+     * propagates `currentStep`/`direction`/`showDescription` down to them as JS properties whenever any
+     * of those change or the slotted children themselves change -- the same "container pushes state
+     * onto its slotted children" pattern `bs-tabs` uses for `selected` and `bs-breadcrumbs` uses for
+     * `size`. Each step computes its own `enabled`/`current`/`done` state from its position among its
+     * siblings relative to `currentStep`, unless that step's own `error`/`disabled` prop overrides it.
+     * This is a static status display, not an interactive control -- Figma's spec shows no
+     * hover/pressed treatment on any step, so nothing here is clickable.
+     * ## When to use
+     * - Showing where the user is in a fixed, ordered, multi-step flow.
+     * ## When not to use
+     * - A flow whose steps aren't fixed/known in advance -- a stepper implies the full sequence is
+     *   already known.
+     * - As a substitute for actual in-page navigation between steps -- pair this with real controls
+     *   (Next/Back buttons) elsewhere in the flow, this component only displays status.
+     */
+    interface BsStepper {
+        /**
+          * 0-indexed: which step is current. Every step before this index reads as "done" (unless that step's own `error`/`disabled` overrides it), every step after reads as "enabled".
+          * @default 0
+         */
+        "currentStep": number;
+        /**
+          * `horizontal` (icon above name/description, connected by a horizontal rail) or `vertical` (icon beside name/description, connected by a vertical rail). Propagated to every slotted `bs-stepper-step`, and reflected as an attribute so this container's own `:host` CSS can switch its `flex-direction` to match -- a bare `<slot>` with no wrapping element (see `render()`) means the slotted steps' flex-row/column layout comes directly from `:host` here, not from any wrapper div.
+          * @default 'horizontal'
+         */
+        "direction": BsStepperDirection;
+        /**
+          * Whether each step's description renders at all. Propagated to every slotted `bs-stepper-step`.
+          * @default true
+         */
+        "showDescription": boolean;
+    }
+    /**
+     * A single step within a `<bs-stepper>` sequence: an icon/indicator plus a name and optional
+     * description, connected to the next step by a trailing rail.
+     * `computedState` is set automatically by the parent `<bs-stepper>` based on this step's position
+     * relative to its `currentStep` (before it = "done", at it = "current", after it = "enabled") --
+     * same "container pushes state onto its slotted children" pattern `bs-tabs` uses for `selected`
+     * and `bs-breadcrumbs` uses for `size`. This step's own `error`/`disabled` props, when set directly
+     * by the consumer, override that computed value -- e.g. a step before `currentStep` would normally
+     * read as "done", but `error` on that step wins regardless.
+     * The trailing rail is owned by this component, not the container: `:host(:last-child)` hides it
+     * on whichever step is visually last, mirroring `bs-breadcrumb`'s own `:host(:first-child)` rule
+     * for its leading separator (same technique, opposite end -- see that component for why pure DOM
+     * position, not CSS `:last-of-type`, is what actually needs checking here too).
+     * ## When to use
+     * - As a child of `<bs-stepper>`, one per step in the sequence.
+     * ## When not to use
+     * - Standalone, outside a `<bs-stepper>` wrapper -- `computedState`/`direction`/`showDescription`
+     *   depend on that parent propagating them; alone, this defaults to `enabled`/`horizontal`/`true`.
+     */
+    interface BsStepperStep {
+        /**
+          * Set automatically by the parent `<bs-stepper>` from this step's position relative to its `currentStep` -- see the class doc above. Can be set directly for a standalone step.
+          * @default 'enabled'
+         */
+        "computedState": BsStepperStepComputedState;
+        /**
+          * Optional supporting text below the name. Only rendered when `showDescription` (propagated from the parent `<bs-stepper>`) is also true.
+         */
+        "description"?: string;
+        /**
+          * Set automatically by the parent `<bs-stepper>`, propagated to every slotted step.
+          * @default 'horizontal'
+         */
+        "direction": BsStepperDirection1;
+        /**
+          * Shows the disabled treatment for this step, regardless of its `computedState`. Takes priority over `error` if both are somehow set.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * Shows the error treatment for this step, regardless of its `computedState`.
+          * @default false
+         */
+        "error": boolean;
+        /**
+          * This step's name/title.
+          * @default ''
+         */
+        "name": string;
+        /**
+          * Set automatically by the parent `<bs-stepper>`, propagated to every slotted step.
+          * @default true
+         */
+        "showDescription": boolean;
+    }
+    /**
      * A toggle switch for an on/off setting that takes effect immediately (no explicit form
      * submission required).
      * ## When to use
@@ -3234,6 +3330,57 @@ declare global {
         prototype: HTMLBsSourceLinkElement;
         new (): HTMLBsSourceLinkElement;
     };
+    /**
+     * A sequence of named steps showing overall progress through a multi-step flow (e.g. a checkout,
+     * an onboarding wizard) -- each step reads as enabled (not yet reached), current, done, error, or
+     * disabled, connected by a rail between them.
+     * This container is intentionally thin: it renders a `<slot>` for `<bs-stepper-step>` children and
+     * propagates `currentStep`/`direction`/`showDescription` down to them as JS properties whenever any
+     * of those change or the slotted children themselves change -- the same "container pushes state
+     * onto its slotted children" pattern `bs-tabs` uses for `selected` and `bs-breadcrumbs` uses for
+     * `size`. Each step computes its own `enabled`/`current`/`done` state from its position among its
+     * siblings relative to `currentStep`, unless that step's own `error`/`disabled` prop overrides it.
+     * This is a static status display, not an interactive control -- Figma's spec shows no
+     * hover/pressed treatment on any step, so nothing here is clickable.
+     * ## When to use
+     * - Showing where the user is in a fixed, ordered, multi-step flow.
+     * ## When not to use
+     * - A flow whose steps aren't fixed/known in advance -- a stepper implies the full sequence is
+     *   already known.
+     * - As a substitute for actual in-page navigation between steps -- pair this with real controls
+     *   (Next/Back buttons) elsewhere in the flow, this component only displays status.
+     */
+    interface HTMLBsStepperElement extends Components.BsStepper, HTMLStencilElement {
+    }
+    var HTMLBsStepperElement: {
+        prototype: HTMLBsStepperElement;
+        new (): HTMLBsStepperElement;
+    };
+    /**
+     * A single step within a `<bs-stepper>` sequence: an icon/indicator plus a name and optional
+     * description, connected to the next step by a trailing rail.
+     * `computedState` is set automatically by the parent `<bs-stepper>` based on this step's position
+     * relative to its `currentStep` (before it = "done", at it = "current", after it = "enabled") --
+     * same "container pushes state onto its slotted children" pattern `bs-tabs` uses for `selected`
+     * and `bs-breadcrumbs` uses for `size`. This step's own `error`/`disabled` props, when set directly
+     * by the consumer, override that computed value -- e.g. a step before `currentStep` would normally
+     * read as "done", but `error` on that step wins regardless.
+     * The trailing rail is owned by this component, not the container: `:host(:last-child)` hides it
+     * on whichever step is visually last, mirroring `bs-breadcrumb`'s own `:host(:first-child)` rule
+     * for its leading separator (same technique, opposite end -- see that component for why pure DOM
+     * position, not CSS `:last-of-type`, is what actually needs checking here too).
+     * ## When to use
+     * - As a child of `<bs-stepper>`, one per step in the sequence.
+     * ## When not to use
+     * - Standalone, outside a `<bs-stepper>` wrapper -- `computedState`/`direction`/`showDescription`
+     *   depend on that parent propagating them; alone, this defaults to `enabled`/`horizontal`/`true`.
+     */
+    interface HTMLBsStepperStepElement extends Components.BsStepperStep, HTMLStencilElement {
+    }
+    var HTMLBsStepperStepElement: {
+        prototype: HTMLBsStepperStepElement;
+        new (): HTMLBsStepperStepElement;
+    };
     interface HTMLBsSwitchElementEventMap {
         "bsChange": boolean;
     }
@@ -3391,6 +3538,8 @@ declare global {
         "bs-slider": HTMLBsSliderElement;
         "bs-snackbar": HTMLBsSnackbarElement;
         "bs-source-link": HTMLBsSourceLinkElement;
+        "bs-stepper": HTMLBsStepperElement;
+        "bs-stepper-step": HTMLBsStepperStepElement;
         "bs-switch": HTMLBsSwitchElement;
         "bs-tab": HTMLBsTabElement;
         "bs-tabs": HTMLBsTabsElement;
@@ -5214,6 +5363,98 @@ declare namespace LocalJSX {
         "version"?: string;
     }
     /**
+     * A sequence of named steps showing overall progress through a multi-step flow (e.g. a checkout,
+     * an onboarding wizard) -- each step reads as enabled (not yet reached), current, done, error, or
+     * disabled, connected by a rail between them.
+     * This container is intentionally thin: it renders a `<slot>` for `<bs-stepper-step>` children and
+     * propagates `currentStep`/`direction`/`showDescription` down to them as JS properties whenever any
+     * of those change or the slotted children themselves change -- the same "container pushes state
+     * onto its slotted children" pattern `bs-tabs` uses for `selected` and `bs-breadcrumbs` uses for
+     * `size`. Each step computes its own `enabled`/`current`/`done` state from its position among its
+     * siblings relative to `currentStep`, unless that step's own `error`/`disabled` prop overrides it.
+     * This is a static status display, not an interactive control -- Figma's spec shows no
+     * hover/pressed treatment on any step, so nothing here is clickable.
+     * ## When to use
+     * - Showing where the user is in a fixed, ordered, multi-step flow.
+     * ## When not to use
+     * - A flow whose steps aren't fixed/known in advance -- a stepper implies the full sequence is
+     *   already known.
+     * - As a substitute for actual in-page navigation between steps -- pair this with real controls
+     *   (Next/Back buttons) elsewhere in the flow, this component only displays status.
+     */
+    interface BsStepper {
+        /**
+          * 0-indexed: which step is current. Every step before this index reads as "done" (unless that step's own `error`/`disabled` overrides it), every step after reads as "enabled".
+          * @default 0
+         */
+        "currentStep"?: number;
+        /**
+          * `horizontal` (icon above name/description, connected by a horizontal rail) or `vertical` (icon beside name/description, connected by a vertical rail). Propagated to every slotted `bs-stepper-step`, and reflected as an attribute so this container's own `:host` CSS can switch its `flex-direction` to match -- a bare `<slot>` with no wrapping element (see `render()`) means the slotted steps' flex-row/column layout comes directly from `:host` here, not from any wrapper div.
+          * @default 'horizontal'
+         */
+        "direction"?: BsStepperDirection;
+        /**
+          * Whether each step's description renders at all. Propagated to every slotted `bs-stepper-step`.
+          * @default true
+         */
+        "showDescription"?: boolean;
+    }
+    /**
+     * A single step within a `<bs-stepper>` sequence: an icon/indicator plus a name and optional
+     * description, connected to the next step by a trailing rail.
+     * `computedState` is set automatically by the parent `<bs-stepper>` based on this step's position
+     * relative to its `currentStep` (before it = "done", at it = "current", after it = "enabled") --
+     * same "container pushes state onto its slotted children" pattern `bs-tabs` uses for `selected`
+     * and `bs-breadcrumbs` uses for `size`. This step's own `error`/`disabled` props, when set directly
+     * by the consumer, override that computed value -- e.g. a step before `currentStep` would normally
+     * read as "done", but `error` on that step wins regardless.
+     * The trailing rail is owned by this component, not the container: `:host(:last-child)` hides it
+     * on whichever step is visually last, mirroring `bs-breadcrumb`'s own `:host(:first-child)` rule
+     * for its leading separator (same technique, opposite end -- see that component for why pure DOM
+     * position, not CSS `:last-of-type`, is what actually needs checking here too).
+     * ## When to use
+     * - As a child of `<bs-stepper>`, one per step in the sequence.
+     * ## When not to use
+     * - Standalone, outside a `<bs-stepper>` wrapper -- `computedState`/`direction`/`showDescription`
+     *   depend on that parent propagating them; alone, this defaults to `enabled`/`horizontal`/`true`.
+     */
+    interface BsStepperStep {
+        /**
+          * Set automatically by the parent `<bs-stepper>` from this step's position relative to its `currentStep` -- see the class doc above. Can be set directly for a standalone step.
+          * @default 'enabled'
+         */
+        "computedState"?: BsStepperStepComputedState;
+        /**
+          * Optional supporting text below the name. Only rendered when `showDescription` (propagated from the parent `<bs-stepper>`) is also true.
+         */
+        "description"?: string;
+        /**
+          * Set automatically by the parent `<bs-stepper>`, propagated to every slotted step.
+          * @default 'horizontal'
+         */
+        "direction"?: BsStepperDirection1;
+        /**
+          * Shows the disabled treatment for this step, regardless of its `computedState`. Takes priority over `error` if both are somehow set.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * Shows the error treatment for this step, regardless of its `computedState`.
+          * @default false
+         */
+        "error"?: boolean;
+        /**
+          * This step's name/title.
+          * @default ''
+         */
+        "name"?: string;
+        /**
+          * Set automatically by the parent `<bs-stepper>`, propagated to every slotted step.
+          * @default true
+         */
+        "showDescription"?: boolean;
+    }
+    /**
      * A toggle switch for an on/off setting that takes effect immediately (no explicit form
      * submission required).
      * ## When to use
@@ -5584,6 +5825,20 @@ declare namespace LocalJSX {
         "href": string;
         "target": string;
     }
+    interface BsStepperAttributes {
+        "currentStep": number;
+        "direction": BsStepperDirection;
+        "showDescription": boolean;
+    }
+    interface BsStepperStepAttributes {
+        "name": string;
+        "description": string;
+        "error": boolean;
+        "disabled": boolean;
+        "computedState": BsStepperStepComputedState;
+        "direction": BsStepperDirection;
+        "showDescription": boolean;
+    }
     interface BsSwitchAttributes {
         "size": BsSwitchSize;
         "checked": boolean;
@@ -5643,6 +5898,8 @@ declare namespace LocalJSX {
         "bs-slider": Omit<BsSlider, keyof BsSliderAttributes> & { [K in keyof BsSlider & keyof BsSliderAttributes]?: BsSlider[K] } & { [K in keyof BsSlider & keyof BsSliderAttributes as `attr:${K}`]?: BsSliderAttributes[K] } & { [K in keyof BsSlider & keyof BsSliderAttributes as `prop:${K}`]?: BsSlider[K] };
         "bs-snackbar": Omit<BsSnackbar, keyof BsSnackbarAttributes> & { [K in keyof BsSnackbar & keyof BsSnackbarAttributes]?: BsSnackbar[K] } & { [K in keyof BsSnackbar & keyof BsSnackbarAttributes as `attr:${K}`]?: BsSnackbarAttributes[K] } & { [K in keyof BsSnackbar & keyof BsSnackbarAttributes as `prop:${K}`]?: BsSnackbar[K] };
         "bs-source-link": Omit<BsSourceLink, keyof BsSourceLinkAttributes> & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes]?: BsSourceLink[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `attr:${K}`]?: BsSourceLinkAttributes[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `prop:${K}`]?: BsSourceLink[K] };
+        "bs-stepper": Omit<BsStepper, keyof BsStepperAttributes> & { [K in keyof BsStepper & keyof BsStepperAttributes]?: BsStepper[K] } & { [K in keyof BsStepper & keyof BsStepperAttributes as `attr:${K}`]?: BsStepperAttributes[K] } & { [K in keyof BsStepper & keyof BsStepperAttributes as `prop:${K}`]?: BsStepper[K] };
+        "bs-stepper-step": Omit<BsStepperStep, keyof BsStepperStepAttributes> & { [K in keyof BsStepperStep & keyof BsStepperStepAttributes]?: BsStepperStep[K] } & { [K in keyof BsStepperStep & keyof BsStepperStepAttributes as `attr:${K}`]?: BsStepperStepAttributes[K] } & { [K in keyof BsStepperStep & keyof BsStepperStepAttributes as `prop:${K}`]?: BsStepperStep[K] };
         "bs-switch": Omit<BsSwitch, keyof BsSwitchAttributes> & { [K in keyof BsSwitch & keyof BsSwitchAttributes]?: BsSwitch[K] } & { [K in keyof BsSwitch & keyof BsSwitchAttributes as `attr:${K}`]?: BsSwitchAttributes[K] } & { [K in keyof BsSwitch & keyof BsSwitchAttributes as `prop:${K}`]?: BsSwitch[K] };
         "bs-tab": Omit<BsTab, keyof BsTabAttributes> & { [K in keyof BsTab & keyof BsTabAttributes]?: BsTab[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `attr:${K}`]?: BsTabAttributes[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `prop:${K}`]?: BsTab[K] };
         "bs-tabs": Omit<BsTabs, keyof BsTabsAttributes> & { [K in keyof BsTabs & keyof BsTabsAttributes]?: BsTabs[K] } & { [K in keyof BsTabs & keyof BsTabsAttributes as `attr:${K}`]?: BsTabsAttributes[K] } & { [K in keyof BsTabs & keyof BsTabsAttributes as `prop:${K}`]?: BsTabs[K] };
@@ -6526,6 +6783,47 @@ declare module "@stencil/core" {
              * `--bs-text-secondary`.
              */
             "bs-source-link": LocalJSX.IntrinsicElements["bs-source-link"] & JSXBase.HTMLAttributes<HTMLBsSourceLinkElement>;
+            /**
+             * A sequence of named steps showing overall progress through a multi-step flow (e.g. a checkout,
+             * an onboarding wizard) -- each step reads as enabled (not yet reached), current, done, error, or
+             * disabled, connected by a rail between them.
+             * This container is intentionally thin: it renders a `<slot>` for `<bs-stepper-step>` children and
+             * propagates `currentStep`/`direction`/`showDescription` down to them as JS properties whenever any
+             * of those change or the slotted children themselves change -- the same "container pushes state
+             * onto its slotted children" pattern `bs-tabs` uses for `selected` and `bs-breadcrumbs` uses for
+             * `size`. Each step computes its own `enabled`/`current`/`done` state from its position among its
+             * siblings relative to `currentStep`, unless that step's own `error`/`disabled` prop overrides it.
+             * This is a static status display, not an interactive control -- Figma's spec shows no
+             * hover/pressed treatment on any step, so nothing here is clickable.
+             * ## When to use
+             * - Showing where the user is in a fixed, ordered, multi-step flow.
+             * ## When not to use
+             * - A flow whose steps aren't fixed/known in advance -- a stepper implies the full sequence is
+             *   already known.
+             * - As a substitute for actual in-page navigation between steps -- pair this with real controls
+             *   (Next/Back buttons) elsewhere in the flow, this component only displays status.
+             */
+            "bs-stepper": LocalJSX.IntrinsicElements["bs-stepper"] & JSXBase.HTMLAttributes<HTMLBsStepperElement>;
+            /**
+             * A single step within a `<bs-stepper>` sequence: an icon/indicator plus a name and optional
+             * description, connected to the next step by a trailing rail.
+             * `computedState` is set automatically by the parent `<bs-stepper>` based on this step's position
+             * relative to its `currentStep` (before it = "done", at it = "current", after it = "enabled") --
+             * same "container pushes state onto its slotted children" pattern `bs-tabs` uses for `selected`
+             * and `bs-breadcrumbs` uses for `size`. This step's own `error`/`disabled` props, when set directly
+             * by the consumer, override that computed value -- e.g. a step before `currentStep` would normally
+             * read as "done", but `error` on that step wins regardless.
+             * The trailing rail is owned by this component, not the container: `:host(:last-child)` hides it
+             * on whichever step is visually last, mirroring `bs-breadcrumb`'s own `:host(:first-child)` rule
+             * for its leading separator (same technique, opposite end -- see that component for why pure DOM
+             * position, not CSS `:last-of-type`, is what actually needs checking here too).
+             * ## When to use
+             * - As a child of `<bs-stepper>`, one per step in the sequence.
+             * ## When not to use
+             * - Standalone, outside a `<bs-stepper>` wrapper -- `computedState`/`direction`/`showDescription`
+             *   depend on that parent propagating them; alone, this defaults to `enabled`/`horizontal`/`true`.
+             */
+            "bs-stepper-step": LocalJSX.IntrinsicElements["bs-stepper-step"] & JSXBase.HTMLAttributes<HTMLBsStepperStepElement>;
             /**
              * A toggle switch for an on/off setting that takes effect immediately (no explicit form
              * submission required).

@@ -54,6 +54,8 @@ import '../dist/components/bs-radio.js';
 import '../dist/components/bs-slider.js';
 import '../dist/components/bs-snackbar.js';
 import '../dist/components/bs-source-link.js';
+import '../dist/components/bs-stepper.js';
+import '../dist/components/bs-stepper-step.js';
 import '../dist/components/bs-switch.js';
 import '../dist/components/bs-navigation-drawer.js';
 import '../dist/components/bs-navigation-drawer-item.js';
@@ -169,7 +171,11 @@ function applyPartsDebug(root: Document | ShadowRoot | Element, enabled: boolean
 let partsDebugEverEnabled = false;
 
 const withPartsDebug: Decorator = (story, context) => {
-  const enabled = Boolean(context.globals.showParts);
+  // Storybook's ToolbarItem.value is typed as `string` (see the globalTypes.showParts.toolbar.items
+  // below), so the global itself is the string 'true'/'false', not a real boolean -- comparing
+  // against the string here, rather than `Boolean(context.globals.showParts)`, which would treat
+  // the non-empty string 'false' as truthy.
+  const enabled = context.globals.showParts === 'true';
   if (enabled) partsDebugEverEnabled = true;
   const result = story();
   if (!partsDebugEverEnabled) return result;
