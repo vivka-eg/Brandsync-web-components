@@ -1,0 +1,93 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as SnackbarStories from './bs-snackbar.stories';
+
+<Meta of={SnackbarStories} />
+
+# Snackbar
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Variants](#variants)
+- [Overflow](#overflow)
+- [Loading](#loading)
+- [No action](#no-action)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A transient status bar for confirming the result of an action (e.g. "Files uploaded
+successfully.") -- an icon (or loading spinner), a message, an optional action, and a close
+button.
+
+This component only renders the bar itself -- it doesn't manage its own visibility, timing, or
+stacking. A consumer (typically a small "toast manager" utility) creates one per message and
+removes it from the DOM again, whether on a timer or on `bsDismiss`. Figma's spec doesn't show
+auto-dismiss timing at all (it's a static visual spec), so this deliberately doesn't invent one.
+
+**When to use**
+- Confirming the outcome of an action that just happened (save succeeded, upload failed) without
+  interrupting the user's flow.
+
+**When not to use**
+- For a response that requires the user to make a decision before continuing -- use `bs-dialog`.
+- For persistent, always-visible status -- a snackbar is inherently transient.
+
+<Canvas of={SnackbarStories.Default} />
+
+## Variants
+
+`variant` covers `default` (a dark, inverse-surface bar) plus `info`/`warning`/`success`/`error`,
+each with matching container/text tokens. The icon is always the same checkmark glyph across every
+variant, just recolored -- matching the Figma spec exactly, even though a checkmark for
+`variant="error"` reads a little oddly semantically. Worth revisiting with severity-specific icons
+if the design updates to specify them.
+
+<Canvas of={SnackbarStories.AllVariants} />
+
+## Overflow
+
+The message wraps to multiple lines rather than truncating -- there's no line-clamp or ellipsis.
+
+<Canvas of={SnackbarStories.Overflow} />
+
+## Loading
+
+`loading` swaps the checkmark for a spinning indicator, for a message describing in-progress work
+rather than a completed result.
+
+<Canvas of={SnackbarStories.Loading} />
+
+## No action
+
+`actionLabel` is optional -- omit it entirely (not a boolean flag) to render no action button at
+all, just the message and the close button.
+
+<Canvas of={SnackbarStories.NoAction} />
+
+## Component API
+
+<Controls of={SnackbarStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (the message content)
+- Shadow parts: `::part(container)`, `::part(icon)`, `::part(message)`, `::part(action)`, `::part(close)`
+- CSS Custom Properties: layout (`--bs-snackbar-radius`, `--bs-snackbar-shadow`, `--bs-snackbar-gap`,
+  `--bs-snackbar-content-padding-y`, `--bs-snackbar-content-padding-x`, `--bs-snackbar-content-gap`,
+  `--bs-snackbar-font-size`, `--bs-snackbar-line-height`, `--bs-snackbar-actions-padding-y`,
+  `--bs-snackbar-actions-padding-x`, `--bs-snackbar-actions-gap`, `--bs-snackbar-action-radius`,
+  `--bs-snackbar-action-font-size`, `--bs-snackbar-action-font-weight`,
+  `--bs-snackbar-action-line-height`, `--bs-snackbar-close-radius`) plus one surface/text pair (and
+  an action background/border) per variant (`--bs-snackbar-surface-*`, `--bs-snackbar-color-default`
+  /`--bs-snackbar-text-*`, `--bs-snackbar-action-bg-*`/`--bs-snackbar-action-border-default`) -- see
+  `bs-snackbar.css`'s header block for what each aliases to.
+
+## Accessibility
+
+- The bar has `role="status"` and `aria-live` -- `"assertive"` for `variant="error"` (interrupts,
+  since an error is worth interrupting for), `"polite"` for every other variant (announced without
+  cutting off whatever a screen reader is already saying). This is a standard toast/snackbar
+  convention, not something Figma's static visual spec addresses one way or the other.
+- The icon/spinner is `aria-hidden` -- the message text itself is what gets announced.
+- The close button always has an accessible name (`aria-label="Dismiss"`), regardless of variant.

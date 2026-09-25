@@ -1,0 +1,105 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as AvatarStories from './bs-avatar.stories';
+
+<Meta of={AvatarStories} />
+
+# Avatar
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Initials](#initials)
+- [Image](#image)
+- [Sizes](#sizes)
+- [Disabled](#disabled)
+- [Interactive](#interactive)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A circular representation of a person or entity -- a photo, initials, or (as a fallback when
+neither is available) a generic user-silhouette icon.
+
+**When to use**
+- Representing a specific user or account: in a header, a comment, a member list, etc.
+- `type="icon"` (the default) as the generic fallback when neither a photo nor a name/initials is
+  available yet.
+
+**When not to use**
+- A company/brand logo -- use `bs-logo` instead.
+
+<Canvas of={AvatarStories.Icon} />
+
+## Initials
+
+`type="initials"` when a photo isn't available but a name is (e.g. "Sam Lee" -> "SL"). Font
+styling genuinely varies per `size` (not a simple linear scale) -- see the Component API's CSS
+Custom Properties list, and `bs-avatar.css`'s own comments, for the exact per-size mapping.
+
+<Canvas of={AvatarStories.Initials} />
+
+## Image
+
+`type="image"` renders a real `<img src={src} alt={alt}>`. This component never fetches the photo
+itself -- network calls, loading/error states, and caching are the consuming app's job, same
+convention as `bs-logo`'s own `src` prop.
+
+<Canvas of={AvatarStories.Image} />
+
+## Sizes
+
+Six sizes -- `xs` (24px) through `xxl` (128px) -- matching Figma's own six-step scale. `xxl` uses a
+hair thicker border (1.333px) than the other five; this is a deliberate Figma spec value, not a
+rounding artifact.
+
+<Canvas of={AvatarStories.Sizes} />
+
+## Disabled
+
+Applies 50% opacity and suppresses the hover/focus/pressed states below. Not a native `disabled`
+attribute -- this component renders no native form control, so it's purely a visual/interaction-state
+flag for when a consuming app has wrapped this in its own disabled control.
+
+<Canvas of={AvatarStories.Disabled} />
+
+## Interactive
+
+This component is decorative/informational by default (a plain `<span>`/`<img>`, not a
+`<button>`), but its hover/focused/pressed treatment is real `:hover`/`:focus-visible`/`:active`
+CSS on the host itself -- so making a `<bs-avatar>` interactive (e.g. an account-switcher trigger)
+is just a matter of setting `tabindex` and a click handler on it directly, or wrapping it in your
+own `<button>`. No extra prop or wiring needed for the visual states to follow. This story sets
+`tabindex="0"` directly -- tab to it, or click/hold it, to see the states.
+
+<Canvas of={AvatarStories.Interactive} />
+
+## Component API
+
+<Controls of={AvatarStories.Icon} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Props: `type`, `size`, `initials`, `src`, `alt`, `ariaLabel`, `disabled`
+- Shadow parts: `::part(container)`, `::part(image)`, `::part(initials)`, `::part(icon)`
+- CSS Custom Properties: `--bs-avatar-size-xs/sm/md/lg/xl/xxl`, `--bs-avatar-radius`,
+  `--bs-avatar-border-width`, `--bs-avatar-border-width-xxl`, `--bs-avatar-bg-dafault` (this
+  library's own vendored token name, typo included -- see `bs-avatar.css`'s own comment),
+  `--bs-avatar-bg-hover`, `--bs-avatar-bg-pressed`, `--bs-avatar-bg-focused`,
+  `--bs-avatar-border-primary`, `--bs-avatar-border-hover`, `--bs-avatar-border-pressed`,
+  `--bs-avatar-border-focused`, `--bs-avatar-border-focus`, `--bs-avatar-icon-primary`,
+  `--bs-avatar-text-default`
+
+## Accessibility
+
+- `type="image"` renders a real `<img alt={alt}>` -- a person's photo is meaningful content, not
+  decorative, so pass something real (e.g. their name) via `alt`. Falls back to `alt=""`
+  (decorative to assistive tech) when unset, rather than omitting the attribute entirely, but
+  don't rely on that fallback.
+- `type="icon"`/`"initials"` render a `role="img"` wrapper instead (neither is a real `<img>`) --
+  set `ariaLabel` for these so assistive technology has a name for the avatar. Setting a plain
+  `aria-label` HTML attribute directly on the `<bs-avatar>` host does **not** work: that attribute
+  stays on the light-DOM host and never crosses into the shadow DOM, so the actual `role="img"`
+  element stays nameless.
+- This component is genuinely non-interactive by default (no implicit role/tabindex of its own),
+  so it doesn't misrepresent a purely decorative avatar (e.g. next to a comment) as a control when
+  it isn't one -- see "Interactive" above for making one that is.

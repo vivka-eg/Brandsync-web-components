@@ -6,36 +6,48 @@
  */
 import { HTMLStencilElement, JSXBase } from "@stencil/core/internal";
 import { BsAttachmentType } from "./components/bs-attachment/bs-attachment";
+import { BsAvatarSize, BsAvatarType } from "./components/bs-avatar/bs-avatar";
 import { BsBadgeVariant } from "./components/bs-badge/bs-badge";
+import { BsBreadcrumbSize } from "./components/bs-breadcrumb/bs-breadcrumb/bs-breadcrumb";
+import { BsBreadcrumbOverflowItem } from "./components/bs-breadcrumb/bs-breadcrumb-overflow/bs-breadcrumb-overflow";
+import { BsBreadcrumbSize as BsBreadcrumbSize1 } from "./components/bs-breadcrumb/bs-breadcrumb/bs-breadcrumb";
 import { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button/bs-button";
 import { BsButtonSize as BsButtonSize1 } from "./components/bs-button/bs-button/bs-button";
 import { BsCardSurface } from "./components/bs-card/bs-card";
 import { BsCheckboxSize } from "./components/bs-checkbox/bs-checkbox";
+import { BsCheckboxSize as BsCheckboxSize1 } from "./components/bs-checkbox/bs-checkbox";
 import { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
 import { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 import { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
+import { BsDialogSize } from "./components/bs-dialog/bs-dialog";
 import { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-button/bs-icon-button/bs-icon-button";
 import { BsLogoBackground, BsLogoVariant } from "./components/bs-logo/bs-logo";
-import { BsModalSize } from "./components/bs-modal/bs-modal";
 import { BsNavigationHeaderAlignment } from "./components/ui-shell/bs-navigation-header/bs-navigation-header/bs-navigation-header";
 import { BsSliderType } from "./components/bs-slider/bs-slider";
+import { BsSnackbarVariant } from "./components/bs-snackbar/bs-snackbar";
 import { BsSwitchSize } from "./components/bs-switch/bs-switch";
 import { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 import { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
 export { BsAttachmentType } from "./components/bs-attachment/bs-attachment";
+export { BsAvatarSize, BsAvatarType } from "./components/bs-avatar/bs-avatar";
 export { BsBadgeVariant } from "./components/bs-badge/bs-badge";
+export { BsBreadcrumbSize } from "./components/bs-breadcrumb/bs-breadcrumb/bs-breadcrumb";
+export { BsBreadcrumbOverflowItem } from "./components/bs-breadcrumb/bs-breadcrumb-overflow/bs-breadcrumb-overflow";
+export { BsBreadcrumbSize as BsBreadcrumbSize1 } from "./components/bs-breadcrumb/bs-breadcrumb/bs-breadcrumb";
 export { BsButtonSize, BsButtonVariant } from "./components/bs-button/bs-button/bs-button";
 export { BsButtonSize as BsButtonSize1 } from "./components/bs-button/bs-button/bs-button";
 export { BsCardSurface } from "./components/bs-card/bs-card";
 export { BsCheckboxSize } from "./components/bs-checkbox/bs-checkbox";
+export { BsCheckboxSize as BsCheckboxSize1 } from "./components/bs-checkbox/bs-checkbox";
 export { BsComposerState, BsComposerVariant } from "./components/bs-composer/bs-composer";
 export { BsComposerStatusBannerType } from "./components/bs-composer-status-banner/bs-composer-status-banner";
 export { BsDataTableColumn, BsDataTableRow } from "./components/bs-data-table/bs-data-table";
+export { BsDialogSize } from "./components/bs-dialog/bs-dialog";
 export { BsIconButtonSize, BsIconButtonVariant } from "./components/bs-button/bs-icon-button/bs-icon-button";
 export { BsLogoBackground, BsLogoVariant } from "./components/bs-logo/bs-logo";
-export { BsModalSize } from "./components/bs-modal/bs-modal";
 export { BsNavigationHeaderAlignment } from "./components/ui-shell/bs-navigation-header/bs-navigation-header/bs-navigation-header";
 export { BsSliderType } from "./components/bs-slider/bs-slider";
+export { BsSnackbarVariant } from "./components/bs-snackbar/bs-snackbar";
 export { BsSwitchSize } from "./components/bs-switch/bs-switch";
 export { BsTabIconPosition } from "./components/bs-tab/bs-tab/bs-tab";
 export { BsTabsOrientation, BsTabsType } from "./components/bs-tab/bs-tabs/bs-tabs";
@@ -207,6 +219,62 @@ export namespace Components {
         "ariaLabel": string | null;
     }
     /**
+     * A circular representation of a person or entity -- a photo, initials, or (as a fallback when
+     * neither is available) a generic user-silhouette icon.
+     * ## When to use
+     * - Representing a specific user or account: in a header, a comment, a member list, etc.
+     * - `type="initials"` when a photo isn't available but a name is (e.g. "Sam Lee" -> "SL").
+     * - `type="icon"` (the default) as the generic fallback when neither a photo nor a name/initials
+     *   is available yet.
+     * ## When not to use
+     * - A company/brand logo -- use `bs-logo` instead.
+     * This component is decorative/informational by default, not an interactive control -- it renders
+     * a plain `<span>`/`<img>`, not a `<button>`. Figma's own component set includes hover/focused/
+     * pressed states (e.g. for an account-switcher trigger use case), which this implements as real
+     * `:hover`/`:focus-visible`/`:active` CSS on the host itself -- so wrapping this in your own
+     * `<button>`, or setting `tabindex` and a click handler on the `<bs-avatar>` element directly, gets
+     * the matching visual treatment for free with no extra wiring. Left genuinely non-interactive
+     * (no implicit role/tabindex of its own) so it doesn't misrepresent a purely decorative avatar
+     * (e.g. next to a comment) as a control when it isn't one.
+     */
+    interface BsAvatar {
+        /**
+          * `type="image"` only: accessible alt text for the photo, set directly on the real `<img>` this renders -- a person's photo is meaningful content, not decorative, so pass something real (e.g. their name). Falls back to `alt=""` (decorative to assistive tech) when unset, rather than omitting the attribute entirely, but don't rely on that fallback. Ignored for `icon`/`initials` -- see `ariaLabel` for those instead.
+          * @default null
+         */
+        "alt": string | null;
+        /**
+          * `type="icon"`/`"initials"` only: accessible name for the avatar, set as `aria-label` on the `role="img"` wrapper this renders (neither is a real `<img>`, so there's no native `alt` to set). Setting a plain `aria-label` attribute on the `<bs-avatar>` host does NOT work for this -- that attribute stays on the light-DOM host and never crosses into the shadow DOM, so the actual `role="img"` element stays nameless. Same pattern as `bs-checkbox`'s identical `ariaLabel` prop. Ignored for `image` -- see `alt` for that instead.
+          * @default null
+         */
+        "ariaLabel": string | null;
+        /**
+          * Applies the disabled treatment (50% opacity) and suppresses the hover/focus/pressed CSS states -- this doesn't set a native `disabled` attribute (this component renders no native form control), it's purely a visual/interaction-state flag for when a consuming app has wrapped this in its own disabled control. Reflected so the `:host([disabled])` CSS selector that drives all of the above still matches when a consumer sets the JS property directly (`el.disabled = true`) rather than the HTML attribute.
+          * @default false
+         */
+        "disabled": boolean;
+        /**
+          * `type="initials"` only: the initials text to display (e.g. `"SL"` for "Sam Lee"). Ignored for `icon`/`image`.
+          * @default null
+         */
+        "initials": string | null;
+        /**
+          * Sizing scale -- `xs` (24px) through `xxl` (128px), matching Figma's own six-step scale.
+          * @default 'md'
+         */
+        "size": BsAvatarSize;
+        /**
+          * `type="image"` only: the photo URL. This component does not fetch it itself -- network calls, loading/error states, and caching are the consuming app's responsibility, same convention as `bs-logo`'s own `src` prop. Ignored for `icon`/`initials`.
+          * @default null
+         */
+        "src": string | null;
+        /**
+          * What to render inside the circle. `icon` (default) is the generic fallback for when neither a photo nor initials are available yet.
+          * @default 'icon'
+         */
+        "type": BsAvatarType;
+    }
+    /**
      * A small status or category pill, usually paired with a label or list item.
      * ## When to use
      * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
@@ -221,6 +289,109 @@ export namespace Components {
           * @default 'default'
          */
         "variant": BsBadgeVariant;
+    }
+    /**
+     * A single crumb within a `<bs-breadcrumbs>` trail: a leading separator icon plus either a link,
+     * plain text, or the current-page label, depending on `current`/`href`.
+     * Rendering follows the W3C ARIA Authoring Practices breadcrumb pattern
+     * (https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/): the current page is marked
+     * `aria-current="page"` and is never a link -- this holds even when `href` is also set, unlike
+     * Carbon Design System's `cds-breadcrumb-item`, which allows a link on the current item.
+     * Sets `role="listitem"` on the host, mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()`
+     * -- since this is a custom-element child of a real `<ol>` rather than a real `<li>`, the
+     * accessibility tree needs this explicit role to preserve the list's semantics.
+     * ## When to use
+     * - As one crumb inside a `<bs-breadcrumbs>` trail.
+     * ## When not to use
+     * - Standalone, outside a `<bs-breadcrumbs>` wrapper -- its `<ol>`/`<nav>` context and
+     *   first-child-aware separator hiding depend on that parent structure.
+     */
+    interface BsBreadcrumb {
+        /**
+          * Whether this crumb is the current page. Renders as plain (non-link) text marked `aria-current="page"`, reflected as an attribute so consumers/CSS can target `bs-breadcrumb[current]`.
+          * @default false
+         */
+        "current": boolean;
+        /**
+          * Destination for a non-current crumb. Ignored when `current` is true -- the current page is never a link, even if `href` is set (see the class JSDoc).
+         */
+        "href"?: string;
+        /**
+          * Size variant. Normally set automatically by a parent `<bs-breadcrumbs size="...">` -- the container propagates its own `size` as a JS property to every slotted `bs-breadcrumb`/ `bs-breadcrumb-overflow` child (see `bs-breadcrumbs.tsx`'s `propagateSize`), since CSS custom properties can't carry an enum that switches rules on their own. Can also be set directly on a standalone crumb. `sm` scales down font-size/line-height only -- the separator icon's pixel size is unchanged, since Figma didn't specify a `sm` icon size and guessing one risked drifting off-brand. Reflected so consumers/CSS can target `bs-breadcrumb[size="sm"]`.
+          * @default 'md'
+         */
+        "size": BsBreadcrumbSize;
+    }
+    /**
+     * A manually-placed collapsed-items disclosure for a `<bs-breadcrumbs>` trail: a leading separator
+     * plus an icon-only ellipsis button that reveals a `bs-menu` popup listing every hidden crumb.
+     * `items` is JS-property-only -- must be set as a JS property (`el.items = [...]`), not an HTML
+     * attribute, since attributes can only carry strings. See CONVENTIONS.md.
+     * Unlike an earlier `bs-breadcrumbs`-owned automatic `maxItems` collapse, this component does no
+     * collapsing logic itself -- the consumer decides which crumbs to hide and places this element
+     * wherever they want the disclosure, exactly matching Carbon Design System's own approach (Carbon
+     * doesn't auto-collapse breadcrumbs either; a consumer there manually decides what's visible).
+     * Hidden items with an `href` render as real `<a href>` rows inside the popup, not `bs-menu-item`
+     * (which renders a `<button>`) -- this matters because consuming apps commonly use client-side
+     * routers that intercept clicks on real `<a>` tags to do `preventDefault` + push-state navigation.
+     * Rendering hidden links any other way (e.g. `window.location`) would silently break client-side
+     * routing for hidden crumbs while working fine for visible ones. Hidden items without an `href`
+     * render as plain non-interactive text, matching how `bs-breadcrumb` itself handles link vs.
+     * no-link crumbs.
+     * Sets `role="listitem"` on the host, mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()`
+     * -- since this is a custom-element child of a real `<ol>` rather than a real `<li>`, the
+     * accessibility tree needs this explicit role to preserve the list's semantics.
+     * ## When to use
+     * - Inside a `<bs-breadcrumbs>` trail, wherever the consumer wants an interactive disclosure for
+     *   crumbs they've chosen not to render directly.
+     * ## When not to use
+     * - As an automatic collapsing mechanism -- there is none; the consumer decides what's hidden.
+     */
+    interface BsBreadcrumbOverflow {
+        /**
+          * Array prop -- must be set as a JS property (`el.items = [...]`), not an HTML attribute, since attributes can only carry strings. See CONVENTIONS.md. The hidden crumbs reachable via this disclosure -- no collapsing logic here, the consumer decides what goes in this list.
+          * @default []
+         */
+        "items": BsBreadcrumbOverflowItem[];
+        /**
+          * Accessible name (`aria-label`) for the icon-only ellipsis trigger button.
+          * @default 'Show hidden breadcrumbs'
+         */
+        "overflowLabel": string;
+        /**
+          * Size variant. Normally set automatically by a parent `<bs-breadcrumbs size="...">` -- see `bs-breadcrumb`'s identical `size` prop doc comment for why this is propagated as a JS property rather than inherited via CSS. Scales the popup rows' font-size/line-height only; the separator/ellipsis icons' pixel sizes are unchanged. Reflected so consumers/CSS can target `bs-breadcrumb-overflow[size="sm"]`.
+          * @default 'md'
+         */
+        "size": BsBreadcrumbSize1;
+    }
+    /**
+     * A breadcrumb trail container: a real `<nav>` landmark wrapping an `<ol>`, meant to be populated
+     * with slotted `<bs-breadcrumb>` (and, where the consumer wants a collapsed-items disclosure,
+     * `<bs-breadcrumb-overflow>`) children -- same composition-over-configuration architecture as
+     * Carbon Design System's `cds-breadcrumb`/`cds-breadcrumb-item`/`cds-breadcrumb-link`.
+     * This component is intentionally thin: it owns only the `<nav>` landmark and list semantics.
+     * Unlike an earlier `items`-array-driven design, there is no automatic collapsing here -- exactly
+     * like Carbon, the consumer decides what's visible and manually places a `<bs-breadcrumb-overflow>`
+     * wherever they want a collapsed-items disclosure. See `bs-breadcrumbs.mdx` for the consolidated
+     * docs covering all three components in this feature area.
+     * ## When to use
+     * - Showing a user's current location within a hierarchical page structure, with a path back to
+     *   its ancestors.
+     * ## When not to use
+     * - Primary in-app navigation -- use `bs-navigation-drawer`/`bs-navigation-header` instead.
+     * - A flat set of unrelated pages with no hierarchy -- breadcrumbs imply ancestry, not just history.
+     */
+    interface BsBreadcrumbs {
+        /**
+          * Accessible name for the `<nav>` landmark, via `aria-label`. Same pattern as `bs-navigation-drawer`'s `heading` prop.
+          * @default 'Breadcrumb'
+         */
+        "label": string;
+        /**
+          * Size variant, propagated as a JS property to every slotted `bs-breadcrumb`/ `bs-breadcrumb-overflow` child -- this container has no visual sizing of its own (font/spacing live on the item components, see `bs-breadcrumb.tsx`'s identical `size` prop), so propagation is the only way setting `size` here reaches every crumb. CSS custom properties can't carry an enum that switches rules on their own, which is why this is pushed via JS property instead of CSS inheritance -- same reasoning as `bs-tabs` setting `selected` directly on its slotted `bs-tab`/`bs-inline-tab` children. Re-propagated on `size` changes and whenever the slotted children change (e.g. a crumb added later).
+          * @default 'md'
+         */
+        "size": BsBreadcrumbSize1;
     }
     /**
      * A clickable action element for the single most important action in a given context.
@@ -575,6 +746,36 @@ export namespace Components {
         "size": BsCheckboxSize;
     }
     /**
+     * A shape-matched loading placeholder for `bs-checkbox`, shown while the real label text isn't
+     * known yet (e.g. still being fetched from an API). Renders a small square (matching the
+     * checkbox's own box) beside a text-bar placeholder (standing in for the label), both pulsing
+     * together, sized to match `bs-checkbox`'s `sm`/`md`/`lg` box dimensions so layout doesn't shift
+     * once the real checkbox renders.
+     * ## When to use
+     * - In place of a `bs-checkbox` whose label/checked state depends on data that hasn't loaded yet.
+     * ## When not to use
+     * - While a checkbox's own change handler is running (e.g. a save request in flight) -- render the
+     *   real `bs-checkbox` itself; this component is not a saving-in-progress spinner.
+     * @prop --bs-checkbox-skeleton-size-sm - Box width/height at `size="sm"`. Aliased to
+     * `--bs-spacing-200`, mirroring `bs-checkbox`'s own `--bs-checkbox-size-sm` -- not read directly
+     * from it, since these are two separate shadow roots.
+     * @prop --bs-checkbox-skeleton-size-md - Box width/height at `size="md"`. Aliased to
+     * `--bs-spacing-250`.
+     * @prop --bs-checkbox-skeleton-size-lg - Box width/height at `size="lg"`. Aliased to
+     * `--bs-spacing-300`.
+     * @prop --bs-checkbox-skeleton-gap - Gap between the box and label placeholders. Aliased to
+     * `--bs-spacing-100`, mirroring `bs-checkbox`'s own `--bs-checkbox-gap`.
+     * @prop --bs-checkbox-skeleton-label-width - Width of the label placeholder bar. Defaults to
+     * `96px`.
+     */
+    interface BsCheckboxSkeleton {
+        /**
+          * Sizing scale, matching the `bs-checkbox` size it stands in for. Defaults to `lg`, the same (unusual) default `bs-checkbox` itself uses.
+          * @default 'lg'
+         */
+        "size": BsCheckboxSize1;
+    }
+    /**
      * A chat composer input for Genie AI-style conversational interfaces: a text field
      * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
      * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
@@ -763,6 +964,40 @@ export namespace Components {
           * @default 'asc'
          */
         "sortDirection": 'asc' | 'desc';
+    }
+    /**
+     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
+     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+     * ## When to use
+     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+     * - A short, focused task that doesn't warrant navigating to a new page.
+     * ## When not to use
+     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
+     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+     *   dialog that just gets taller and taller.
+     * Two additional slots cover the Figma "Dialog" component's other states: `image` (a hero image
+     * across the top, close button floats over it instead of sitting in the header row) and `icon`
+     * (only rendered when `centered` is set, e.g. a success checkmark above a centered heading). The
+     * close button "floats" (absolute-positioned, top-right of the dialog, with its own background)
+     * whenever `centered` is true or the `image` slot has content -- otherwise it's the plain inline
+     * button in the header row next to the heading, same as before this addition.
+     */
+    interface BsDialog {
+        /**
+          * Switches to the Figma "Icon Centered" layout: heading/body text centered, the `icon` slot rendered above the heading, and the close button floating top-right of the dialog instead of inline in the header row. Doesn't hide a slotted `image` if one is also provided -- Figma's spec doesn't show the two combined, so this is unspecified rather than actively blocked. Reflected so consumers/CSS can target `bs-dialog[centered]`.
+          * @default false
+         */
+        "centered": boolean;
+        "heading"?: string;
+        /**
+          * Mutable + reflected so the component can close itself (backdrop click, Escape, close button) the same way a native `<dialog>` does, while still emitting `bsClose` for the consumer to react to.
+          * @default false
+         */
+        "open": boolean;
+        /**
+          * @default 'md'
+         */
+        "size": BsDialogSize;
     }
     /**
      * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
@@ -1051,29 +1286,6 @@ export namespace Components {
         "disabled": boolean;
     }
     /**
-     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
-     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
-     * ## When to use
-     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
-     * - A short, focused task that doesn't warrant navigating to a new page.
-     * ## When not to use
-     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
-     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
-     *   modal that just gets taller and taller.
-     */
-    interface BsModal {
-        "heading"?: string;
-        /**
-          * Mutable + reflected so the component can close itself (backdrop click, Escape, close button) the same way a native `<dialog>` does, while still emitting `bsClose` for the consumer to react to.
-          * @default false
-         */
-        "open": boolean;
-        /**
-          * @default 'md'
-         */
-        "size": BsModalSize;
-    }
-    /**
      * A left-side persistent navigation sidebar: the BrandSync logo, a "Main Menu" title with a
      * collapse toggle, a reserved slot for a search field, and a scrollable list of nav items.
      * ## When to use
@@ -1240,6 +1452,48 @@ export namespace Components {
         "skipToContentLabel": string;
     }
     /**
+     * A numbered page control -- previous/next chevrons, page-number buttons, and `...` overflow for
+     * large page counts. Matches the Figma "Pagination" component's "Default" type (the classic
+     * numbered pagination); its other type ("jumper" -- a rows-per-page dropdown plus a page-jump
+     * input) is a structurally different composite widget and isn't covered by this component.
+     * `totalPages`/`currentPage` drive everything -- this computes which page numbers to show and
+     * where to collapse into `...` itself, the consumer never builds the button list by hand.
+     * ## When to use
+     * - Paging through a large, ordered result set (a table, a search results list) where jumping
+     *   directly to a specific page number is useful.
+     * ## When not to use
+     * - Infinite-scroll or "load more" patterns -- those don't have a fixed, addressable page number.
+     * - A huge page count where users realistically only ever go forward/back one page at a time --
+     *   plain prev/next controls (no numbers) are simpler there.
+     */
+    interface BsPagination {
+        /**
+          * The active page (1-indexed). Mutable + reflected so clicking a page button updates it directly, the same way `bs-modal`'s `open` self-manages, while `bsPageChange` still fires for the consumer to react to (e.g. fetching that page's data).
+          * @default 1
+         */
+        "currentPage": number;
+        /**
+          * Accessible name for the next-page button.
+          * @default 'Next page'
+         */
+        "nextLabel": string;
+        /**
+          * Accessible name for the previous-page button.
+          * @default 'Previous page'
+         */
+        "previousLabel": string;
+        /**
+          * How many page numbers to show on each side of the current page before collapsing the rest into `...`. `1` (the default) reproduces the Figma spec's example exactly (page 1 of 12 shows `1 2 3 ... 12`).
+          * @default 1
+         */
+        "siblingCount": number;
+        /**
+          * Total number of pages. Must be a positive integer -- there's always at least one page.
+          * @default 1
+         */
+        "totalPages": number;
+    }
+    /**
      * A single radio button with its label, for one mutually-exclusive choice within a group.
      * ## When to use
      * - One option within a set of mutually-exclusive choices, where all options should stay visible
@@ -1343,6 +1597,41 @@ export namespace Components {
           * Lower thumb's value for `type="range"`. Defaults to `min` when unset. Mutable so dragging the thumb updates it directly.
          */
         "valueStart"?: number;
+    }
+    /**
+     * A transient status bar for confirming the result of an action (e.g. "Files uploaded
+     * successfully.") -- an icon (or loading spinner), a message, an optional action, and a close
+     * button.
+     * This component only renders the bar itself -- it doesn't manage its own visibility, timing, or
+     * stacking. A consumer (typically a small "toast manager" utility) creates one per message and
+     * removes it from the DOM again, whether on a timer or on `bsDismiss`. Figma's spec doesn't show
+     * auto-dismiss timing at all (it's a static visual spec), so this deliberately doesn't invent one.
+     * The icon is always the same checkmark glyph across every `variant`, just recolored -- matching
+     * the Figma spec exactly, even though a checkmark for `variant="error"` reads a little oddly
+     * semantically. Worth revisiting with severity-specific icons (warning triangle, error circle,
+     * etc.) if the design updates to specify them.
+     * ## When to use
+     * - Confirming the outcome of an action that just happened (save succeeded, upload failed) without
+     *   interrupting the user's flow.
+     * ## When not to use
+     * - For a response that requires the user to make a decision before continuing -- use `bs-dialog`.
+     * - For persistent, always-visible status -- a snackbar is inherently transient.
+     */
+    interface BsSnackbar {
+        /**
+          * Label for the optional action button (e.g. "Undo", "Retry"). Omit this prop entirely to render no action button at all -- its presence, not a boolean flag, is what shows it.
+         */
+        "actionLabel"?: string;
+        /**
+          * Replaces the checkmark icon with a spinning loading indicator, for a message describing in-progress work (e.g. "Uploading files...") rather than a completed result.
+          * @default false
+         */
+        "loading": boolean;
+        /**
+          * Color/semantic variant. `default` is the neutral (dark, inverse-surface) bar Figma shows as the baseline; `info`/`warning`/`success`/`error` use their matching container/text tokens.
+          * @default 'default'
+         */
+        "variant": BsSnackbarVariant;
     }
     /**
      * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
@@ -1569,6 +1858,10 @@ export interface BsDataTableCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsDataTableElement;
 }
+export interface BsDialogCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsDialogElement;
+}
 export interface BsInlineTabCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsInlineTabElement;
@@ -1581,10 +1874,6 @@ export interface BsMenuItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsMenuItemElement;
 }
-export interface BsModalCustomEvent<T> extends CustomEvent<T> {
-    detail: T;
-    target: HTMLBsModalElement;
-}
 export interface BsNavigationDrawerCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsNavigationDrawerElement;
@@ -1593,6 +1882,10 @@ export interface BsNavigationDrawerItemCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsNavigationDrawerItemElement;
 }
+export interface BsPaginationCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsPaginationElement;
+}
 export interface BsRadioCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsRadioElement;
@@ -1600,6 +1893,10 @@ export interface BsRadioCustomEvent<T> extends CustomEvent<T> {
 export interface BsSliderCustomEvent<T> extends CustomEvent<T> {
     detail: T;
     target: HTMLBsSliderElement;
+}
+export interface BsSnackbarCustomEvent<T> extends CustomEvent<T> {
+    detail: T;
+    target: HTMLBsSnackbarElement;
 }
 export interface BsSourceLinkCustomEvent<T> extends CustomEvent<T> {
     detail: T;
@@ -1764,6 +2061,31 @@ declare global {
         new (): HTMLBsAttachmentListElement;
     };
     /**
+     * A circular representation of a person or entity -- a photo, initials, or (as a fallback when
+     * neither is available) a generic user-silhouette icon.
+     * ## When to use
+     * - Representing a specific user or account: in a header, a comment, a member list, etc.
+     * - `type="initials"` when a photo isn't available but a name is (e.g. "Sam Lee" -> "SL").
+     * - `type="icon"` (the default) as the generic fallback when neither a photo nor a name/initials
+     *   is available yet.
+     * ## When not to use
+     * - A company/brand logo -- use `bs-logo` instead.
+     * This component is decorative/informational by default, not an interactive control -- it renders
+     * a plain `<span>`/`<img>`, not a `<button>`. Figma's own component set includes hover/focused/
+     * pressed states (e.g. for an account-switcher trigger use case), which this implements as real
+     * `:hover`/`:focus-visible`/`:active` CSS on the host itself -- so wrapping this in your own
+     * `<button>`, or setting `tabindex` and a click handler on the `<bs-avatar>` element directly, gets
+     * the matching visual treatment for free with no extra wiring. Left genuinely non-interactive
+     * (no implicit role/tabindex of its own) so it doesn't misrepresent a purely decorative avatar
+     * (e.g. next to a comment) as a control when it isn't one.
+     */
+    interface HTMLBsAvatarElement extends Components.BsAvatar, HTMLStencilElement {
+    }
+    var HTMLBsAvatarElement: {
+        prototype: HTMLBsAvatarElement;
+        new (): HTMLBsAvatarElement;
+    };
+    /**
      * A small status or category pill, usually paired with a label or list item.
      * ## When to use
      * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
@@ -1777,6 +2099,82 @@ declare global {
     var HTMLBsBadgeElement: {
         prototype: HTMLBsBadgeElement;
         new (): HTMLBsBadgeElement;
+    };
+    /**
+     * A single crumb within a `<bs-breadcrumbs>` trail: a leading separator icon plus either a link,
+     * plain text, or the current-page label, depending on `current`/`href`.
+     * Rendering follows the W3C ARIA Authoring Practices breadcrumb pattern
+     * (https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/): the current page is marked
+     * `aria-current="page"` and is never a link -- this holds even when `href` is also set, unlike
+     * Carbon Design System's `cds-breadcrumb-item`, which allows a link on the current item.
+     * Sets `role="listitem"` on the host, mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()`
+     * -- since this is a custom-element child of a real `<ol>` rather than a real `<li>`, the
+     * accessibility tree needs this explicit role to preserve the list's semantics.
+     * ## When to use
+     * - As one crumb inside a `<bs-breadcrumbs>` trail.
+     * ## When not to use
+     * - Standalone, outside a `<bs-breadcrumbs>` wrapper -- its `<ol>`/`<nav>` context and
+     *   first-child-aware separator hiding depend on that parent structure.
+     */
+    interface HTMLBsBreadcrumbElement extends Components.BsBreadcrumb, HTMLStencilElement {
+    }
+    var HTMLBsBreadcrumbElement: {
+        prototype: HTMLBsBreadcrumbElement;
+        new (): HTMLBsBreadcrumbElement;
+    };
+    /**
+     * A manually-placed collapsed-items disclosure for a `<bs-breadcrumbs>` trail: a leading separator
+     * plus an icon-only ellipsis button that reveals a `bs-menu` popup listing every hidden crumb.
+     * `items` is JS-property-only -- must be set as a JS property (`el.items = [...]`), not an HTML
+     * attribute, since attributes can only carry strings. See CONVENTIONS.md.
+     * Unlike an earlier `bs-breadcrumbs`-owned automatic `maxItems` collapse, this component does no
+     * collapsing logic itself -- the consumer decides which crumbs to hide and places this element
+     * wherever they want the disclosure, exactly matching Carbon Design System's own approach (Carbon
+     * doesn't auto-collapse breadcrumbs either; a consumer there manually decides what's visible).
+     * Hidden items with an `href` render as real `<a href>` rows inside the popup, not `bs-menu-item`
+     * (which renders a `<button>`) -- this matters because consuming apps commonly use client-side
+     * routers that intercept clicks on real `<a>` tags to do `preventDefault` + push-state navigation.
+     * Rendering hidden links any other way (e.g. `window.location`) would silently break client-side
+     * routing for hidden crumbs while working fine for visible ones. Hidden items without an `href`
+     * render as plain non-interactive text, matching how `bs-breadcrumb` itself handles link vs.
+     * no-link crumbs.
+     * Sets `role="listitem"` on the host, mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()`
+     * -- since this is a custom-element child of a real `<ol>` rather than a real `<li>`, the
+     * accessibility tree needs this explicit role to preserve the list's semantics.
+     * ## When to use
+     * - Inside a `<bs-breadcrumbs>` trail, wherever the consumer wants an interactive disclosure for
+     *   crumbs they've chosen not to render directly.
+     * ## When not to use
+     * - As an automatic collapsing mechanism -- there is none; the consumer decides what's hidden.
+     */
+    interface HTMLBsBreadcrumbOverflowElement extends Components.BsBreadcrumbOverflow, HTMLStencilElement {
+    }
+    var HTMLBsBreadcrumbOverflowElement: {
+        prototype: HTMLBsBreadcrumbOverflowElement;
+        new (): HTMLBsBreadcrumbOverflowElement;
+    };
+    /**
+     * A breadcrumb trail container: a real `<nav>` landmark wrapping an `<ol>`, meant to be populated
+     * with slotted `<bs-breadcrumb>` (and, where the consumer wants a collapsed-items disclosure,
+     * `<bs-breadcrumb-overflow>`) children -- same composition-over-configuration architecture as
+     * Carbon Design System's `cds-breadcrumb`/`cds-breadcrumb-item`/`cds-breadcrumb-link`.
+     * This component is intentionally thin: it owns only the `<nav>` landmark and list semantics.
+     * Unlike an earlier `items`-array-driven design, there is no automatic collapsing here -- exactly
+     * like Carbon, the consumer decides what's visible and manually places a `<bs-breadcrumb-overflow>`
+     * wherever they want a collapsed-items disclosure. See `bs-breadcrumbs.mdx` for the consolidated
+     * docs covering all three components in this feature area.
+     * ## When to use
+     * - Showing a user's current location within a hierarchical page structure, with a path back to
+     *   its ancestors.
+     * ## When not to use
+     * - Primary in-app navigation -- use `bs-navigation-drawer`/`bs-navigation-header` instead.
+     * - A flat set of unrelated pages with no hierarchy -- breadcrumbs imply ancestry, not just history.
+     */
+    interface HTMLBsBreadcrumbsElement extends Components.BsBreadcrumbs, HTMLStencilElement {
+    }
+    var HTMLBsBreadcrumbsElement: {
+        prototype: HTMLBsBreadcrumbsElement;
+        new (): HTMLBsBreadcrumbsElement;
     };
     /**
      * A clickable action element for the single most important action in a given context.
@@ -2123,6 +2521,35 @@ declare global {
         prototype: HTMLBsCheckboxElement;
         new (): HTMLBsCheckboxElement;
     };
+    /**
+     * A shape-matched loading placeholder for `bs-checkbox`, shown while the real label text isn't
+     * known yet (e.g. still being fetched from an API). Renders a small square (matching the
+     * checkbox's own box) beside a text-bar placeholder (standing in for the label), both pulsing
+     * together, sized to match `bs-checkbox`'s `sm`/`md`/`lg` box dimensions so layout doesn't shift
+     * once the real checkbox renders.
+     * ## When to use
+     * - In place of a `bs-checkbox` whose label/checked state depends on data that hasn't loaded yet.
+     * ## When not to use
+     * - While a checkbox's own change handler is running (e.g. a save request in flight) -- render the
+     *   real `bs-checkbox` itself; this component is not a saving-in-progress spinner.
+     * @prop --bs-checkbox-skeleton-size-sm - Box width/height at `size="sm"`. Aliased to
+     * `--bs-spacing-200`, mirroring `bs-checkbox`'s own `--bs-checkbox-size-sm` -- not read directly
+     * from it, since these are two separate shadow roots.
+     * @prop --bs-checkbox-skeleton-size-md - Box width/height at `size="md"`. Aliased to
+     * `--bs-spacing-250`.
+     * @prop --bs-checkbox-skeleton-size-lg - Box width/height at `size="lg"`. Aliased to
+     * `--bs-spacing-300`.
+     * @prop --bs-checkbox-skeleton-gap - Gap between the box and label placeholders. Aliased to
+     * `--bs-spacing-100`, mirroring `bs-checkbox`'s own `--bs-checkbox-gap`.
+     * @prop --bs-checkbox-skeleton-label-width - Width of the label placeholder bar. Defaults to
+     * `96px`.
+     */
+    interface HTMLBsCheckboxSkeletonElement extends Components.BsCheckboxSkeleton, HTMLStencilElement {
+    }
+    var HTMLBsCheckboxSkeletonElement: {
+        prototype: HTMLBsCheckboxSkeletonElement;
+        new (): HTMLBsCheckboxSkeletonElement;
+    };
     interface HTMLBsComposerElementEventMap {
         "bsInput": string;
         "bsSubmit": void;
@@ -2287,6 +2714,40 @@ declare global {
     var HTMLBsDataTableElement: {
         prototype: HTMLBsDataTableElement;
         new (): HTMLBsDataTableElement;
+    };
+    interface HTMLBsDialogElementEventMap {
+        "bsClose": void;
+    }
+    /**
+     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
+     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+     * ## When to use
+     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+     * - A short, focused task that doesn't warrant navigating to a new page.
+     * ## When not to use
+     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
+     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+     *   dialog that just gets taller and taller.
+     * Two additional slots cover the Figma "Dialog" component's other states: `image` (a hero image
+     * across the top, close button floats over it instead of sitting in the header row) and `icon`
+     * (only rendered when `centered` is set, e.g. a success checkmark above a centered heading). The
+     * close button "floats" (absolute-positioned, top-right of the dialog, with its own background)
+     * whenever `centered` is true or the `image` slot has content -- otherwise it's the plain inline
+     * button in the header row next to the heading, same as before this addition.
+     */
+    interface HTMLBsDialogElement extends Components.BsDialog, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsDialogElementEventMap>(type: K, listener: (this: HTMLBsDialogElement, ev: BsDialogCustomEvent<HTMLBsDialogElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsDialogElementEventMap>(type: K, listener: (this: HTMLBsDialogElement, ev: BsDialogCustomEvent<HTMLBsDialogElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsDialogElement: {
+        prototype: HTMLBsDialogElement;
+        new (): HTMLBsDialogElement;
     };
     /**
      * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
@@ -2480,34 +2941,6 @@ declare global {
         prototype: HTMLBsMenuItemElement;
         new (): HTMLBsMenuItemElement;
     };
-    interface HTMLBsModalElementEventMap {
-        "bsClose": void;
-    }
-    /**
-     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
-     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
-     * ## When to use
-     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
-     * - A short, focused task that doesn't warrant navigating to a new page.
-     * ## When not to use
-     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
-     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
-     *   modal that just gets taller and taller.
-     */
-    interface HTMLBsModalElement extends Components.BsModal, HTMLStencilElement {
-        addEventListener<K extends keyof HTMLBsModalElementEventMap>(type: K, listener: (this: HTMLBsModalElement, ev: BsModalCustomEvent<HTMLBsModalElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
-        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLBsModalElementEventMap>(type: K, listener: (this: HTMLBsModalElement, ev: BsModalCustomEvent<HTMLBsModalElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
-        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
-    }
-    var HTMLBsModalElement: {
-        prototype: HTMLBsModalElement;
-        new (): HTMLBsModalElement;
-    };
     interface HTMLBsNavigationDrawerElementEventMap {
         "bsCollapse": boolean;
         "bsSearchClick": void;
@@ -2630,6 +3063,38 @@ declare global {
         prototype: HTMLBsNavigationHeaderElement;
         new (): HTMLBsNavigationHeaderElement;
     };
+    interface HTMLBsPaginationElementEventMap {
+        "bsPageChange": number;
+    }
+    /**
+     * A numbered page control -- previous/next chevrons, page-number buttons, and `...` overflow for
+     * large page counts. Matches the Figma "Pagination" component's "Default" type (the classic
+     * numbered pagination); its other type ("jumper" -- a rows-per-page dropdown plus a page-jump
+     * input) is a structurally different composite widget and isn't covered by this component.
+     * `totalPages`/`currentPage` drive everything -- this computes which page numbers to show and
+     * where to collapse into `...` itself, the consumer never builds the button list by hand.
+     * ## When to use
+     * - Paging through a large, ordered result set (a table, a search results list) where jumping
+     *   directly to a specific page number is useful.
+     * ## When not to use
+     * - Infinite-scroll or "load more" patterns -- those don't have a fixed, addressable page number.
+     * - A huge page count where users realistically only ever go forward/back one page at a time --
+     *   plain prev/next controls (no numbers) are simpler there.
+     */
+    interface HTMLBsPaginationElement extends Components.BsPagination, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsPaginationElementEventMap>(type: K, listener: (this: HTMLBsPaginationElement, ev: BsPaginationCustomEvent<HTMLBsPaginationElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsPaginationElementEventMap>(type: K, listener: (this: HTMLBsPaginationElement, ev: BsPaginationCustomEvent<HTMLBsPaginationElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsPaginationElement: {
+        prototype: HTMLBsPaginationElement;
+        new (): HTMLBsPaginationElement;
+    };
     interface HTMLBsRadioElementEventMap {
         "bsChange": string;
     }
@@ -2689,6 +3154,43 @@ declare global {
     var HTMLBsSliderElement: {
         prototype: HTMLBsSliderElement;
         new (): HTMLBsSliderElement;
+    };
+    interface HTMLBsSnackbarElementEventMap {
+        "bsAction": void;
+        "bsDismiss": void;
+    }
+    /**
+     * A transient status bar for confirming the result of an action (e.g. "Files uploaded
+     * successfully.") -- an icon (or loading spinner), a message, an optional action, and a close
+     * button.
+     * This component only renders the bar itself -- it doesn't manage its own visibility, timing, or
+     * stacking. A consumer (typically a small "toast manager" utility) creates one per message and
+     * removes it from the DOM again, whether on a timer or on `bsDismiss`. Figma's spec doesn't show
+     * auto-dismiss timing at all (it's a static visual spec), so this deliberately doesn't invent one.
+     * The icon is always the same checkmark glyph across every `variant`, just recolored -- matching
+     * the Figma spec exactly, even though a checkmark for `variant="error"` reads a little oddly
+     * semantically. Worth revisiting with severity-specific icons (warning triangle, error circle,
+     * etc.) if the design updates to specify them.
+     * ## When to use
+     * - Confirming the outcome of an action that just happened (save succeeded, upload failed) without
+     *   interrupting the user's flow.
+     * ## When not to use
+     * - For a response that requires the user to make a decision before continuing -- use `bs-dialog`.
+     * - For persistent, always-visible status -- a snackbar is inherently transient.
+     */
+    interface HTMLBsSnackbarElement extends Components.BsSnackbar, HTMLStencilElement {
+        addEventListener<K extends keyof HTMLBsSnackbarElementEventMap>(type: K, listener: (this: HTMLBsSnackbarElement, ev: BsSnackbarCustomEvent<HTMLBsSnackbarElementEventMap[K]>) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
+        addEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | AddEventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLBsSnackbarElementEventMap>(type: K, listener: (this: HTMLBsSnackbarElement, ev: BsSnackbarCustomEvent<HTMLBsSnackbarElementEventMap[K]>) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof DocumentEventMap>(type: K, listener: (this: Document, ev: DocumentEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener<K extends keyof HTMLElementEventMap>(type: K, listener: (this: HTMLElement, ev: HTMLElementEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
+        removeEventListener(type: string, listener: EventListenerOrEventListenerObject, options?: boolean | EventListenerOptions): void;
+    }
+    var HTMLBsSnackbarElement: {
+        prototype: HTMLBsSnackbarElement;
+        new (): HTMLBsSnackbarElement;
     };
     interface HTMLBsSourceLinkElementEventMap {
         "bsOpen": void;
@@ -2856,7 +3358,11 @@ declare global {
         "bs-ai-thinking": HTMLBsAiThinkingElement;
         "bs-attachment": HTMLBsAttachmentElement;
         "bs-attachment-list": HTMLBsAttachmentListElement;
+        "bs-avatar": HTMLBsAvatarElement;
         "bs-badge": HTMLBsBadgeElement;
+        "bs-breadcrumb": HTMLBsBreadcrumbElement;
+        "bs-breadcrumb-overflow": HTMLBsBreadcrumbOverflowElement;
+        "bs-breadcrumbs": HTMLBsBreadcrumbsElement;
         "bs-button": HTMLBsButtonElement;
         "bs-button-skeleton": HTMLBsButtonSkeletonElement;
         "bs-card": HTMLBsCardElement;
@@ -2866,21 +3372,24 @@ declare global {
         "bs-chatbot-sources-drawer": HTMLBsChatbotSourcesDrawerElement;
         "bs-chatbot-suggestion-button": HTMLBsChatbotSuggestionButtonElement;
         "bs-checkbox": HTMLBsCheckboxElement;
+        "bs-checkbox-skeleton": HTMLBsCheckboxSkeletonElement;
         "bs-composer": HTMLBsComposerElement;
         "bs-composer-status-banner": HTMLBsComposerStatusBannerElement;
         "bs-data-table": HTMLBsDataTableElement;
+        "bs-dialog": HTMLBsDialogElement;
         "bs-icon-button": HTMLBsIconButtonElement;
         "bs-inline-tab": HTMLBsInlineTabElement;
         "bs-input": HTMLBsInputElement;
         "bs-logo": HTMLBsLogoElement;
         "bs-menu": HTMLBsMenuElement;
         "bs-menu-item": HTMLBsMenuItemElement;
-        "bs-modal": HTMLBsModalElement;
         "bs-navigation-drawer": HTMLBsNavigationDrawerElement;
         "bs-navigation-drawer-item": HTMLBsNavigationDrawerItemElement;
         "bs-navigation-header": HTMLBsNavigationHeaderElement;
+        "bs-pagination": HTMLBsPaginationElement;
         "bs-radio": HTMLBsRadioElement;
         "bs-slider": HTMLBsSliderElement;
+        "bs-snackbar": HTMLBsSnackbarElement;
         "bs-source-link": HTMLBsSourceLinkElement;
         "bs-switch": HTMLBsSwitchElement;
         "bs-tab": HTMLBsTabElement;
@@ -3060,6 +3569,62 @@ declare namespace LocalJSX {
         "ariaLabel"?: string | null;
     }
     /**
+     * A circular representation of a person or entity -- a photo, initials, or (as a fallback when
+     * neither is available) a generic user-silhouette icon.
+     * ## When to use
+     * - Representing a specific user or account: in a header, a comment, a member list, etc.
+     * - `type="initials"` when a photo isn't available but a name is (e.g. "Sam Lee" -> "SL").
+     * - `type="icon"` (the default) as the generic fallback when neither a photo nor a name/initials
+     *   is available yet.
+     * ## When not to use
+     * - A company/brand logo -- use `bs-logo` instead.
+     * This component is decorative/informational by default, not an interactive control -- it renders
+     * a plain `<span>`/`<img>`, not a `<button>`. Figma's own component set includes hover/focused/
+     * pressed states (e.g. for an account-switcher trigger use case), which this implements as real
+     * `:hover`/`:focus-visible`/`:active` CSS on the host itself -- so wrapping this in your own
+     * `<button>`, or setting `tabindex` and a click handler on the `<bs-avatar>` element directly, gets
+     * the matching visual treatment for free with no extra wiring. Left genuinely non-interactive
+     * (no implicit role/tabindex of its own) so it doesn't misrepresent a purely decorative avatar
+     * (e.g. next to a comment) as a control when it isn't one.
+     */
+    interface BsAvatar {
+        /**
+          * `type="image"` only: accessible alt text for the photo, set directly on the real `<img>` this renders -- a person's photo is meaningful content, not decorative, so pass something real (e.g. their name). Falls back to `alt=""` (decorative to assistive tech) when unset, rather than omitting the attribute entirely, but don't rely on that fallback. Ignored for `icon`/`initials` -- see `ariaLabel` for those instead.
+          * @default null
+         */
+        "alt"?: string | null;
+        /**
+          * `type="icon"`/`"initials"` only: accessible name for the avatar, set as `aria-label` on the `role="img"` wrapper this renders (neither is a real `<img>`, so there's no native `alt` to set). Setting a plain `aria-label` attribute on the `<bs-avatar>` host does NOT work for this -- that attribute stays on the light-DOM host and never crosses into the shadow DOM, so the actual `role="img"` element stays nameless. Same pattern as `bs-checkbox`'s identical `ariaLabel` prop. Ignored for `image` -- see `alt` for that instead.
+          * @default null
+         */
+        "ariaLabel"?: string | null;
+        /**
+          * Applies the disabled treatment (50% opacity) and suppresses the hover/focus/pressed CSS states -- this doesn't set a native `disabled` attribute (this component renders no native form control), it's purely a visual/interaction-state flag for when a consuming app has wrapped this in its own disabled control. Reflected so the `:host([disabled])` CSS selector that drives all of the above still matches when a consumer sets the JS property directly (`el.disabled = true`) rather than the HTML attribute.
+          * @default false
+         */
+        "disabled"?: boolean;
+        /**
+          * `type="initials"` only: the initials text to display (e.g. `"SL"` for "Sam Lee"). Ignored for `icon`/`image`.
+          * @default null
+         */
+        "initials"?: string | null;
+        /**
+          * Sizing scale -- `xs` (24px) through `xxl` (128px), matching Figma's own six-step scale.
+          * @default 'md'
+         */
+        "size"?: BsAvatarSize;
+        /**
+          * `type="image"` only: the photo URL. This component does not fetch it itself -- network calls, loading/error states, and caching are the consuming app's responsibility, same convention as `bs-logo`'s own `src` prop. Ignored for `icon`/`initials`.
+          * @default null
+         */
+        "src"?: string | null;
+        /**
+          * What to render inside the circle. `icon` (default) is the generic fallback for when neither a photo nor initials are available yet.
+          * @default 'icon'
+         */
+        "type"?: BsAvatarType;
+    }
+    /**
      * A small status or category pill, usually paired with a label or list item.
      * ## When to use
      * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
@@ -3074,6 +3639,109 @@ declare namespace LocalJSX {
           * @default 'default'
          */
         "variant"?: BsBadgeVariant;
+    }
+    /**
+     * A single crumb within a `<bs-breadcrumbs>` trail: a leading separator icon plus either a link,
+     * plain text, or the current-page label, depending on `current`/`href`.
+     * Rendering follows the W3C ARIA Authoring Practices breadcrumb pattern
+     * (https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/): the current page is marked
+     * `aria-current="page"` and is never a link -- this holds even when `href` is also set, unlike
+     * Carbon Design System's `cds-breadcrumb-item`, which allows a link on the current item.
+     * Sets `role="listitem"` on the host, mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()`
+     * -- since this is a custom-element child of a real `<ol>` rather than a real `<li>`, the
+     * accessibility tree needs this explicit role to preserve the list's semantics.
+     * ## When to use
+     * - As one crumb inside a `<bs-breadcrumbs>` trail.
+     * ## When not to use
+     * - Standalone, outside a `<bs-breadcrumbs>` wrapper -- its `<ol>`/`<nav>` context and
+     *   first-child-aware separator hiding depend on that parent structure.
+     */
+    interface BsBreadcrumb {
+        /**
+          * Whether this crumb is the current page. Renders as plain (non-link) text marked `aria-current="page"`, reflected as an attribute so consumers/CSS can target `bs-breadcrumb[current]`.
+          * @default false
+         */
+        "current"?: boolean;
+        /**
+          * Destination for a non-current crumb. Ignored when `current` is true -- the current page is never a link, even if `href` is set (see the class JSDoc).
+         */
+        "href"?: string;
+        /**
+          * Size variant. Normally set automatically by a parent `<bs-breadcrumbs size="...">` -- the container propagates its own `size` as a JS property to every slotted `bs-breadcrumb`/ `bs-breadcrumb-overflow` child (see `bs-breadcrumbs.tsx`'s `propagateSize`), since CSS custom properties can't carry an enum that switches rules on their own. Can also be set directly on a standalone crumb. `sm` scales down font-size/line-height only -- the separator icon's pixel size is unchanged, since Figma didn't specify a `sm` icon size and guessing one risked drifting off-brand. Reflected so consumers/CSS can target `bs-breadcrumb[size="sm"]`.
+          * @default 'md'
+         */
+        "size"?: BsBreadcrumbSize;
+    }
+    /**
+     * A manually-placed collapsed-items disclosure for a `<bs-breadcrumbs>` trail: a leading separator
+     * plus an icon-only ellipsis button that reveals a `bs-menu` popup listing every hidden crumb.
+     * `items` is JS-property-only -- must be set as a JS property (`el.items = [...]`), not an HTML
+     * attribute, since attributes can only carry strings. See CONVENTIONS.md.
+     * Unlike an earlier `bs-breadcrumbs`-owned automatic `maxItems` collapse, this component does no
+     * collapsing logic itself -- the consumer decides which crumbs to hide and places this element
+     * wherever they want the disclosure, exactly matching Carbon Design System's own approach (Carbon
+     * doesn't auto-collapse breadcrumbs either; a consumer there manually decides what's visible).
+     * Hidden items with an `href` render as real `<a href>` rows inside the popup, not `bs-menu-item`
+     * (which renders a `<button>`) -- this matters because consuming apps commonly use client-side
+     * routers that intercept clicks on real `<a>` tags to do `preventDefault` + push-state navigation.
+     * Rendering hidden links any other way (e.g. `window.location`) would silently break client-side
+     * routing for hidden crumbs while working fine for visible ones. Hidden items without an `href`
+     * render as plain non-interactive text, matching how `bs-breadcrumb` itself handles link vs.
+     * no-link crumbs.
+     * Sets `role="listitem"` on the host, mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()`
+     * -- since this is a custom-element child of a real `<ol>` rather than a real `<li>`, the
+     * accessibility tree needs this explicit role to preserve the list's semantics.
+     * ## When to use
+     * - Inside a `<bs-breadcrumbs>` trail, wherever the consumer wants an interactive disclosure for
+     *   crumbs they've chosen not to render directly.
+     * ## When not to use
+     * - As an automatic collapsing mechanism -- there is none; the consumer decides what's hidden.
+     */
+    interface BsBreadcrumbOverflow {
+        /**
+          * Array prop -- must be set as a JS property (`el.items = [...]`), not an HTML attribute, since attributes can only carry strings. See CONVENTIONS.md. The hidden crumbs reachable via this disclosure -- no collapsing logic here, the consumer decides what goes in this list.
+          * @default []
+         */
+        "items"?: BsBreadcrumbOverflowItem[];
+        /**
+          * Accessible name (`aria-label`) for the icon-only ellipsis trigger button.
+          * @default 'Show hidden breadcrumbs'
+         */
+        "overflowLabel"?: string;
+        /**
+          * Size variant. Normally set automatically by a parent `<bs-breadcrumbs size="...">` -- see `bs-breadcrumb`'s identical `size` prop doc comment for why this is propagated as a JS property rather than inherited via CSS. Scales the popup rows' font-size/line-height only; the separator/ellipsis icons' pixel sizes are unchanged. Reflected so consumers/CSS can target `bs-breadcrumb-overflow[size="sm"]`.
+          * @default 'md'
+         */
+        "size"?: BsBreadcrumbSize1;
+    }
+    /**
+     * A breadcrumb trail container: a real `<nav>` landmark wrapping an `<ol>`, meant to be populated
+     * with slotted `<bs-breadcrumb>` (and, where the consumer wants a collapsed-items disclosure,
+     * `<bs-breadcrumb-overflow>`) children -- same composition-over-configuration architecture as
+     * Carbon Design System's `cds-breadcrumb`/`cds-breadcrumb-item`/`cds-breadcrumb-link`.
+     * This component is intentionally thin: it owns only the `<nav>` landmark and list semantics.
+     * Unlike an earlier `items`-array-driven design, there is no automatic collapsing here -- exactly
+     * like Carbon, the consumer decides what's visible and manually places a `<bs-breadcrumb-overflow>`
+     * wherever they want a collapsed-items disclosure. See `bs-breadcrumbs.mdx` for the consolidated
+     * docs covering all three components in this feature area.
+     * ## When to use
+     * - Showing a user's current location within a hierarchical page structure, with a path back to
+     *   its ancestors.
+     * ## When not to use
+     * - Primary in-app navigation -- use `bs-navigation-drawer`/`bs-navigation-header` instead.
+     * - A flat set of unrelated pages with no hierarchy -- breadcrumbs imply ancestry, not just history.
+     */
+    interface BsBreadcrumbs {
+        /**
+          * Accessible name for the `<nav>` landmark, via `aria-label`. Same pattern as `bs-navigation-drawer`'s `heading` prop.
+          * @default 'Breadcrumb'
+         */
+        "label"?: string;
+        /**
+          * Size variant, propagated as a JS property to every slotted `bs-breadcrumb`/ `bs-breadcrumb-overflow` child -- this container has no visual sizing of its own (font/spacing live on the item components, see `bs-breadcrumb.tsx`'s identical `size` prop), so propagation is the only way setting `size` here reaches every crumb. CSS custom properties can't carry an enum that switches rules on their own, which is why this is pushed via JS property instead of CSS inheritance -- same reasoning as `bs-tabs` setting `selected` directly on its slotted `bs-tab`/`bs-inline-tab` children. Re-propagated on `size` changes and whenever the slotted children change (e.g. a crumb added later).
+          * @default 'md'
+         */
+        "size"?: BsBreadcrumbSize1;
     }
     /**
      * A clickable action element for the single most important action in a given context.
@@ -3500,6 +4168,36 @@ declare namespace LocalJSX {
         "size"?: BsCheckboxSize;
     }
     /**
+     * A shape-matched loading placeholder for `bs-checkbox`, shown while the real label text isn't
+     * known yet (e.g. still being fetched from an API). Renders a small square (matching the
+     * checkbox's own box) beside a text-bar placeholder (standing in for the label), both pulsing
+     * together, sized to match `bs-checkbox`'s `sm`/`md`/`lg` box dimensions so layout doesn't shift
+     * once the real checkbox renders.
+     * ## When to use
+     * - In place of a `bs-checkbox` whose label/checked state depends on data that hasn't loaded yet.
+     * ## When not to use
+     * - While a checkbox's own change handler is running (e.g. a save request in flight) -- render the
+     *   real `bs-checkbox` itself; this component is not a saving-in-progress spinner.
+     * @prop --bs-checkbox-skeleton-size-sm - Box width/height at `size="sm"`. Aliased to
+     * `--bs-spacing-200`, mirroring `bs-checkbox`'s own `--bs-checkbox-size-sm` -- not read directly
+     * from it, since these are two separate shadow roots.
+     * @prop --bs-checkbox-skeleton-size-md - Box width/height at `size="md"`. Aliased to
+     * `--bs-spacing-250`.
+     * @prop --bs-checkbox-skeleton-size-lg - Box width/height at `size="lg"`. Aliased to
+     * `--bs-spacing-300`.
+     * @prop --bs-checkbox-skeleton-gap - Gap between the box and label placeholders. Aliased to
+     * `--bs-spacing-100`, mirroring `bs-checkbox`'s own `--bs-checkbox-gap`.
+     * @prop --bs-checkbox-skeleton-label-width - Width of the label placeholder bar. Defaults to
+     * `96px`.
+     */
+    interface BsCheckboxSkeleton {
+        /**
+          * Sizing scale, matching the `bs-checkbox` size it stands in for. Defaults to `lg`, the same (unusual) default `bs-checkbox` itself uses.
+          * @default 'lg'
+         */
+        "size"?: BsCheckboxSize1;
+    }
+    /**
      * A chat composer input for Genie AI-style conversational interfaces: a text field
      * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
      * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
@@ -3722,6 +4420,41 @@ declare namespace LocalJSX {
           * @default 'asc'
          */
         "sortDirection"?: 'asc' | 'desc';
+    }
+    /**
+     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
+     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+     * ## When to use
+     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+     * - A short, focused task that doesn't warrant navigating to a new page.
+     * ## When not to use
+     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
+     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+     *   dialog that just gets taller and taller.
+     * Two additional slots cover the Figma "Dialog" component's other states: `image` (a hero image
+     * across the top, close button floats over it instead of sitting in the header row) and `icon`
+     * (only rendered when `centered` is set, e.g. a success checkmark above a centered heading). The
+     * close button "floats" (absolute-positioned, top-right of the dialog, with its own background)
+     * whenever `centered` is true or the `image` slot has content -- otherwise it's the plain inline
+     * button in the header row next to the heading, same as before this addition.
+     */
+    interface BsDialog {
+        /**
+          * Switches to the Figma "Icon Centered" layout: heading/body text centered, the `icon` slot rendered above the heading, and the close button floating top-right of the dialog instead of inline in the header row. Doesn't hide a slotted `image` if one is also provided -- Figma's spec doesn't show the two combined, so this is unspecified rather than actively blocked. Reflected so consumers/CSS can target `bs-dialog[centered]`.
+          * @default false
+         */
+        "centered"?: boolean;
+        "heading"?: string;
+        "onBsClose"?: (event: BsDialogCustomEvent<void>) => void;
+        /**
+          * Mutable + reflected so the component can close itself (backdrop click, Escape, close button) the same way a native `<dialog>` does, while still emitting `bsClose` for the consumer to react to.
+          * @default false
+         */
+        "open"?: boolean;
+        /**
+          * @default 'md'
+         */
+        "size"?: BsDialogSize;
     }
     /**
      * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
@@ -4040,30 +4773,6 @@ declare namespace LocalJSX {
         "onBsSelect"?: (event: BsMenuItemCustomEvent<void>) => void;
     }
     /**
-     * An overlay dialog that interrupts the current flow for a focused task or confirmation.
-     * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
-     * ## When to use
-     * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
-     * - A short, focused task that doesn't warrant navigating to a new page.
-     * ## When not to use
-     * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
-     * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
-     *   modal that just gets taller and taller.
-     */
-    interface BsModal {
-        "heading"?: string;
-        "onBsClose"?: (event: BsModalCustomEvent<void>) => void;
-        /**
-          * Mutable + reflected so the component can close itself (backdrop click, Escape, close button) the same way a native `<dialog>` does, while still emitting `bsClose` for the consumer to react to.
-          * @default false
-         */
-        "open"?: boolean;
-        /**
-          * @default 'md'
-         */
-        "size"?: BsModalSize;
-    }
-    /**
      * A left-side persistent navigation sidebar: the BrandSync logo, a "Main Menu" title with a
      * collapse toggle, a reserved slot for a search field, and a scrollable list of nav items.
      * ## When to use
@@ -4246,6 +4955,52 @@ declare namespace LocalJSX {
         "skipToContentLabel"?: string;
     }
     /**
+     * A numbered page control -- previous/next chevrons, page-number buttons, and `...` overflow for
+     * large page counts. Matches the Figma "Pagination" component's "Default" type (the classic
+     * numbered pagination); its other type ("jumper" -- a rows-per-page dropdown plus a page-jump
+     * input) is a structurally different composite widget and isn't covered by this component.
+     * `totalPages`/`currentPage` drive everything -- this computes which page numbers to show and
+     * where to collapse into `...` itself, the consumer never builds the button list by hand.
+     * ## When to use
+     * - Paging through a large, ordered result set (a table, a search results list) where jumping
+     *   directly to a specific page number is useful.
+     * ## When not to use
+     * - Infinite-scroll or "load more" patterns -- those don't have a fixed, addressable page number.
+     * - A huge page count where users realistically only ever go forward/back one page at a time --
+     *   plain prev/next controls (no numbers) are simpler there.
+     */
+    interface BsPagination {
+        /**
+          * The active page (1-indexed). Mutable + reflected so clicking a page button updates it directly, the same way `bs-modal`'s `open` self-manages, while `bsPageChange` still fires for the consumer to react to (e.g. fetching that page's data).
+          * @default 1
+         */
+        "currentPage"?: number;
+        /**
+          * Accessible name for the next-page button.
+          * @default 'Next page'
+         */
+        "nextLabel"?: string;
+        /**
+          * Fires whenever the active page changes as a result of the user clicking a page/prev/next button -- not when `currentPage` is set programmatically from outside.
+         */
+        "onBsPageChange"?: (event: BsPaginationCustomEvent<number>) => void;
+        /**
+          * Accessible name for the previous-page button.
+          * @default 'Previous page'
+         */
+        "previousLabel"?: string;
+        /**
+          * How many page numbers to show on each side of the current page before collapsing the rest into `...`. `1` (the default) reproduces the Figma spec's example exactly (page 1 of 12 shows `1 2 3 ... 12`).
+          * @default 1
+         */
+        "siblingCount"?: number;
+        /**
+          * Total number of pages. Must be a positive integer -- there's always at least one page.
+          * @default 1
+         */
+        "totalPages"?: number;
+    }
+    /**
      * A single radio button with its label, for one mutually-exclusive choice within a group.
      * ## When to use
      * - One option within a set of mutually-exclusive choices, where all options should stay visible
@@ -4361,6 +5116,49 @@ declare namespace LocalJSX {
           * Lower thumb's value for `type="range"`. Defaults to `min` when unset. Mutable so dragging the thumb updates it directly.
          */
         "valueStart"?: number;
+    }
+    /**
+     * A transient status bar for confirming the result of an action (e.g. "Files uploaded
+     * successfully.") -- an icon (or loading spinner), a message, an optional action, and a close
+     * button.
+     * This component only renders the bar itself -- it doesn't manage its own visibility, timing, or
+     * stacking. A consumer (typically a small "toast manager" utility) creates one per message and
+     * removes it from the DOM again, whether on a timer or on `bsDismiss`. Figma's spec doesn't show
+     * auto-dismiss timing at all (it's a static visual spec), so this deliberately doesn't invent one.
+     * The icon is always the same checkmark glyph across every `variant`, just recolored -- matching
+     * the Figma spec exactly, even though a checkmark for `variant="error"` reads a little oddly
+     * semantically. Worth revisiting with severity-specific icons (warning triangle, error circle,
+     * etc.) if the design updates to specify them.
+     * ## When to use
+     * - Confirming the outcome of an action that just happened (save succeeded, upload failed) without
+     *   interrupting the user's flow.
+     * ## When not to use
+     * - For a response that requires the user to make a decision before continuing -- use `bs-dialog`.
+     * - For persistent, always-visible status -- a snackbar is inherently transient.
+     */
+    interface BsSnackbar {
+        /**
+          * Label for the optional action button (e.g. "Undo", "Retry"). Omit this prop entirely to render no action button at all -- its presence, not a boolean flag, is what shows it.
+         */
+        "actionLabel"?: string;
+        /**
+          * Replaces the checkmark icon with a spinning loading indicator, for a message describing in-progress work (e.g. "Uploading files...") rather than a completed result.
+          * @default false
+         */
+        "loading"?: boolean;
+        /**
+          * Fires when the action button is clicked. Ignored/never fires if `actionLabel` isn't set.
+         */
+        "onBsAction"?: (event: BsSnackbarCustomEvent<void>) => void;
+        /**
+          * Fires when the close button is clicked. This component doesn't remove itself from the DOM -- the consumer is expected to do that (or hide it) in response to this event.
+         */
+        "onBsDismiss"?: (event: BsSnackbarCustomEvent<void>) => void;
+        /**
+          * Color/semantic variant. `default` is the neutral (dark, inverse-surface) bar Figma shows as the baseline; `info`/`warning`/`success`/`error` use their matching container/text tokens.
+          * @default 'default'
+         */
+        "variant"?: BsSnackbarVariant;
     }
     /**
      * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
@@ -4577,8 +5375,30 @@ declare namespace LocalJSX {
     interface BsAttachmentListAttributes {
         "ariaLabel": string | null;
     }
+    interface BsAvatarAttributes {
+        "type": BsAvatarType;
+        "size": BsAvatarSize;
+        "initials": string | null;
+        "src": string | null;
+        "alt": string | null;
+        "ariaLabel": string | null;
+        "disabled": boolean;
+    }
     interface BsBadgeAttributes {
         "variant": BsBadgeVariant;
+    }
+    interface BsBreadcrumbAttributes {
+        "href": string;
+        "current": boolean;
+        "size": BsBreadcrumbSize;
+    }
+    interface BsBreadcrumbOverflowAttributes {
+        "overflowLabel": string;
+        "size": BsBreadcrumbSize;
+    }
+    interface BsBreadcrumbsAttributes {
+        "label": string;
+        "size": BsBreadcrumbSize;
     }
     interface BsButtonAttributes {
         "variant": BsButtonVariant;
@@ -4623,6 +5443,9 @@ declare namespace LocalJSX {
         "error": boolean;
         "ariaLabel": string | null;
     }
+    interface BsCheckboxSkeletonAttributes {
+        "size": BsCheckboxSize;
+    }
     interface BsComposerAttributes {
         "variant": BsComposerVariant;
         "placeholder": string;
@@ -4642,6 +5465,12 @@ declare namespace LocalJSX {
         "sortColumn": string;
         "sortDirection": 'asc' | 'desc';
         "selectable": boolean;
+    }
+    interface BsDialogAttributes {
+        "open": boolean;
+        "heading": string;
+        "size": BsDialogSize;
+        "centered": boolean;
     }
     interface BsIconButtonAttributes {
         "variant": BsIconButtonVariant;
@@ -4694,11 +5523,6 @@ declare namespace LocalJSX {
     interface BsMenuItemAttributes {
         "disabled": boolean;
     }
-    interface BsModalAttributes {
-        "open": boolean;
-        "heading": string;
-        "size": BsModalSize;
-    }
     interface BsNavigationDrawerAttributes {
         "heading": string;
         "collapsible": boolean;
@@ -4721,6 +5545,13 @@ declare namespace LocalJSX {
         "skipToContentLabel": string;
         "logoBackground": 'auto' | 'light' | 'dark';
     }
+    interface BsPaginationAttributes {
+        "totalPages": number;
+        "currentPage": number;
+        "siblingCount": number;
+        "previousLabel": string;
+        "nextLabel": string;
+    }
     interface BsRadioAttributes {
         "name": string;
         "value": string;
@@ -4740,6 +5571,11 @@ declare namespace LocalJSX {
         "segments": number;
         "disabled": boolean;
         "ariaLabel": string | null;
+    }
+    interface BsSnackbarAttributes {
+        "variant": BsSnackbarVariant;
+        "loading": boolean;
+        "actionLabel": string;
     }
     interface BsSourceLinkAttributes {
         "fileName": string;
@@ -4774,7 +5610,11 @@ declare namespace LocalJSX {
         "bs-ai-thinking": Omit<BsAiThinking, keyof BsAiThinkingAttributes> & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes]?: BsAiThinking[K] } & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes as `attr:${K}`]?: BsAiThinkingAttributes[K] } & { [K in keyof BsAiThinking & keyof BsAiThinkingAttributes as `prop:${K}`]?: BsAiThinking[K] };
         "bs-attachment": Omit<BsAttachment, keyof BsAttachmentAttributes> & { [K in keyof BsAttachment & keyof BsAttachmentAttributes]?: BsAttachment[K] } & { [K in keyof BsAttachment & keyof BsAttachmentAttributes as `attr:${K}`]?: BsAttachmentAttributes[K] } & { [K in keyof BsAttachment & keyof BsAttachmentAttributes as `prop:${K}`]?: BsAttachment[K] };
         "bs-attachment-list": Omit<BsAttachmentList, keyof BsAttachmentListAttributes> & { [K in keyof BsAttachmentList & keyof BsAttachmentListAttributes]?: BsAttachmentList[K] } & { [K in keyof BsAttachmentList & keyof BsAttachmentListAttributes as `attr:${K}`]?: BsAttachmentListAttributes[K] } & { [K in keyof BsAttachmentList & keyof BsAttachmentListAttributes as `prop:${K}`]?: BsAttachmentList[K] };
+        "bs-avatar": Omit<BsAvatar, keyof BsAvatarAttributes> & { [K in keyof BsAvatar & keyof BsAvatarAttributes]?: BsAvatar[K] } & { [K in keyof BsAvatar & keyof BsAvatarAttributes as `attr:${K}`]?: BsAvatarAttributes[K] } & { [K in keyof BsAvatar & keyof BsAvatarAttributes as `prop:${K}`]?: BsAvatar[K] };
         "bs-badge": Omit<BsBadge, keyof BsBadgeAttributes> & { [K in keyof BsBadge & keyof BsBadgeAttributes]?: BsBadge[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `attr:${K}`]?: BsBadgeAttributes[K] } & { [K in keyof BsBadge & keyof BsBadgeAttributes as `prop:${K}`]?: BsBadge[K] };
+        "bs-breadcrumb": Omit<BsBreadcrumb, keyof BsBreadcrumbAttributes> & { [K in keyof BsBreadcrumb & keyof BsBreadcrumbAttributes]?: BsBreadcrumb[K] } & { [K in keyof BsBreadcrumb & keyof BsBreadcrumbAttributes as `attr:${K}`]?: BsBreadcrumbAttributes[K] } & { [K in keyof BsBreadcrumb & keyof BsBreadcrumbAttributes as `prop:${K}`]?: BsBreadcrumb[K] };
+        "bs-breadcrumb-overflow": Omit<BsBreadcrumbOverflow, keyof BsBreadcrumbOverflowAttributes> & { [K in keyof BsBreadcrumbOverflow & keyof BsBreadcrumbOverflowAttributes]?: BsBreadcrumbOverflow[K] } & { [K in keyof BsBreadcrumbOverflow & keyof BsBreadcrumbOverflowAttributes as `attr:${K}`]?: BsBreadcrumbOverflowAttributes[K] } & { [K in keyof BsBreadcrumbOverflow & keyof BsBreadcrumbOverflowAttributes as `prop:${K}`]?: BsBreadcrumbOverflow[K] };
+        "bs-breadcrumbs": Omit<BsBreadcrumbs, keyof BsBreadcrumbsAttributes> & { [K in keyof BsBreadcrumbs & keyof BsBreadcrumbsAttributes]?: BsBreadcrumbs[K] } & { [K in keyof BsBreadcrumbs & keyof BsBreadcrumbsAttributes as `attr:${K}`]?: BsBreadcrumbsAttributes[K] } & { [K in keyof BsBreadcrumbs & keyof BsBreadcrumbsAttributes as `prop:${K}`]?: BsBreadcrumbs[K] };
         "bs-button": Omit<BsButton, keyof BsButtonAttributes> & { [K in keyof BsButton & keyof BsButtonAttributes]?: BsButton[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `attr:${K}`]?: BsButtonAttributes[K] } & { [K in keyof BsButton & keyof BsButtonAttributes as `prop:${K}`]?: BsButton[K] };
         "bs-button-skeleton": Omit<BsButtonSkeleton, keyof BsButtonSkeletonAttributes> & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes]?: BsButtonSkeleton[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `attr:${K}`]?: BsButtonSkeletonAttributes[K] } & { [K in keyof BsButtonSkeleton & keyof BsButtonSkeletonAttributes as `prop:${K}`]?: BsButtonSkeleton[K] };
         "bs-card": Omit<BsCard, keyof BsCardAttributes> & { [K in keyof BsCard & keyof BsCardAttributes]?: BsCard[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `attr:${K}`]?: BsCardAttributes[K] } & { [K in keyof BsCard & keyof BsCardAttributes as `prop:${K}`]?: BsCard[K] };
@@ -4784,21 +5624,24 @@ declare namespace LocalJSX {
         "bs-chatbot-sources-drawer": Omit<BsChatbotSourcesDrawer, keyof BsChatbotSourcesDrawerAttributes> & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes]?: BsChatbotSourcesDrawer[K] } & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes as `attr:${K}`]?: BsChatbotSourcesDrawerAttributes[K] } & { [K in keyof BsChatbotSourcesDrawer & keyof BsChatbotSourcesDrawerAttributes as `prop:${K}`]?: BsChatbotSourcesDrawer[K] };
         "bs-chatbot-suggestion-button": Omit<BsChatbotSuggestionButton, keyof BsChatbotSuggestionButtonAttributes> & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes]?: BsChatbotSuggestionButton[K] } & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes as `attr:${K}`]?: BsChatbotSuggestionButtonAttributes[K] } & { [K in keyof BsChatbotSuggestionButton & keyof BsChatbotSuggestionButtonAttributes as `prop:${K}`]?: BsChatbotSuggestionButton[K] };
         "bs-checkbox": Omit<BsCheckbox, keyof BsCheckboxAttributes> & { [K in keyof BsCheckbox & keyof BsCheckboxAttributes]?: BsCheckbox[K] } & { [K in keyof BsCheckbox & keyof BsCheckboxAttributes as `attr:${K}`]?: BsCheckboxAttributes[K] } & { [K in keyof BsCheckbox & keyof BsCheckboxAttributes as `prop:${K}`]?: BsCheckbox[K] };
+        "bs-checkbox-skeleton": Omit<BsCheckboxSkeleton, keyof BsCheckboxSkeletonAttributes> & { [K in keyof BsCheckboxSkeleton & keyof BsCheckboxSkeletonAttributes]?: BsCheckboxSkeleton[K] } & { [K in keyof BsCheckboxSkeleton & keyof BsCheckboxSkeletonAttributes as `attr:${K}`]?: BsCheckboxSkeletonAttributes[K] } & { [K in keyof BsCheckboxSkeleton & keyof BsCheckboxSkeletonAttributes as `prop:${K}`]?: BsCheckboxSkeleton[K] };
         "bs-composer": Omit<BsComposer, keyof BsComposerAttributes> & { [K in keyof BsComposer & keyof BsComposerAttributes]?: BsComposer[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `attr:${K}`]?: BsComposerAttributes[K] } & { [K in keyof BsComposer & keyof BsComposerAttributes as `prop:${K}`]?: BsComposer[K] };
         "bs-composer-status-banner": Omit<BsComposerStatusBanner, keyof BsComposerStatusBannerAttributes> & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes]?: BsComposerStatusBanner[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `attr:${K}`]?: BsComposerStatusBannerAttributes[K] } & { [K in keyof BsComposerStatusBanner & keyof BsComposerStatusBannerAttributes as `prop:${K}`]?: BsComposerStatusBanner[K] };
         "bs-data-table": Omit<BsDataTable, keyof BsDataTableAttributes> & { [K in keyof BsDataTable & keyof BsDataTableAttributes]?: BsDataTable[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `attr:${K}`]?: BsDataTableAttributes[K] } & { [K in keyof BsDataTable & keyof BsDataTableAttributes as `prop:${K}`]?: BsDataTable[K] };
+        "bs-dialog": Omit<BsDialog, keyof BsDialogAttributes> & { [K in keyof BsDialog & keyof BsDialogAttributes]?: BsDialog[K] } & { [K in keyof BsDialog & keyof BsDialogAttributes as `attr:${K}`]?: BsDialogAttributes[K] } & { [K in keyof BsDialog & keyof BsDialogAttributes as `prop:${K}`]?: BsDialog[K] };
         "bs-icon-button": Omit<BsIconButton, keyof BsIconButtonAttributes> & { [K in keyof BsIconButton & keyof BsIconButtonAttributes]?: BsIconButton[K] } & { [K in keyof BsIconButton & keyof BsIconButtonAttributes as `attr:${K}`]?: BsIconButtonAttributes[K] } & { [K in keyof BsIconButton & keyof BsIconButtonAttributes as `prop:${K}`]?: BsIconButton[K] };
         "bs-inline-tab": Omit<BsInlineTab, keyof BsInlineTabAttributes> & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes]?: BsInlineTab[K] } & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes as `attr:${K}`]?: BsInlineTabAttributes[K] } & { [K in keyof BsInlineTab & keyof BsInlineTabAttributes as `prop:${K}`]?: BsInlineTab[K] };
         "bs-input": Omit<BsInput, keyof BsInputAttributes> & { [K in keyof BsInput & keyof BsInputAttributes]?: BsInput[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `attr:${K}`]?: BsInputAttributes[K] } & { [K in keyof BsInput & keyof BsInputAttributes as `prop:${K}`]?: BsInput[K] };
         "bs-logo": Omit<BsLogo, keyof BsLogoAttributes> & { [K in keyof BsLogo & keyof BsLogoAttributes]?: BsLogo[K] } & { [K in keyof BsLogo & keyof BsLogoAttributes as `attr:${K}`]?: BsLogoAttributes[K] } & { [K in keyof BsLogo & keyof BsLogoAttributes as `prop:${K}`]?: BsLogo[K] };
         "bs-menu": BsMenu;
         "bs-menu-item": Omit<BsMenuItem, keyof BsMenuItemAttributes> & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes]?: BsMenuItem[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `attr:${K}`]?: BsMenuItemAttributes[K] } & { [K in keyof BsMenuItem & keyof BsMenuItemAttributes as `prop:${K}`]?: BsMenuItem[K] };
-        "bs-modal": Omit<BsModal, keyof BsModalAttributes> & { [K in keyof BsModal & keyof BsModalAttributes]?: BsModal[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `attr:${K}`]?: BsModalAttributes[K] } & { [K in keyof BsModal & keyof BsModalAttributes as `prop:${K}`]?: BsModal[K] };
         "bs-navigation-drawer": Omit<BsNavigationDrawer, keyof BsNavigationDrawerAttributes> & { [K in keyof BsNavigationDrawer & keyof BsNavigationDrawerAttributes]?: BsNavigationDrawer[K] } & { [K in keyof BsNavigationDrawer & keyof BsNavigationDrawerAttributes as `attr:${K}`]?: BsNavigationDrawerAttributes[K] } & { [K in keyof BsNavigationDrawer & keyof BsNavigationDrawerAttributes as `prop:${K}`]?: BsNavigationDrawer[K] };
         "bs-navigation-drawer-item": Omit<BsNavigationDrawerItem, keyof BsNavigationDrawerItemAttributes> & { [K in keyof BsNavigationDrawerItem & keyof BsNavigationDrawerItemAttributes]?: BsNavigationDrawerItem[K] } & { [K in keyof BsNavigationDrawerItem & keyof BsNavigationDrawerItemAttributes as `attr:${K}`]?: BsNavigationDrawerItemAttributes[K] } & { [K in keyof BsNavigationDrawerItem & keyof BsNavigationDrawerItemAttributes as `prop:${K}`]?: BsNavigationDrawerItem[K] };
         "bs-navigation-header": Omit<BsNavigationHeader, keyof BsNavigationHeaderAttributes> & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes]?: BsNavigationHeader[K] } & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes as `attr:${K}`]?: BsNavigationHeaderAttributes[K] } & { [K in keyof BsNavigationHeader & keyof BsNavigationHeaderAttributes as `prop:${K}`]?: BsNavigationHeader[K] };
+        "bs-pagination": Omit<BsPagination, keyof BsPaginationAttributes> & { [K in keyof BsPagination & keyof BsPaginationAttributes]?: BsPagination[K] } & { [K in keyof BsPagination & keyof BsPaginationAttributes as `attr:${K}`]?: BsPaginationAttributes[K] } & { [K in keyof BsPagination & keyof BsPaginationAttributes as `prop:${K}`]?: BsPagination[K] };
         "bs-radio": Omit<BsRadio, keyof BsRadioAttributes> & { [K in keyof BsRadio & keyof BsRadioAttributes]?: BsRadio[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `attr:${K}`]?: BsRadioAttributes[K] } & { [K in keyof BsRadio & keyof BsRadioAttributes as `prop:${K}`]?: BsRadio[K] };
         "bs-slider": Omit<BsSlider, keyof BsSliderAttributes> & { [K in keyof BsSlider & keyof BsSliderAttributes]?: BsSlider[K] } & { [K in keyof BsSlider & keyof BsSliderAttributes as `attr:${K}`]?: BsSliderAttributes[K] } & { [K in keyof BsSlider & keyof BsSliderAttributes as `prop:${K}`]?: BsSlider[K] };
+        "bs-snackbar": Omit<BsSnackbar, keyof BsSnackbarAttributes> & { [K in keyof BsSnackbar & keyof BsSnackbarAttributes]?: BsSnackbar[K] } & { [K in keyof BsSnackbar & keyof BsSnackbarAttributes as `attr:${K}`]?: BsSnackbarAttributes[K] } & { [K in keyof BsSnackbar & keyof BsSnackbarAttributes as `prop:${K}`]?: BsSnackbar[K] };
         "bs-source-link": Omit<BsSourceLink, keyof BsSourceLinkAttributes> & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes]?: BsSourceLink[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `attr:${K}`]?: BsSourceLinkAttributes[K] } & { [K in keyof BsSourceLink & keyof BsSourceLinkAttributes as `prop:${K}`]?: BsSourceLink[K] };
         "bs-switch": Omit<BsSwitch, keyof BsSwitchAttributes> & { [K in keyof BsSwitch & keyof BsSwitchAttributes]?: BsSwitch[K] } & { [K in keyof BsSwitch & keyof BsSwitchAttributes as `attr:${K}`]?: BsSwitchAttributes[K] } & { [K in keyof BsSwitch & keyof BsSwitchAttributes as `prop:${K}`]?: BsSwitch[K] };
         "bs-tab": Omit<BsTab, keyof BsTabAttributes> & { [K in keyof BsTab & keyof BsTabAttributes]?: BsTab[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `attr:${K}`]?: BsTabAttributes[K] } & { [K in keyof BsTab & keyof BsTabAttributes as `prop:${K}`]?: BsTab[K] };
@@ -4924,6 +5767,26 @@ declare module "@stencil/core" {
              */
             "bs-attachment-list": LocalJSX.IntrinsicElements["bs-attachment-list"] & JSXBase.HTMLAttributes<HTMLBsAttachmentListElement>;
             /**
+             * A circular representation of a person or entity -- a photo, initials, or (as a fallback when
+             * neither is available) a generic user-silhouette icon.
+             * ## When to use
+             * - Representing a specific user or account: in a header, a comment, a member list, etc.
+             * - `type="initials"` when a photo isn't available but a name is (e.g. "Sam Lee" -> "SL").
+             * - `type="icon"` (the default) as the generic fallback when neither a photo nor a name/initials
+             *   is available yet.
+             * ## When not to use
+             * - A company/brand logo -- use `bs-logo` instead.
+             * This component is decorative/informational by default, not an interactive control -- it renders
+             * a plain `<span>`/`<img>`, not a `<button>`. Figma's own component set includes hover/focused/
+             * pressed states (e.g. for an account-switcher trigger use case), which this implements as real
+             * `:hover`/`:focus-visible`/`:active` CSS on the host itself -- so wrapping this in your own
+             * `<button>`, or setting `tabindex` and a click handler on the `<bs-avatar>` element directly, gets
+             * the matching visual treatment for free with no extra wiring. Left genuinely non-interactive
+             * (no implicit role/tabindex of its own) so it doesn't misrepresent a purely decorative avatar
+             * (e.g. next to a comment) as a control when it isn't one.
+             */
+            "bs-avatar": LocalJSX.IntrinsicElements["bs-avatar"] & JSXBase.HTMLAttributes<HTMLBsAvatarElement>;
+            /**
              * A small status or category pill, usually paired with a label or list item.
              * ## When to use
              * - Communicating a short, fixed status (e.g. "Active", "On leave") or category label.
@@ -4933,6 +5796,67 @@ declare module "@stencil/core" {
              * - For long text — badges are sized for one or two words.
              */
             "bs-badge": LocalJSX.IntrinsicElements["bs-badge"] & JSXBase.HTMLAttributes<HTMLBsBadgeElement>;
+            /**
+             * A single crumb within a `<bs-breadcrumbs>` trail: a leading separator icon plus either a link,
+             * plain text, or the current-page label, depending on `current`/`href`.
+             * Rendering follows the W3C ARIA Authoring Practices breadcrumb pattern
+             * (https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/): the current page is marked
+             * `aria-current="page"` and is never a link -- this holds even when `href` is also set, unlike
+             * Carbon Design System's `cds-breadcrumb-item`, which allows a link on the current item.
+             * Sets `role="listitem"` on the host, mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()`
+             * -- since this is a custom-element child of a real `<ol>` rather than a real `<li>`, the
+             * accessibility tree needs this explicit role to preserve the list's semantics.
+             * ## When to use
+             * - As one crumb inside a `<bs-breadcrumbs>` trail.
+             * ## When not to use
+             * - Standalone, outside a `<bs-breadcrumbs>` wrapper -- its `<ol>`/`<nav>` context and
+             *   first-child-aware separator hiding depend on that parent structure.
+             */
+            "bs-breadcrumb": LocalJSX.IntrinsicElements["bs-breadcrumb"] & JSXBase.HTMLAttributes<HTMLBsBreadcrumbElement>;
+            /**
+             * A manually-placed collapsed-items disclosure for a `<bs-breadcrumbs>` trail: a leading separator
+             * plus an icon-only ellipsis button that reveals a `bs-menu` popup listing every hidden crumb.
+             * `items` is JS-property-only -- must be set as a JS property (`el.items = [...]`), not an HTML
+             * attribute, since attributes can only carry strings. See CONVENTIONS.md.
+             * Unlike an earlier `bs-breadcrumbs`-owned automatic `maxItems` collapse, this component does no
+             * collapsing logic itself -- the consumer decides which crumbs to hide and places this element
+             * wherever they want the disclosure, exactly matching Carbon Design System's own approach (Carbon
+             * doesn't auto-collapse breadcrumbs either; a consumer there manually decides what's visible).
+             * Hidden items with an `href` render as real `<a href>` rows inside the popup, not `bs-menu-item`
+             * (which renders a `<button>`) -- this matters because consuming apps commonly use client-side
+             * routers that intercept clicks on real `<a>` tags to do `preventDefault` + push-state navigation.
+             * Rendering hidden links any other way (e.g. `window.location`) would silently break client-side
+             * routing for hidden crumbs while working fine for visible ones. Hidden items without an `href`
+             * render as plain non-interactive text, matching how `bs-breadcrumb` itself handles link vs.
+             * no-link crumbs.
+             * Sets `role="listitem"` on the host, mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()`
+             * -- since this is a custom-element child of a real `<ol>` rather than a real `<li>`, the
+             * accessibility tree needs this explicit role to preserve the list's semantics.
+             * ## When to use
+             * - Inside a `<bs-breadcrumbs>` trail, wherever the consumer wants an interactive disclosure for
+             *   crumbs they've chosen not to render directly.
+             * ## When not to use
+             * - As an automatic collapsing mechanism -- there is none; the consumer decides what's hidden.
+             */
+            "bs-breadcrumb-overflow": LocalJSX.IntrinsicElements["bs-breadcrumb-overflow"] & JSXBase.HTMLAttributes<HTMLBsBreadcrumbOverflowElement>;
+            /**
+             * A breadcrumb trail container: a real `<nav>` landmark wrapping an `<ol>`, meant to be populated
+             * with slotted `<bs-breadcrumb>` (and, where the consumer wants a collapsed-items disclosure,
+             * `<bs-breadcrumb-overflow>`) children -- same composition-over-configuration architecture as
+             * Carbon Design System's `cds-breadcrumb`/`cds-breadcrumb-item`/`cds-breadcrumb-link`.
+             * This component is intentionally thin: it owns only the `<nav>` landmark and list semantics.
+             * Unlike an earlier `items`-array-driven design, there is no automatic collapsing here -- exactly
+             * like Carbon, the consumer decides what's visible and manually places a `<bs-breadcrumb-overflow>`
+             * wherever they want a collapsed-items disclosure. See `bs-breadcrumbs.mdx` for the consolidated
+             * docs covering all three components in this feature area.
+             * ## When to use
+             * - Showing a user's current location within a hierarchical page structure, with a path back to
+             *   its ancestors.
+             * ## When not to use
+             * - Primary in-app navigation -- use `bs-navigation-drawer`/`bs-navigation-header` instead.
+             * - A flat set of unrelated pages with no hierarchy -- breadcrumbs imply ancestry, not just history.
+             */
+            "bs-breadcrumbs": LocalJSX.IntrinsicElements["bs-breadcrumbs"] & JSXBase.HTMLAttributes<HTMLBsBreadcrumbsElement>;
             /**
              * A clickable action element for the single most important action in a given context.
              * ## When to use
@@ -5156,6 +6080,30 @@ declare module "@stencil/core" {
              */
             "bs-checkbox": LocalJSX.IntrinsicElements["bs-checkbox"] & JSXBase.HTMLAttributes<HTMLBsCheckboxElement>;
             /**
+             * A shape-matched loading placeholder for `bs-checkbox`, shown while the real label text isn't
+             * known yet (e.g. still being fetched from an API). Renders a small square (matching the
+             * checkbox's own box) beside a text-bar placeholder (standing in for the label), both pulsing
+             * together, sized to match `bs-checkbox`'s `sm`/`md`/`lg` box dimensions so layout doesn't shift
+             * once the real checkbox renders.
+             * ## When to use
+             * - In place of a `bs-checkbox` whose label/checked state depends on data that hasn't loaded yet.
+             * ## When not to use
+             * - While a checkbox's own change handler is running (e.g. a save request in flight) -- render the
+             *   real `bs-checkbox` itself; this component is not a saving-in-progress spinner.
+             * @prop --bs-checkbox-skeleton-size-sm - Box width/height at `size="sm"`. Aliased to
+             * `--bs-spacing-200`, mirroring `bs-checkbox`'s own `--bs-checkbox-size-sm` -- not read directly
+             * from it, since these are two separate shadow roots.
+             * @prop --bs-checkbox-skeleton-size-md - Box width/height at `size="md"`. Aliased to
+             * `--bs-spacing-250`.
+             * @prop --bs-checkbox-skeleton-size-lg - Box width/height at `size="lg"`. Aliased to
+             * `--bs-spacing-300`.
+             * @prop --bs-checkbox-skeleton-gap - Gap between the box and label placeholders. Aliased to
+             * `--bs-spacing-100`, mirroring `bs-checkbox`'s own `--bs-checkbox-gap`.
+             * @prop --bs-checkbox-skeleton-label-width - Width of the label placeholder bar. Defaults to
+             * `96px`.
+             */
+            "bs-checkbox-skeleton": LocalJSX.IntrinsicElements["bs-checkbox-skeleton"] & JSXBase.HTMLAttributes<HTMLBsCheckboxSkeletonElement>;
+            /**
              * A chat composer input for Genie AI-style conversational interfaces: a text field
              * plus an attach button, a mic/voice-recording toggle, and a single primary action button whose
              * icon and behavior change with `state` (send, stop generating, or confirm a voice recording).
@@ -5265,6 +6213,24 @@ declare module "@stencil/core" {
              * - Deeply nested/hierarchical data — this component renders one flat row per record.
              */
             "bs-data-table": LocalJSX.IntrinsicElements["bs-data-table"] & JSXBase.HTMLAttributes<HTMLBsDataTableElement>;
+            /**
+             * An overlay dialog that interrupts the current flow for a focused task or confirmation.
+             * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+             * ## When to use
+             * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+             * - A short, focused task that doesn't warrant navigating to a new page.
+             * ## When not to use
+             * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
+             * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+             *   dialog that just gets taller and taller.
+             * Two additional slots cover the Figma "Dialog" component's other states: `image` (a hero image
+             * across the top, close button floats over it instead of sitting in the header row) and `icon`
+             * (only rendered when `centered` is set, e.g. a success checkmark above a centered heading). The
+             * close button "floats" (absolute-positioned, top-right of the dialog, with its own background)
+             * whenever `centered` is true or the `image` slot has content -- otherwise it's the plain inline
+             * button in the header row next to the heading, same as before this addition.
+             */
+            "bs-dialog": LocalJSX.IntrinsicElements["bs-dialog"] & JSXBase.HTMLAttributes<HTMLBsDialogElement>;
             /**
              * A clickable, icon-only action element -- the icon-only sibling of `bs-button`, sharing the same
              * 8 visual variants and color language, but ALWAYS rendering just a single icon, never a label.
@@ -5389,18 +6355,6 @@ declare module "@stencil/core" {
              */
             "bs-menu-item": LocalJSX.IntrinsicElements["bs-menu-item"] & JSXBase.HTMLAttributes<HTMLBsMenuItemElement>;
             /**
-             * An overlay dialog that interrupts the current flow for a focused task or confirmation.
-             * Closes itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
-             * ## When to use
-             * - Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
-             * - A short, focused task that doesn't warrant navigating to a new page.
-             * ## When not to use
-             * - For non-blocking status messages — use a toast/notification instead of interrupting the user.
-             * - For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
-             *   modal that just gets taller and taller.
-             */
-            "bs-modal": LocalJSX.IntrinsicElements["bs-modal"] & JSXBase.HTMLAttributes<HTMLBsModalElement>;
-            /**
              * A left-side persistent navigation sidebar: the BrandSync logo, a "Main Menu" title with a
              * collapse toggle, a reserved slot for a search field, and a scrollable list of nav items.
              * ## When to use
@@ -5484,6 +6438,22 @@ declare module "@stencil/core" {
              */
             "bs-navigation-header": LocalJSX.IntrinsicElements["bs-navigation-header"] & JSXBase.HTMLAttributes<HTMLBsNavigationHeaderElement>;
             /**
+             * A numbered page control -- previous/next chevrons, page-number buttons, and `...` overflow for
+             * large page counts. Matches the Figma "Pagination" component's "Default" type (the classic
+             * numbered pagination); its other type ("jumper" -- a rows-per-page dropdown plus a page-jump
+             * input) is a structurally different composite widget and isn't covered by this component.
+             * `totalPages`/`currentPage` drive everything -- this computes which page numbers to show and
+             * where to collapse into `...` itself, the consumer never builds the button list by hand.
+             * ## When to use
+             * - Paging through a large, ordered result set (a table, a search results list) where jumping
+             *   directly to a specific page number is useful.
+             * ## When not to use
+             * - Infinite-scroll or "load more" patterns -- those don't have a fixed, addressable page number.
+             * - A huge page count where users realistically only ever go forward/back one page at a time --
+             *   plain prev/next controls (no numbers) are simpler there.
+             */
+            "bs-pagination": LocalJSX.IntrinsicElements["bs-pagination"] & JSXBase.HTMLAttributes<HTMLBsPaginationElement>;
+            /**
              * A single radio button with its label, for one mutually-exclusive choice within a group.
              * ## When to use
              * - One option within a set of mutually-exclusive choices, where all options should stay visible
@@ -5510,6 +6480,26 @@ declare module "@stencil/core" {
              * - A small, fixed set of mutually exclusive choices -- use a radio group instead.
              */
             "bs-slider": LocalJSX.IntrinsicElements["bs-slider"] & JSXBase.HTMLAttributes<HTMLBsSliderElement>;
+            /**
+             * A transient status bar for confirming the result of an action (e.g. "Files uploaded
+             * successfully.") -- an icon (or loading spinner), a message, an optional action, and a close
+             * button.
+             * This component only renders the bar itself -- it doesn't manage its own visibility, timing, or
+             * stacking. A consumer (typically a small "toast manager" utility) creates one per message and
+             * removes it from the DOM again, whether on a timer or on `bsDismiss`. Figma's spec doesn't show
+             * auto-dismiss timing at all (it's a static visual spec), so this deliberately doesn't invent one.
+             * The icon is always the same checkmark glyph across every `variant`, just recolored -- matching
+             * the Figma spec exactly, even though a checkmark for `variant="error"` reads a little oddly
+             * semantically. Worth revisiting with severity-specific icons (warning triangle, error circle,
+             * etc.) if the design updates to specify them.
+             * ## When to use
+             * - Confirming the outcome of an action that just happened (save succeeded, upload failed) without
+             *   interrupting the user's flow.
+             * ## When not to use
+             * - For a response that requires the user to make a decision before continuing -- use `bs-dialog`.
+             * - For persistent, always-visible status -- a snackbar is inherently transient.
+             */
+            "bs-snackbar": LocalJSX.IntrinsicElements["bs-snackbar"] & JSXBase.HTMLAttributes<HTMLBsSnackbarElement>;
             /**
              * A single citation row inside `bs-chatbot-sources-drawer` -- a file icon + filename on the first
              * line, the originating system and version on the second, and a trailing "open" arrow.

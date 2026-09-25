@@ -173,7 +173,7 @@ const RIGHT_SLOT = html`
 
 // "Switcher" here means a workspace/account switcher panel that slides in from the right edge of
 // the viewport when its trigger icon is clicked -- not a real bs-* component (no generic
-// slide-in-from-right panel exists in this library yet; bs-modal is a centered dialog, not this),
+// slide-in-from-right panel exists in this library yet; bs-dialog is a centered dialog, not this),
 // so this is plain story-only markup: a fixed-position aside toggled via a direct classList
 // change on click, not lit's own reactive re-render (a Storybook `render` function re-runs on
 // args changes, not on arbitrary DOM events, so state that needs to survive a click has to live in

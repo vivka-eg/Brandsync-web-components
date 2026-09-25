@@ -23,6 +23,14 @@
  * @prop --bs-input-error-color: Error message text color. Aliased to --bs-input-error.
  * @prop --bs-input-chip-bg: Chip pill background for type="chip". Aliased to --bs-input-bg-disabled.
  * @prop --bs-input-chip-text: Chip pill text color for type="chip". Aliased to --bs-input-text.
+ * @prop --bs-input-initials-title-width: Width of the title box for type="initials" (e.g.
+ *   "Mrs."/"Mr."/"Dr."). A literal 80px, not aliased to a spacing token -- Figma specs this
+ *   sub-field as a fixed, compact width regardless of option content (node 10306:101047), not
+ *   content-based sizing. Applied to the box itself (`.bs-input__field--initials-title`), not the
+ *   `<select>` directly -- see that class's own comment for why type="initials" renders two
+ *   separate bordered boxes instead of sharing one field the way every other composite type does.
+ * @prop --bs-input-initials-gap: Gap between the title box and the name box for type="initials".
+ *   Aliased to --bs-spacing-50 (4px), matching Figma's own gap-[4px] on this same pairing exactly.
  */
 :host {
   display: block;
@@ -56,6 +64,9 @@
 
   --bs-input-chip-bg: var(--bs-input-bg-disabled);
   --bs-input-chip-text: var(--bs-input-text);
+
+  --bs-input-initials-title-width: 80px;
+  --bs-input-initials-gap: var(--bs-spacing-50);
 }
 
 .bs-input {
@@ -329,8 +340,10 @@
   min-width: 60px;
 }
 
-/* Initials/Country composite selects (type="initials"/"country") */
-.bs-input__title-select,
+/* Country composite select (type="country") -- unlike type="initials" below, this shares one
+   field box with its adjacent text input (no confirmed Figma spec yet for splitting it into two
+   separate boxes the same way), so its own <select> still needs the flex/width override here to
+   keep it from stretching to fill the shared row via .bs-input__control's own `flex: 1`. */
 .bs-input__country-select {
   flex-shrink: 0;
   width: auto;
@@ -340,6 +353,67 @@
   color: var(--bs-input-field-text);
   font-size: var(--bs-font-size-md);
   font-family: inherit;
+}
+
+/* Suppress the browser's own select arrow (varies by OS/browser -- e.g. an up+down double
+   arrow on some platforms) in favor of a single chevron-down rendered via renderSelectChevron(),
+   matching type="dropdown"'s own chevron. */
+.bs-input__title-select,
+.bs-input__country-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+}
+
+.bs-input__title-select::-ms-expand,
+.bs-input__country-select::-ms-expand {
+  display: none;
+}
+
+.bs-input__select-chevron {
+  flex-shrink: 0;
+  width: var(--bs-input-icon-size);
+  height: var(--bs-input-icon-size);
+  color: var(--bs-input-icon-color);
+  pointer-events: none;
+}
+
+.bs-input__field--disabled .bs-input__select-chevron {
+  color: var(--bs-input-icon-color-disabled);
+}
+
+/* Initials (type="initials") -- two genuinely separate bordered boxes side by side (see the class
+   doc on renderInitialsField() in bs-input.tsx for why), not one shared field the way country
+   above still is. Each box is a plain .bs-input__field, so the <select>/<input> inside either one
+   already gets normal .bs-input__control styling (flex: 1 filling ITS OWN box) with no extra
+   override needed -- only the title box's own OUTER width needs constraining, not its select. */
+.bs-input__initials-row {
+  display: flex;
+  gap: var(--bs-input-initials-gap);
+  width: 100%;
+}
+
+.bs-input__field--initials-title {
+  flex: 0 0 auto;
+  width: var(--bs-input-initials-title-width);
+  /* Tighter gap and a smaller chevron than the field default -- at this box's compact fixed
+     width, the full-size icon/gap would crowd out the title text (e.g. "Mrs." truncating to
+     "M"). */
+  gap: var(--bs-spacing-50);
+}
+
+.bs-input__field--initials-title .bs-input__select-chevron {
+  width: 10px;
+  height: 10px;
+}
+
+.bs-input__field--initials-value {
+  flex: 1;
+  min-width: 0;
+}
+
+.bs-input__country-select {
+  width: auto;
 }
 
 /* Pin input (type="pin") */
@@ -371,4 +445,8 @@
 .bs-input__field--pin.bs-input__field--disabled .bs-input__pin-cell {
   background: var(--bs-input-field-bg-disabled);
   cursor: not-allowed;
+}
+
+.bs-input__field--pin.bs-input__field--error .bs-input__pin-cell {
+  border-color: var(--bs-input-field-border-error);
 }

@@ -1,0 +1,51 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as CheckboxSkeletonStories from './bs-checkbox-skeleton.stories';
+
+<Meta of={CheckboxSkeletonStories} />
+
+# Checkbox skeleton
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Sizes](#sizes)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A shape-matched loading placeholder for `bs-checkbox`, shown while the real label text isn't
+known yet.
+
+**When to use**
+- In place of a `bs-checkbox` whose label/checked state depends on data that hasn't loaded yet.
+
+**When not to use**
+- While a checkbox's own change handler is running (e.g. a save request in flight) — render the
+  real `bs-checkbox` itself; this component is not a saving-in-progress spinner.
+
+<Canvas of={CheckboxSkeletonStories.Default} />
+
+## Sizes
+
+Three sizes — `sm`, `md`, `lg` — mirror `bs-checkbox`'s own box dimensions
+(`--bs-spacing-200/250/300`), so a skeleton and the real checkbox it stands in for don't shift the
+layout when swapped. Defaults to `lg`, the same (unusual) default `bs-checkbox` itself uses.
+
+<Canvas of={CheckboxSkeletonStories.Sizes} />
+
+## Component API
+
+<Controls of={CheckboxSkeletonStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Shadow parts: `::part(container)`, `::part(box)`, `::part(label)`
+- CSS Custom Properties: `--bs-checkbox-skeleton-size-sm/md/lg`, `--bs-checkbox-skeleton-gap`,
+  `--bs-checkbox-skeleton-label-width`
+
+## Accessibility
+
+- Renders as a `<span role="status" aria-label="Loading">`, so screen readers announce the
+  loading state instead of relying on the visual pulse animation alone.
+- The pulse animation respects `prefers-reduced-motion` and is disabled entirely for users who
+  request reduced motion.

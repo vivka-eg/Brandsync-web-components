@@ -54,14 +54,14 @@ safe, beyond reading raw git history.
 stated policy for what counts as a breaking change.
 
 ### 6. Known, unfixed accessibility regression
-`bs-modal`'s focus-restoration tests have been failing throughout this project's history and were
+`bs-dialog`'s focus-restoration tests have been failing throughout this project's history and were
 never actually fixed — only documented as "pre-existing." This is a real behavior gap (focus may
 not correctly return to the trigger element on close), not just test debt, in a component other
 teams would rely on for accessible modals.
 **Needed:** actually fix this before launch, not just note it.
 
 ### 7. No enforced visual regression testing
-Screenshot tests exist for exactly one component (`bs-modal`), applied inconsistently, and nothing
+Screenshot tests exist for exactly one component (`bs-dialog`), applied inconsistently, and nothing
 enforces them since there's no CI.
 **Needed:** either extend screenshot coverage to all components or explicitly decide visual review
 happens manually per PR (and say so).
@@ -75,7 +75,7 @@ deprecation policy) before external teams start depending on this.
 ## Suggested order of attack
 
 1. CI (tests + build gate on PRs) — cheapest, highest-leverage, unblocks everything else.
-2. Fix the `bs-modal` focus-restoration bug — a real user-facing a11y issue, not process debt.
+2. Fix the `bs-dialog` focus-restoration bug — a real user-facing a11y issue, not process debt.
 3. Versioning/changelog tooling (Changesets or equivalent) + bump to `0.1.0`.
 4. Decide and document the "shared publish credential" story.
 5. Write `CONTRIBUTING.md`.

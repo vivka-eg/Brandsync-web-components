@@ -1,0 +1,93 @@
+/**
+ * @prop --bs-breadcrumb-gap: Gap between the separator icon and this crumb's own content. Aliased to --bs-spacing-50.
+ * @prop --bs-breadcrumb-separator-color: Separator icon color. Aliased to --bs-icon-default.
+ * @prop --bs-breadcrumb-color-default: Text color, non-current crumb. Aliased to --bs-text-muted.
+ * @prop --bs-breadcrumb-color-hover: Text color, non-current link crumb on hover/focus. Aliased to --bs-text-default.
+ * @prop --bs-breadcrumb-color-current: Text color, the current-page crumb. Aliased to --bs-text-default.
+ * @prop --bs-breadcrumb-font-size: Aliased to --bs-font-size-md.
+ * @prop --bs-breadcrumb-line-height: Aliased to --bs-line-height-body-md.
+ * @prop --bs-breadcrumb-font-size-sm: Font size at size="sm". Aliased to --bs-font-size-sm.
+ * @prop --bs-breadcrumb-line-height-sm: Line height at size="sm". Aliased to --bs-line-height-body-sm.
+ * @prop --bs-breadcrumb-font-weight-default: Font weight, non-current crumb. Aliased to --bs-font-weight-regular.
+ * @prop --bs-breadcrumb-font-weight-current: Font weight, the current-page crumb. Aliased to --bs-font-weight-semibold.
+ * @prop --bs-breadcrumb-focus-ring-color: Focus ring color for a link crumb. Aliased to --bs-border-neutral-focus.
+ * @prop --bs-breadcrumb-radius: Border radius for a link crumb's focus ring. Aliased to --bs-border-radius-50.
+ */
+:host {
+  display: inline-flex;
+  align-items: center;
+
+  --bs-breadcrumb-gap: var(--bs-spacing-50);
+
+  --bs-breadcrumb-separator-color: var(--bs-icon-default);
+
+  --bs-breadcrumb-color-default: var(--bs-text-muted);
+  --bs-breadcrumb-color-hover: var(--bs-text-default);
+  --bs-breadcrumb-color-current: var(--bs-text-default);
+
+  --bs-breadcrumb-font-size: var(--bs-font-size-md);
+  --bs-breadcrumb-line-height: var(--bs-line-height-body-md);
+  --bs-breadcrumb-font-size-sm: var(--bs-font-size-sm);
+  --bs-breadcrumb-line-height-sm: var(--bs-line-height-body-sm);
+  --bs-breadcrumb-font-weight-default: var(--bs-font-weight-regular);
+  --bs-breadcrumb-font-weight-current: var(--bs-font-weight-semibold);
+
+  --bs-breadcrumb-focus-ring-color: var(--bs-border-neutral-focus);
+  --bs-breadcrumb-radius: var(--bs-border-radius-50);
+
+  gap: var(--bs-breadcrumb-gap);
+  font-family: inherit;
+  font-size: var(--bs-breadcrumb-font-size);
+  line-height: calc(var(--bs-breadcrumb-line-height) * 1px);
+}
+
+/* This crumb is visually first in the trail -- pure DOM position (not :first-of-type, which only
+   counts same-tag siblings and would wrongly also match a bs-breadcrumb immediately following a
+   bs-breadcrumb-overflow). See bs-breadcrumb-overflow.css for the identical rule. */
+:host(:first-child) .bs-breadcrumb__separator {
+  display: none;
+}
+
+/* size="sm" scales font-size/line-height only -- the separator icon's pixel size is unchanged,
+   since Figma didn't specify a sm icon size (see the `size` prop's doc comment in bs-breadcrumb.tsx). */
+:host([size='sm']) {
+  font-size: var(--bs-breadcrumb-font-size-sm);
+  line-height: calc(var(--bs-breadcrumb-line-height-sm) * 1px);
+}
+
+.bs-breadcrumb__separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--bs-breadcrumb-separator-color);
+}
+
+.bs-breadcrumb__separator svg {
+  width: 16px;
+  height: 16px;
+}
+
+.bs-breadcrumb__link {
+  color: var(--bs-breadcrumb-color-default);
+  font-weight: var(--bs-breadcrumb-font-weight-default);
+  text-decoration: none;
+  border-radius: var(--bs-breadcrumb-radius);
+  transition: color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+a.bs-breadcrumb__link:hover {
+  color: var(--bs-breadcrumb-color-hover);
+}
+
+a.bs-breadcrumb__link:focus-visible {
+  outline: 2px solid var(--bs-breadcrumb-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.bs-breadcrumb__current {
+  color: var(--bs-breadcrumb-color-current);
+  font-weight: var(--bs-breadcrumb-font-weight-current);
+}

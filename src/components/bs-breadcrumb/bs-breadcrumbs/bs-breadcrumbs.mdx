@@ -1,0 +1,171 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as BreadcrumbsStories from './bs-breadcrumbs.stories';
+
+<Meta of={BreadcrumbsStories} />
+
+# Breadcrumbs
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Current page](#current-page)
+- [Non-link crumb](#non-link-crumb)
+- [Overflow](#overflow)
+- [Size](#size)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+Breadcrumbs are built from three composable elements, the same slotted-composition architecture as
+Carbon Design System's `cds-breadcrumb`/`cds-breadcrumb-item`/`cds-breadcrumb-link`:
+
+- **`bs-breadcrumbs`** -- the container. A thin `<nav>` landmark wrapping an `<ol>`; owns no
+  styling beyond layout.
+- **`bs-breadcrumb`** -- one crumb in the trail: a leading separator plus a link, plain text, or
+  the current-page label, depending on its `current`/`href` props.
+- **`bs-breadcrumb-overflow`** -- an optional, manually placed disclosure for crumbs the consumer
+  has chosen to hide (see [Overflow](#overflow)).
+
+**When to use**
+- Showing a user's current location within a hierarchical page structure, with a path back to its
+  ancestors.
+
+**When not to use**
+- Primary in-app navigation -- use `bs-navigation-drawer`/`bs-navigation-header` instead.
+- A flat set of unrelated pages with no hierarchy -- breadcrumbs imply ancestry, not just history.
+
+<Canvas of={BreadcrumbsStories.Default} />
+
+## Current page
+
+`bs-breadcrumb`'s `current` prop renders plain (non-link) text marked `aria-current="page"` --
+this holds even when `href` is also set, per the W3C ARIA Authoring Practices breadcrumb pattern
+(https://www.w3.org/WAI/ARIA/apg/patterns/breadcrumb/). Unlike Carbon Design System's
+`cds-breadcrumb-item`, which allows a link on the current item, `bs-breadcrumb` never renders one --
+the current page is never navigable away from itself.
+
+## Non-link crumb
+
+When a `bs-breadcrumb` has neither `current` nor `href` set, it renders as plain, non-interactive
+text with the same muted styling as a link -- useful for a crumb that isn't the current page but
+also isn't navigable (e.g. an archived section heading).
+
+<Canvas of={BreadcrumbsStories.NonLinkCrumb} />
+
+## Overflow
+
+`bs-breadcrumb-overflow` is a manually placed, consumer-controlled disclosure for crumbs that
+aren't shown directly -- **not** an automatic collapsing mechanism. There is no `maxItems` prop or
+any other auto-collapse behavior anywhere in this trio of components: exactly like Carbon (which
+doesn't auto-collapse breadcrumbs either), the consumer decides which crumbs to render inline,
+which to hide, and where in the trail to place the overflow element carrying the hidden ones.
+
+Its `items` prop (`{ label: string; href?: string }[]`) is **JS-property-only** -- HTML attributes
+can only carry strings, so it must be set via `element.items = [...]`, not as an attribute (see
+each story's "Show code" for the actual usage). Clicking the ellipsis opens a `bs-menu` popup
+listing each item as a real `<a href>` (or plain `<span>` when an item has no `href`) -- real
+anchors, not `bs-menu-item` (which renders a `<button>`), so that client-side routers in consuming
+apps that intercept `<a>` clicks continue to work for hidden crumbs the same way they do for
+visible ones.
+
+<Canvas of={BreadcrumbsStories.WithOverflow} />
+
+The separator-hiding rule (see [Accessibility](#accessibility)) is DOM-position-based, so it
+correctly hides itself even when `bs-breadcrumb-overflow` -- rather than `bs-breadcrumb` -- is the
+first element in the trail:
+
+<Canvas of={BreadcrumbsStories.OverflowFirst} />
+
+## Size
+
+`bs-breadcrumbs`'s `size` prop (`'sm' | 'md'`, default `'md'`) is a plain HTML-attribute-capable
+string prop, but it doesn't style the container itself -- font-size/line-height live on the item
+components. Instead, `bs-breadcrumbs` propagates its `size` as a JS property to every slotted
+`bs-breadcrumb`/`bs-breadcrumb-overflow` child (on load, whenever `size` changes, and whenever the
+slotted children change), the same "container pushes state onto its slotted children" pattern
+`bs-tabs` already uses for `selected`. `size` can also be set directly on a standalone
+`bs-breadcrumb`/`bs-breadcrumb-overflow` outside a container. `sm` only scales font-size/line-height
+-- separator/ellipsis icon pixel sizes are unchanged, since Figma didn't specify a `sm` icon size.
+
+<Canvas of={BreadcrumbsStories.Small} />
+
+## Component API
+
+### bs-breadcrumbs
+
+<Controls of={BreadcrumbsStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (the trail's `bs-breadcrumb`/`bs-breadcrumb-overflow` children, in visual order)
+- Shadow parts: `::part(list)`
+- CSS Custom Properties: `--bs-breadcrumbs-gap` -- see `bs-breadcrumbs.css`'s header block for what
+  it aliases to.
+
+### bs-breadcrumb
+
+| Prop | Type | Default |
+|---|---|---|
+| `href` | `string` | `undefined` |
+| `current` | `boolean` | `false` |
+| `size` | `'sm' \| 'md'` | `'md'` |
+
+**Customization surface**:
+- Slots: default (the crumb's label content/text)
+- Shadow parts: `::part(separator)`, `::part(link)`, `::part(current)`
+- CSS Custom Properties: `--bs-breadcrumb-gap`, `--bs-breadcrumb-separator-color`,
+  `--bs-breadcrumb-color-default`, `--bs-breadcrumb-color-hover`, `--bs-breadcrumb-color-current`,
+  `--bs-breadcrumb-font-size`, `--bs-breadcrumb-line-height`, `--bs-breadcrumb-font-weight-default`,
+  `--bs-breadcrumb-font-weight-current`, `--bs-breadcrumb-focus-ring-color`, `--bs-breadcrumb-radius`,
+  `--bs-breadcrumb-font-size-sm`, `--bs-breadcrumb-line-height-sm` -- see `bs-breadcrumb.css`'s
+  header block for what each aliases to.
+
+### bs-breadcrumb-overflow
+
+`items` and `overflowLabel` are set directly as JS properties/attributes -- `items` specifically
+must be a JS property (`element.items = [...]`), not an HTML attribute, since attributes can only
+carry strings.
+
+| Prop | Type | Default |
+|---|---|---|
+| `items` | `{ label: string; href?: string }[]` | `[]` |
+| `overflowLabel` | `string` | `'Show hidden breadcrumbs'` |
+| `size` | `'sm' \| 'md'` | `'md'` |
+
+**Customization surface**:
+- Slots: none -- `items` fully drives the popup's contents.
+- Shadow parts: `::part(separator)`, `::part(ellipsis)`, `::part(menu)`, `::part(link)`
+- CSS Custom Properties: `--bs-breadcrumb-overflow-gap`, `--bs-breadcrumb-overflow-separator-color`,
+  `--bs-breadcrumb-overflow-ellipsis-color`, `--bs-breadcrumb-overflow-radius`,
+  `--bs-breadcrumb-overflow-padding-y`, `--bs-breadcrumb-overflow-padding-x`,
+  `--bs-breadcrumb-overflow-hover`, `--bs-breadcrumb-overflow-color`,
+  `--bs-breadcrumb-overflow-font-size`, `--bs-breadcrumb-overflow-line-height`,
+  `--bs-breadcrumb-overflow-font-size-sm`, `--bs-breadcrumb-overflow-line-height-sm` -- see
+  `bs-breadcrumb-overflow.css`'s header block for what each aliases to.
+
+## Accessibility
+
+- `bs-breadcrumbs` renders a real `<nav aria-label={label}>` landmark (no explicit `role` needed --
+  `<nav>` already carries the implicit `navigation` role) wrapping a real `<ol>`.
+- `bs-breadcrumb` and `bs-breadcrumb-overflow` each set `role="listitem"` on their own host,
+  mirroring Carbon's own `CDSBreadcrumbItem.connectedCallback()` -- since they're custom-element
+  children of the `<ol>` rather than real `<li>` elements, the accessibility tree needs this
+  explicit role to preserve the list's semantics.
+- The current crumb is marked `aria-current="page"` and is never a link, even if `href` is also
+  set.
+- Every separator icon is marked `aria-hidden="true"`, so it isn't announced as its own list entry
+  or interactive control. The leading separator is hidden on whichever `bs-breadcrumb`/
+  `bs-breadcrumb-overflow` element is visually first inside `bs-breadcrumbs`, via a
+  `:host(:first-child)` CSS rule on each -- pure DOM position, not `:first-of-type` (which only
+  counts same-tag siblings, and would wrongly hide/show separators based on tag rather than visual
+  position when `bs-breadcrumb` and `bs-breadcrumb-overflow` are mixed).
+- `bs-breadcrumb-overflow`'s ellipsis is a real `<button>` (icon-only, accessible name via
+  `aria-label={overflowLabel}`) marked `aria-haspopup="menu"` and `aria-expanded` (reflecting
+  whether the popup is open). The popup closes on <kbd>Escape</kbd>, or when focus/click moves
+  outside the component entirely (via a `focusout` listener on the host checking `relatedTarget`,
+  since `focusout` is composed and bubbles across the `bs-menu` shadow boundary -- there's no
+  document-level click listener).
+- Hidden items with an `href` render as real `<a href>` rows in the popup rather than
+  `bs-menu-item` (which renders a `<button>`), so client-side routers in consuming apps that
+  intercept `<a>` clicks continue to work for hidden crumbs. Items without an `href` render as
+  plain non-interactive `<span>` text.

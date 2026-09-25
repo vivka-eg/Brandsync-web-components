@@ -1,0 +1,18 @@
+/**
+ * @prop --bs-breadcrumbs-gap: Gap between slotted crumbs (bs-breadcrumb/bs-breadcrumb-overflow). Aliased to --bs-spacing-50.
+ */
+:host {
+  display: block;
+
+  --bs-breadcrumbs-gap: var(--bs-spacing-50);
+}
+
+.bs-breadcrumbs__list {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: var(--bs-breadcrumbs-gap);
+}

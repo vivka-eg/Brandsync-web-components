@@ -88,7 +88,7 @@ Measure tool's shadow-DOM crawling produces degenerate results on this component
 slot/icon structure (confirmed by testing); it injects a `<style>` directly into each shadow root
 outlining every `[part]` element instead.
 
-**Known gap:** `bs-modal`'s backdrop is hardcoded to `rgba(0, 0, 0, 0.4)` instead of using
+**Known gap:** `bs-dialog`'s backdrop is hardcoded to `rgba(0, 0, 0, 0.4)` instead of using
 `--bs-surface-overlay` (which has distinct light/dark values) — the one confirmed hardcoded-color
 violation in the whole library as of this writing.
 
@@ -110,7 +110,7 @@ the core `storybook` package (`10.5.8`) — their default caret ranges resolve t
 with incompatible peer requirements (`storybook@^10.6.0`), which conflicts with everything else
 pinned to `10.5.8`.
 
-Two pre-existing test failures (`bs-modal.cmp.test.tsx`, focus-restoration assertions) are
+Two pre-existing test failures (`bs-dialog.cmp.test.tsx`, focus-restoration assertions) are
 unrelated to any work done in this session — confirmed by reproducing them against an unmodified
 tree multiple times.
 

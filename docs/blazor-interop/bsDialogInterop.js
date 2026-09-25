@@ -1,4 +1,4 @@
-// Loaded by BsModal.razor via IJSRuntime.InvokeAsync<IJSObjectReference>('import', './bsModalInterop.js').
+// Loaded by BsDialog.razor via IJSRuntime.InvokeAsync<IJSObjectReference>('import', './bsDialogInterop.js').
 
 export function setOpen(element, isOpen) {
   element.open = isOpen;

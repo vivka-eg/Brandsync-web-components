@@ -453,6 +453,23 @@ describe('bs-input', () => {
 
       expect(bsTitleChangeSpy).toHaveReceivedEventDetail('Mr.');
     });
+
+    it('renders the title select and the text input in two separate [part="field"] boxes, not one shared field', async () => {
+      const { root } = await render(<bs-input type="initials" titleOptions={['Mrs.', 'Mr.']}></bs-input>);
+      const fields = root.shadowRoot.querySelectorAll('[part="field"]');
+      expect(fields).toHaveLength(2);
+      expect(fields[0]).toHaveClass('bs-input__field--initials-title');
+      expect(fields[0].querySelector('select')).not.toBeNull();
+      expect(fields[1]).toHaveClass('bs-input__field--initials-value');
+      expect(fields[1].querySelector('input')).not.toBeNull();
+    });
+
+    it('applies the error class to both the title box and the value box', async () => {
+      const { root } = await render(<bs-input type="initials" titleOptions={['Mrs.']} error="Required"></bs-input>);
+      const fields = root.shadowRoot.querySelectorAll('[part="field"]');
+      expect(fields[0]).toHaveClass('bs-input__field--error');
+      expect(fields[1]).toHaveClass('bs-input__field--error');
+    });
   });
 
   describe('type="country"', () => {
@@ -514,6 +531,12 @@ describe('bs-input', () => {
       cells[0].dispatchEvent(new InputEvent('input', { bubbles: true, composed: true }));
 
       expect(bsChangeSpy).toHaveReceivedEventDetail('4');
+    });
+
+    it('applies the error class to the pin field when error is set', async () => {
+      const { root } = await render(<bs-input type="pin" length={4} error="Invalid code"></bs-input>);
+      const field = root.shadowRoot.querySelector('[part="field"]');
+      expect(field).toHaveClass('bs-input__field--error');
     });
   });
 });

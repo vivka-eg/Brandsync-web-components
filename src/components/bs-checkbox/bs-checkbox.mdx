@@ -1,5 +1,6 @@
 import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
 import * as CheckboxStories from './bs-checkbox.stories';
+import * as CheckboxSkeletonStories from './bs-checkbox-skeleton/bs-checkbox-skeleton.stories';
 
 <Meta of={CheckboxStories} />
 
@@ -8,11 +9,13 @@ import * as CheckboxStories from './bs-checkbox.stories';
 ## Table of Contents
 
 - [Overview](#overview)
+- [Horizontal](#horizontal)
 - [Checked](#checked)
 - [Indeterminate](#indeterminate)
 - [Disabled](#disabled)
 - [Error](#error)
 - [Sizes](#sizes)
+- [Skeleton state](#skeleton-state)
 - [Component API](#component-api)
 - [Events](#events)
 - [Accessibility](#accessibility)
@@ -32,6 +35,14 @@ choices.
 - An on/off setting that takes effect immediately (no explicit form submission) -- use `bs-switch`.
 
 <Canvas of={CheckboxStories.Default} />
+
+## Horizontal
+
+`bs-checkbox` has no built-in group/orientation concept of its own (unlike, say, a `<fieldset>`
+wrapper component) -- arranging multiple instances in a row is just the consuming app's own
+flex/grid layout, same as stacking them vertically is everywhere else on this page.
+
+<Canvas of={CheckboxStories.Horizontal} />
 
 ## Checked
 
@@ -68,6 +79,14 @@ three sizes.
 <Canvas of={CheckboxStories.Small} />
 <Canvas of={CheckboxStories.Medium} />
 <Canvas of={CheckboxStories.Large} />
+
+## Skeleton state
+
+Shown in place of a `bs-checkbox` while its label/checked state isn't known yet (e.g. still being
+fetched from an API), rendered by the separate `bs-checkbox-skeleton` element -- see its own docs
+for the full API. Sized to match this component's own `sm`/`md`/`lg` box dimensions.
+
+<Canvas of={CheckboxSkeletonStories.Default} />
 
 ## Component API
 

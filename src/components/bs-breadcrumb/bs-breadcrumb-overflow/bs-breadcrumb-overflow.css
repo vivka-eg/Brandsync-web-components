@@ -1,0 +1,125 @@
+/**
+ * @prop --bs-breadcrumb-overflow-gap: Gap between the separator icon and the ellipsis, and the popup's offset below the button. Aliased to --bs-spacing-50.
+ * @prop --bs-breadcrumb-overflow-separator-color: Separator icon color. Aliased to --bs-icon-default.
+ * @prop --bs-breadcrumb-overflow-ellipsis-color: Ellipsis icon color. Aliased to --bs-icon-muted.
+ * @prop --bs-breadcrumb-overflow-radius: Border radius of each row in the popup. Aliased to --bs-border-radius-100.
+ * @prop --bs-breadcrumb-overflow-padding-y: Top/bottom padding of each row in the popup. Aliased to --bs-spacing-100.
+ * @prop --bs-breadcrumb-overflow-padding-x: Left/right padding of each row in the popup. Aliased to --bs-spacing-150.
+ * @prop --bs-breadcrumb-overflow-hover: Background color of a row in the popup on hover/focus. Aliased to --bs-color-neutral-container-hover.
+ * @prop --bs-breadcrumb-overflow-color: Text color of a row in the popup. Aliased to --bs-text-muted.
+ * @prop --bs-breadcrumb-overflow-font-size: Aliased to --bs-font-size-md.
+ * @prop --bs-breadcrumb-overflow-line-height: Aliased to --bs-line-height-body-md.
+ * @prop --bs-breadcrumb-overflow-font-size-sm: Popup row font size at size="sm". Aliased to --bs-font-size-sm.
+ * @prop --bs-breadcrumb-overflow-line-height-sm: Popup row line height at size="sm". Aliased to --bs-line-height-body-sm.
+ */
+:host {
+  display: inline-flex;
+  align-items: center;
+
+  --bs-breadcrumb-overflow-gap: var(--bs-spacing-50);
+
+  --bs-breadcrumb-overflow-separator-color: var(--bs-icon-default);
+  --bs-breadcrumb-overflow-ellipsis-color: var(--bs-icon-muted);
+
+  --bs-breadcrumb-overflow-radius: var(--bs-border-radius-100);
+  --bs-breadcrumb-overflow-padding-y: var(--bs-spacing-100);
+  --bs-breadcrumb-overflow-padding-x: var(--bs-spacing-150);
+  --bs-breadcrumb-overflow-hover: var(--bs-color-neutral-container-hover);
+  --bs-breadcrumb-overflow-color: var(--bs-text-muted);
+  --bs-breadcrumb-overflow-font-size: var(--bs-font-size-md);
+  --bs-breadcrumb-overflow-line-height: var(--bs-line-height-body-md);
+  --bs-breadcrumb-overflow-font-size-sm: var(--bs-font-size-sm);
+  --bs-breadcrumb-overflow-line-height-sm: var(--bs-line-height-body-sm);
+
+  gap: var(--bs-breadcrumb-overflow-gap);
+}
+
+/* This element is visually first in the trail -- pure DOM position (not :first-of-type, which
+   only counts same-tag siblings and would wrongly fail to hide the separator when a bs-breadcrumb
+   is literally first and this element immediately follows it). See bs-breadcrumb.css for the
+   identical rule. */
+:host(:first-child) .bs-breadcrumb-overflow__separator {
+  display: none;
+}
+
+/* size="sm" scales the popup rows' font-size/line-height only -- the separator/ellipsis icons'
+   pixel sizes are unchanged, matching bs-breadcrumb's identical sm rule. */
+:host([size='sm']) .bs-breadcrumb-overflow__link {
+  font-size: var(--bs-breadcrumb-overflow-font-size-sm);
+  line-height: calc(var(--bs-breadcrumb-overflow-line-height-sm) * 1px);
+}
+
+.bs-breadcrumb-overflow__separator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+  color: var(--bs-breadcrumb-overflow-separator-color);
+}
+
+.bs-breadcrumb-overflow__separator svg {
+  width: 16px;
+  height: 16px;
+}
+
+.bs-breadcrumb-overflow__wrapper {
+  position: relative;
+  display: inline-flex;
+}
+
+.bs-breadcrumb-overflow__ellipsis {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  color: var(--bs-breadcrumb-overflow-ellipsis-color);
+  border-radius: var(--bs-breadcrumb-overflow-radius);
+}
+
+.bs-breadcrumb-overflow__ellipsis:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: 2px;
+}
+
+.bs-breadcrumb-overflow__ellipsis svg {
+  width: 24px;
+  height: 24px;
+}
+
+.bs-breadcrumb-overflow__menu {
+  position: absolute;
+  top: calc(100% + var(--bs-breadcrumb-overflow-gap));
+  left: 0;
+  z-index: 1;
+  white-space: nowrap;
+}
+
+.bs-breadcrumb-overflow__link {
+  display: block;
+  box-sizing: border-box;
+  padding: var(--bs-breadcrumb-overflow-padding-y) var(--bs-breadcrumb-overflow-padding-x);
+  border-radius: var(--bs-breadcrumb-overflow-radius);
+  color: var(--bs-breadcrumb-overflow-color);
+  font-size: var(--bs-breadcrumb-overflow-font-size);
+  line-height: calc(var(--bs-breadcrumb-overflow-line-height) * 1px);
+  text-decoration: none;
+  transition: background-color var(--bs-duration-fast) var(--bs-easing-standard);
+}
+
+a.bs-breadcrumb-overflow__link:hover,
+a.bs-breadcrumb-overflow__link:focus-visible {
+  background: var(--bs-breadcrumb-overflow-hover);
+}
+
+a.bs-breadcrumb-overflow__link:focus-visible {
+  outline: 2px solid var(--bs-border-neutral-focus);
+  outline-offset: -2px;
+}

@@ -45,6 +45,7 @@ export const Primary: Story = {};
 
 export const Neutral: Story = {
   args: { variant: 'neutral' },
+  
 };
 
 export const Subtle: Story = {

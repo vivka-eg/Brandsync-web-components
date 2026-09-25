@@ -41,7 +41,7 @@ export type BsButtonSize = 'sm' | 'md' | 'lg';
   tag: 'bs-button',
   styleUrl: 'bs-button.css',
   // delegatesFocus, not just shadow:true -- without it, calling .focus() on the <bs-button> host
-  // (e.g. bs-modal restoring focus to whatever triggered it) silently no-ops, because a shadow
+  // (e.g. bs-dialog restoring focus to whatever triggered it) silently no-ops, because a shadow
   // host isn't itself focusable by default and focus doesn't automatically enter its shadow root.
   shadow: { delegatesFocus: true },
 })

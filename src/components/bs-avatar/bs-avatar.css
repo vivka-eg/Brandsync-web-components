@@ -1,0 +1,197 @@
+/**
+ * @prop --bs-avatar-size-xs: Width/height at size="xs". 24px, matching Figma's own six-step scale.
+ * @prop --bs-avatar-size-sm: Width/height at size="sm". 32px.
+ * @prop --bs-avatar-size-md: Width/height at size="md". 44px.
+ * @prop --bs-avatar-size-lg: Width/height at size="lg". 64px.
+ * @prop --bs-avatar-size-xl: Width/height at size="xl". 96px.
+ * @prop --bs-avatar-size-xxl: Width/height at size="xxl". 128px.
+ * @prop --bs-avatar-radius: Corner radius -- always a full circle regardless of size. Aliased to
+ *   --bs-border-radius-full.
+ * @prop --bs-avatar-border-width: Border width at every size except xxl. Aliased to
+ *   --bs-border-width-thin (1px).
+ * @prop --bs-avatar-border-width-xxl: Border width at size="xxl" specifically -- Figma specs this
+ *   one size a hair thicker (1.333px) than the other five, not a rounding artifact.
+ * @prop --bs-avatar-bg-dafault: Background, resting. Aliased to --bs-surface-raised. Named
+ *   "dafault" (not a typo introduced here) -- this is this library's own vendored
+ *   brandsync-tokens token verbatim; see CLAUDE.md's note on pre-existing malformed vendored
+ *   token names.
+ * @prop --bs-avatar-bg-hover: Background on hover. Aliased to --bs-surface-raised -- identical to
+ *   the resting value; only the border recolors on hover (see below).
+ * @prop --bs-avatar-bg-pressed: Background while pressed. Aliased to --bs-surface-raised, same
+ *   reasoning as hover.
+ * @prop --bs-avatar-bg-focused: Background while focused. Aliased to --bs-surface-raised, same
+ *   reasoning as hover.
+ * @prop --bs-avatar-border-primary: Border color, resting. Aliased to
+ *   --bs-border-neutral-container.
+ * @prop --bs-avatar-border-hover: Border color on hover. Aliased to
+ *   --bs-border-neutral-container-hover.
+ * @prop --bs-avatar-border-pressed: Border color while pressed. Aliased to
+ *   --bs-border-neutral-container-pressed.
+ * @prop --bs-avatar-border-focused: Border color while focused -- Figma keeps this identical to
+ *   the resting --bs-avatar-border-primary; the focus ring (--bs-avatar-border-focus below) is a
+ *   separate, additional ring, not a border recolor.
+ * @prop --bs-avatar-border-focus: Focus ring color -- a separate ring drawn just outside the
+ *   avatar's own border, not the border's own color (see --bs-avatar-border-focused above).
+ *   Aliased to --bs-border-neutral-focus.
+ * @prop --bs-avatar-icon-primary: Fallback user-icon color (type="icon"). Aliased to
+ *   --bs-icon-muted.
+ * @prop --bs-avatar-text-default: Initials text color (type="initials"). Aliased to
+ *   --bs-text-default.
+ *
+ * All of the --bs-avatar-* custom properties above are this library's existing vendored
+ * brandsync-tokens tokens (see tokens.css), not new ones invented for this component --
+ * brandsync-tokens already ships a full avatar-specific token set, referenced here directly
+ * rather than re-aliased through component-local names the way most other components in this
+ * library do, since there's nothing left to add a layer of indirection over.
+ */
+:host {
+  display: inline-flex;
+  vertical-align: middle;
+
+  --bs-avatar-size-xs: 24px;
+  --bs-avatar-size-sm: 32px;
+  --bs-avatar-size-md: 44px;
+  --bs-avatar-size-lg: 64px;
+  --bs-avatar-size-xl: 96px;
+  --bs-avatar-size-xxl: 128px;
+
+  --bs-avatar-radius: var(--bs-border-radius-full);
+  --bs-avatar-border-width: var(--bs-border-width-thin);
+  --bs-avatar-border-width-xxl: 1.333px;
+}
+
+.bs-avatar {
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  border-radius: var(--bs-avatar-radius);
+  border: var(--bs-avatar-border-width) solid var(--bs-avatar-border-primary);
+  background: var(--bs-avatar-bg-dafault);
+  flex-shrink: 0;
+  /* Prevents the initials text (or a stray click-drag anywhere in the circle) from highlighting
+     like ordinary selectable text -- this component is meant to read as a single glyph/photo, not
+     text content, especially once a consuming app makes it interactive (see the class doc in
+     bs-avatar.tsx). Same convention already used for bs-data-table's own clickable sort header. */
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bs-avatar--xs {
+  width: var(--bs-avatar-size-xs);
+  height: var(--bs-avatar-size-xs);
+}
+
+.bs-avatar--sm {
+  width: var(--bs-avatar-size-sm);
+  height: var(--bs-avatar-size-sm);
+}
+
+.bs-avatar--md {
+  width: var(--bs-avatar-size-md);
+  height: var(--bs-avatar-size-md);
+}
+
+.bs-avatar--lg {
+  width: var(--bs-avatar-size-lg);
+  height: var(--bs-avatar-size-lg);
+}
+
+.bs-avatar--xl {
+  width: var(--bs-avatar-size-xl);
+  height: var(--bs-avatar-size-xl);
+}
+
+.bs-avatar--xxl {
+  width: var(--bs-avatar-size-xxl);
+  height: var(--bs-avatar-size-xxl);
+  border-width: var(--bs-avatar-border-width-xxl);
+}
+
+/* type="image" */
+.bs-avatar__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* type="icon" -- proportional to the container regardless of size, so one shared viewBox scales
+   cleanly across all six sizes without needing a per-size icon custom property. */
+.bs-avatar__icon {
+  width: 60%;
+  height: 60%;
+  color: var(--bs-avatar-icon-primary);
+}
+
+/* type="initials" -- font styling genuinely varies per size, not a simple linear scale (xs/sm
+   share one tier, lg sits between md and xl/xxl using a different font family/weight despite
+   matching md's font SIZE) -- matching Figma's own per-size type styles exactly rather than
+   interpolating a "cleaner" scale of our own. */
+.bs-avatar__initials {
+  color: var(--bs-avatar-text-default);
+  font-family: var(--bs-typography-font-family-body);
+  font-weight: var(--bs-font-weight-medium);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.bs-avatar--xs .bs-avatar__initials,
+.bs-avatar--sm .bs-avatar__initials {
+  font-size: var(--bs-fontsize-caption-sm);
+  line-height: calc(var(--bs-line-height-caption-sm) * 1px);
+}
+
+.bs-avatar--md .bs-avatar__initials {
+  font-family: var(--bs-typography-font-family-heading);
+  font-weight: var(--bs-font-weight-bold);
+  font-size: var(--bs-fontsize-heading-h6);
+  line-height: calc(var(--bs-line-height-heading-h6) * 1px);
+}
+
+.bs-avatar--lg .bs-avatar__initials {
+  font-size: var(--bs-fontsize-body-md);
+  line-height: calc(var(--bs-line-height-body-md) * 1px);
+}
+
+.bs-avatar--xl .bs-avatar__initials,
+.bs-avatar--xxl .bs-avatar__initials {
+  font-family: var(--bs-typography-font-family-heading);
+  font-weight: var(--bs-font-weight-bold);
+  font-size: var(--bs-fontsize-heading-h4);
+  line-height: calc(var(--bs-line-height-heading-h4) * 1px);
+}
+
+/* Interaction states -- real :hover/:focus-visible/:active on the HOST itself (not a wrapping
+   button this component doesn't render), so a consuming app gets this treatment for free just by
+   making the <bs-avatar> element itself interactive (a click handler + tabindex, or wrapping it in
+   their own <button>) -- see the class doc in bs-avatar.tsx for why. Guarded by :not([disabled])
+   so a disabled avatar never shows a hover/focus/pressed treatment even if a consumer's own
+   wrapping control still lets these pseudo-classes match. */
+:host(:hover:not([disabled])) .bs-avatar {
+  background: var(--bs-avatar-bg-hover);
+  border-color: var(--bs-avatar-border-hover);
+}
+
+:host(:active:not([disabled])) .bs-avatar {
+  background: var(--bs-avatar-bg-pressed);
+  border-color: var(--bs-avatar-border-pressed);
+}
+
+/* Focus keeps the resting border color (--bs-avatar-border-focused is identical to
+   --bs-avatar-border-primary in Figma) and adds a separate ring just outside it instead of
+   recoloring the border itself -- unlike hover/pressed above. */
+:host(:focus-visible:not([disabled])) {
+  outline: none;
+}
+
+:host(:focus-visible:not([disabled])) .bs-avatar {
+  background: var(--bs-avatar-bg-focused);
+  border-color: var(--bs-avatar-border-focused);
+  box-shadow: 0 0 0 3px var(--bs-avatar-border-focus);
+}
+
+:host([disabled]) {
+  opacity: 0.5;
+}

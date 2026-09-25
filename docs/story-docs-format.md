@@ -1,14 +1,14 @@
 # Storybook docs (`.mdx`) format
 
 Applies to every `<component>.mdx` file. The shape below is already followed by `bs-badge.mdx`
-and `bs-modal.mdx` — this doc makes that pattern explicit so new components don't reinvent it,
+and `bs-dialog.mdx` — this doc makes that pattern explicit so new components don't reinvent it,
 and folds in a couple of patterns worth adopting from other design systems' docs.
 
 ## Section order (required, in this order)
 
 1. **Imports + `<Meta>`** — `import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks'`
    and `import * as XStories from './bs-x.stories'`, then `<Meta of={XStories} />`.
-2. **`# <Title>`** — capitalized display name, no `bs-` prefix (e.g. `# Modal`, not `# bs-modal`).
+2. **`# <Title>`** — capitalized display name, no `bs-` prefix (e.g. `# Dialog`, not `# bs-dialog`).
 3. **`## Table of Contents`** — one anchor link per `##` heading below it, same order they appear in.
 4. **`## Overview`**
    - Component description, matching the `@Component` JSDoc in the `.tsx` source (use

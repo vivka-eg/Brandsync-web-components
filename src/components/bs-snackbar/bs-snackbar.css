@@ -1,0 +1,321 @@
+/**
+ * @prop --bs-snackbar-radius: Corner radius of the bar. Aliased to --bs-border-radius-100.
+ * @prop --bs-snackbar-shadow: Elevation shadow, since a snackbar floats above page content. Aliased to --bs-shadow-md.
+ * @prop --bs-snackbar-gap: Gap between the content area and the actions area. Aliased to --bs-spacing-100.
+ * @prop --bs-snackbar-content-padding-y: Top/bottom padding of the content area. Aliased to --bs-spacing-200.
+ * @prop --bs-snackbar-content-padding-x: Left padding of the content area (the bar's own left edge). Aliased to --bs-spacing-200.
+ * @prop --bs-snackbar-content-gap: Gap between the icon and the message. Aliased to --bs-spacing-150.
+ * @prop --bs-snackbar-font-size: Message font size. Aliased to --bs-font-size-md.
+ * @prop --bs-snackbar-line-height: Message line height. Aliased to --bs-line-height-body-md.
+ * @prop --bs-snackbar-actions-padding-y: Top/bottom padding of the actions area. Aliased to --bs-spacing-50.
+ * @prop --bs-snackbar-actions-padding-x: Right padding of the actions area (the bar's own right edge). Aliased to --bs-spacing-100.
+ * @prop --bs-snackbar-actions-gap: Gap between the action button and the close button. Aliased to --bs-spacing-50.
+ * @prop --bs-snackbar-action-radius: Corner radius of the action button. Aliased to --bs-border-radius-100.
+ * @prop --bs-snackbar-action-font-size: Action button font size. Aliased to --bs-font-size-sm.
+ * @prop --bs-snackbar-action-font-weight: Action button font weight. Aliased to --bs-font-weight-medium.
+ * @prop --bs-snackbar-action-line-height: Action button line height. Aliased to --bs-line-height-body-sm.
+ * @prop --bs-snackbar-close-radius: Corner radius of the close button. Aliased to --bs-border-radius-100.
+ * @prop --bs-snackbar-surface-default: Bar background, variant="default". Aliased to --bs-snackbar-bg-default (brandsync-tokens).
+ * @prop --bs-snackbar-color-default: Icon/message/close color, variant="default". Aliased to --bs-snackbar-text-default (brandsync-tokens) -- named "-color-", not "-text-", solely to avoid colliding with that vendored token's own name.
+ * @prop --bs-snackbar-action-border-default: Action button border, variant="default" (outlined, not filled). Aliased to --bs-blue-300.
+ * @prop --bs-snackbar-action-text-default: Action button text, variant="default". Aliased to --bs-snackbar-action-text (brandsync-tokens).
+ * @prop --bs-snackbar-surface-info: Bar background, variant="info". Aliased to --bs-color-info-container.
+ * @prop --bs-snackbar-text-info: Icon/message/close color, variant="info". Aliased to --bs-text-info.
+ * @prop --bs-snackbar-action-bg-info: Action button background, variant="info". Aliased to --bs-snackbar-bg-info (brandsync-tokens).
+ * @prop --bs-snackbar-action-bg-info-hover: Action button background, variant="info", hover. Aliased to --bs-color-info-hover.
+ * @prop --bs-snackbar-action-bg-info-pressed: Action button background, variant="info", pressed. Aliased to --bs-color-info-pressed.
+ * @prop --bs-snackbar-surface-warning: Bar background, variant="warning". Aliased to --bs-color-warning-container.
+ * @prop --bs-snackbar-text-warning: Icon/message/close color, variant="warning". Aliased to --bs-text-warning.
+ * @prop --bs-snackbar-action-bg-warning: Action button background, variant="warning". Aliased to --bs-snackbar-bg-warning (brandsync-tokens).
+ * @prop --bs-snackbar-action-bg-warning-hover: Action button background, variant="warning", hover. Aliased to --bs-color-warning-hover.
+ * @prop --bs-snackbar-action-bg-warning-pressed: Action button background, variant="warning", pressed. Aliased to --bs-color-warning-pressed.
+ * @prop --bs-snackbar-surface-success: Bar background, variant="success". Aliased to --bs-color-success-container.
+ * @prop --bs-snackbar-text-success: Icon/message/close color, variant="success". Aliased to --bs-text-success.
+ * @prop --bs-snackbar-action-bg-success: Action button background, variant="success". Aliased to --bs-snackbar-bg-success (brandsync-tokens).
+ * @prop --bs-snackbar-action-bg-success-hover: Action button background, variant="success", hover. Aliased to --bs-color-success-hover.
+ * @prop --bs-snackbar-action-bg-success-pressed: Action button background, variant="success", pressed. Aliased to --bs-color-success-pressed.
+ * @prop --bs-snackbar-surface-error: Bar background, variant="error". Aliased to --bs-color-error-container.
+ * @prop --bs-snackbar-text-error: Icon/message/close color, variant="error". Aliased to --bs-text-error.
+ * @prop --bs-snackbar-action-bg-error: Action button background, variant="error". Aliased to --bs-snackbar-bg-error (brandsync-tokens).
+ * @prop --bs-snackbar-action-bg-error-hover: Action button background, variant="error", hover. Aliased to --bs-color-error-hover.
+ * @prop --bs-snackbar-action-bg-error-pressed: Action button background, variant="error", pressed. Aliased to --bs-color-error-pressed.
+ * @prop --bs-snackbar-action-text-on-action: Action button text, every colored (filled) variant. Aliased to --bs-text-on-action.
+ * @prop --bs-snackbar-spinner-track: Loading spinner's background ring. Aliased to --bs-neutral-200.
+ */
+:host {
+  display: inline-flex;
+
+  --bs-snackbar-radius: var(--bs-border-radius-100);
+  --bs-snackbar-shadow: var(--bs-shadow-md);
+  --bs-snackbar-gap: var(--bs-spacing-100);
+
+  --bs-snackbar-content-padding-y: var(--bs-spacing-200);
+  --bs-snackbar-content-padding-x: var(--bs-spacing-200);
+  --bs-snackbar-content-gap: var(--bs-spacing-150);
+  --bs-snackbar-font-size: var(--bs-font-size-md);
+  --bs-snackbar-line-height: var(--bs-line-height-body-md);
+
+  --bs-snackbar-actions-padding-y: var(--bs-spacing-50);
+  --bs-snackbar-actions-padding-x: var(--bs-spacing-100);
+  --bs-snackbar-actions-gap: var(--bs-spacing-50);
+
+  --bs-snackbar-action-radius: var(--bs-border-radius-100);
+  --bs-snackbar-action-font-size: var(--bs-font-size-sm);
+  --bs-snackbar-action-font-weight: var(--bs-font-weight-medium);
+  --bs-snackbar-action-line-height: var(--bs-line-height-body-sm);
+
+  --bs-snackbar-close-radius: var(--bs-border-radius-100);
+
+  --bs-snackbar-surface-default: var(--bs-snackbar-bg-default);
+  /* Named "-color-", not "-text-", solely to avoid a self-referential cycle: the brandsync-tokens
+     vendored token is ALSO literally named --bs-snackbar-text-default, so declaring a property of
+     that same name here (even aliasing to the "outer" token via var()) creates a cyclic reference
+     per the CSS spec -- the property would compute to its initial value (nothing), not fall back
+     to the vendored one. */
+  --bs-snackbar-color-default: var(--bs-snackbar-text-default);
+  --bs-snackbar-action-border-default: var(--bs-blue-300);
+  --bs-snackbar-action-text-default: var(--bs-snackbar-action-text);
+
+  --bs-snackbar-surface-info: var(--bs-color-info-container);
+  --bs-snackbar-text-info: var(--bs-text-info);
+  --bs-snackbar-action-bg-info: var(--bs-snackbar-bg-info);
+  --bs-snackbar-action-bg-info-hover: var(--bs-color-info-hover);
+  --bs-snackbar-action-bg-info-pressed: var(--bs-color-info-pressed);
+
+  --bs-snackbar-surface-warning: var(--bs-color-warning-container);
+  --bs-snackbar-text-warning: var(--bs-text-warning);
+  --bs-snackbar-action-bg-warning: var(--bs-snackbar-bg-warning);
+  --bs-snackbar-action-bg-warning-hover: var(--bs-color-warning-hover);
+  --bs-snackbar-action-bg-warning-pressed: var(--bs-color-warning-pressed);
+
+  --bs-snackbar-surface-success: var(--bs-color-success-container);
+  --bs-snackbar-text-success: var(--bs-text-success);
+  --bs-snackbar-action-bg-success: var(--bs-snackbar-bg-success);
+  --bs-snackbar-action-bg-success-hover: var(--bs-color-success-hover);
+  --bs-snackbar-action-bg-success-pressed: var(--bs-color-success-pressed);
+
+  --bs-snackbar-surface-error: var(--bs-color-error-container);
+  --bs-snackbar-text-error: var(--bs-text-error);
+  --bs-snackbar-action-bg-error: var(--bs-snackbar-bg-error);
+  --bs-snackbar-action-bg-error-hover: var(--bs-color-error-hover);
+  --bs-snackbar-action-bg-error-pressed: var(--bs-color-error-pressed);
+
+  --bs-snackbar-action-text-on-action: var(--bs-text-on-action);
+  --bs-snackbar-spinner-track: var(--bs-neutral-200);
+}
+
+.bs-snackbar {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-snackbar-gap);
+  border-radius: var(--bs-snackbar-radius);
+  box-shadow: var(--bs-snackbar-shadow);
+  font-family: inherit;
+}
+
+/* Each variant sets its own surface/text pair -- .bs-snackbar__icon, .bs-snackbar__message, and
+   .bs-snackbar__close all inherit `color` from here rather than each redeclaring it. */
+.bs-snackbar--default {
+  background: var(--bs-snackbar-surface-default);
+  color: var(--bs-snackbar-color-default);
+}
+
+.bs-snackbar--info {
+  background: var(--bs-snackbar-surface-info);
+  color: var(--bs-snackbar-text-info);
+}
+
+.bs-snackbar--warning {
+  background: var(--bs-snackbar-surface-warning);
+  color: var(--bs-snackbar-text-warning);
+}
+
+.bs-snackbar--success {
+  background: var(--bs-snackbar-surface-success);
+  color: var(--bs-snackbar-text-success);
+}
+
+.bs-snackbar--error {
+  background: var(--bs-snackbar-surface-error);
+  color: var(--bs-snackbar-text-error);
+}
+
+.bs-snackbar__content {
+  display: flex;
+  align-items: center;
+  gap: var(--bs-snackbar-content-gap);
+  flex: 1 1 auto;
+  min-width: 0;
+  padding: var(--bs-snackbar-content-padding-y) 0 var(--bs-snackbar-content-padding-y) var(--bs-snackbar-content-padding-x);
+}
+
+.bs-snackbar__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  flex-shrink: 0;
+  color: inherit;
+}
+
+.bs-snackbar__icon svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Same border-spin technique as bs-attachment's own upload spinner -- a light track ring plus one
+   accent-colored side, rotated. `color: inherit` means the accent automatically matches whatever
+   variant's text color is currently active, without a separate --bs-snackbar-spinner-accent prop. */
+.bs-snackbar__spinner {
+  display: inline-block;
+  box-sizing: border-box;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--bs-snackbar-spinner-track);
+  border-top-color: currentColor;
+  border-radius: 50%;
+  animation: bs-snackbar-spin 0.8s linear infinite;
+}
+
+@keyframes bs-snackbar-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bs-snackbar__spinner {
+    animation: none;
+  }
+}
+
+.bs-snackbar__message {
+  flex: 1 1 auto;
+  min-width: 0;
+  font-size: var(--bs-snackbar-font-size);
+  line-height: calc(var(--bs-snackbar-line-height) * 1px);
+}
+
+.bs-snackbar__actions {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  gap: var(--bs-snackbar-actions-gap);
+  flex-shrink: 0;
+  padding: var(--bs-snackbar-actions-padding-y) var(--bs-snackbar-actions-padding-x) var(--bs-snackbar-actions-padding-y) 0;
+}
+
+.bs-snackbar__action {
+  height: 32px;
+  padding: 0 var(--bs-spacing-150);
+  border-radius: var(--bs-snackbar-action-radius);
+  font-family: inherit;
+  font-size: var(--bs-snackbar-action-font-size);
+  font-weight: var(--bs-snackbar-action-font-weight);
+  line-height: calc(var(--bs-snackbar-action-line-height) * 1px);
+  white-space: nowrap;
+  cursor: pointer;
+  border: none;
+  background: transparent;
+}
+
+/* default is the only variant whose action button is outlined (transparent, bordered) rather than
+   filled -- matches the Figma spec's dark neutral bar using a lighter bordered button instead of a
+   solid fill, since a solid fill would need its own distinct color unrelated to the bar's own dark
+   surface. */
+.bs-snackbar--default .bs-snackbar__action {
+  border: 1px solid var(--bs-snackbar-action-border-default);
+  color: var(--bs-snackbar-action-text-default);
+}
+
+.bs-snackbar--info .bs-snackbar__action {
+  background: var(--bs-snackbar-action-bg-info);
+  color: var(--bs-snackbar-action-text-on-action);
+}
+.bs-snackbar--info .bs-snackbar__action:hover {
+  background: var(--bs-snackbar-action-bg-info-hover);
+}
+.bs-snackbar--info .bs-snackbar__action:active {
+  background: var(--bs-snackbar-action-bg-info-pressed);
+}
+
+.bs-snackbar--warning .bs-snackbar__action {
+  background: var(--bs-snackbar-action-bg-warning);
+  color: var(--bs-snackbar-action-text-on-action);
+}
+.bs-snackbar--warning .bs-snackbar__action:hover {
+  background: var(--bs-snackbar-action-bg-warning-hover);
+}
+.bs-snackbar--warning .bs-snackbar__action:active {
+  background: var(--bs-snackbar-action-bg-warning-pressed);
+}
+
+.bs-snackbar--success .bs-snackbar__action {
+  background: var(--bs-snackbar-action-bg-success);
+  color: var(--bs-snackbar-action-text-on-action);
+}
+.bs-snackbar--success .bs-snackbar__action:hover {
+  background: var(--bs-snackbar-action-bg-success-hover);
+}
+.bs-snackbar--success .bs-snackbar__action:active {
+  background: var(--bs-snackbar-action-bg-success-pressed);
+}
+
+.bs-snackbar--error .bs-snackbar__action {
+  background: var(--bs-snackbar-action-bg-error);
+  color: var(--bs-snackbar-action-text-on-action);
+}
+.bs-snackbar--error .bs-snackbar__action:hover {
+  background: var(--bs-snackbar-action-bg-error-hover);
+}
+.bs-snackbar--error .bs-snackbar__action:active {
+  background: var(--bs-snackbar-action-bg-error-pressed);
+}
+
+.bs-snackbar__close {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  flex-shrink: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  border-radius: var(--bs-snackbar-close-radius);
+  color: inherit;
+  cursor: pointer;
+}
+
+.bs-snackbar__close svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* Hover/active feedback for the close button (every variant) and the default variant's outlined
+   action button -- both have a transparent background with only text/border color, so there's no
+   solid fill to darken the way the filled colored-variant action buttons above do. `opacity` was
+   tried here first and was wrong: dimming a transparent element's opacity blends it TOWARD
+   whatever's behind it, which on the light pastel info/warning/success/error surfaces made a
+   "pressed" dark-colored button look LIGHTER/washed-out -- backwards from a pressed state. A
+   `color-mix()` tint using `currentColor` fixes that (a real added tint, not a blend-toward-behind)
+   while still doing the right thing on the dark `default` surface, where content is white and a
+   light-tint hover is the correct/expected direction (same idea as a ripple highlight on a dark
+   surface). Also automatically matches whichever variant's color is active, no separate per-variant
+   hover token needed here. */
+.bs-snackbar--default .bs-snackbar__action:hover,
+.bs-snackbar__close:hover {
+  background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.bs-snackbar--default .bs-snackbar__action:active,
+.bs-snackbar__close:active {
+  background: color-mix(in srgb, currentColor 24%, transparent);
+}
+
+.bs-snackbar__action:focus-visible,
+.bs-snackbar__close:focus-visible {
+  outline: 2px solid currentColor;
+  outline-offset: 2px;
+}

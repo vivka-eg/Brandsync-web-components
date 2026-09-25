@@ -52,6 +52,19 @@ type Story = StoryObj<BsCheckboxArgs>;
 
 export const Default: Story = {};
 
+export const Horizontal: Story = {
+  // A layout demo, not a real prop -- bs-checkbox has no orientation/group concept of its own
+  // (unlike Carbon's <cds-checkbox-group>), so arranging multiple instances in a row is purely the
+  // consuming app's own flex/grid layout, same as the vertical stacking shown implicitly
+  // everywhere else in this file.
+  render: () => html`
+    <div style="display:flex; gap:24px; align-items:center;">
+      <bs-checkbox>Checkbox label</bs-checkbox>
+      <bs-checkbox>Checkbox label</bs-checkbox>
+    </div>
+  `,
+};
+
 export const Checked: Story = {
   args: { checked: true },
 };

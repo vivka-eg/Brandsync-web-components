@@ -1,0 +1,75 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as PaginationStories from './bs-pagination.stories';
+
+<Meta of={PaginationStories} />
+
+# Pagination
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Truncation](#truncation)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+A numbered page control -- previous/next chevrons, page-number buttons, and `...` overflow for
+large page counts. Matches the Figma "Pagination" component's "Default" type (the classic numbered
+pagination); its other type ("jumper" -- a rows-per-page dropdown plus a page-jump input) is a
+structurally different composite widget and isn't covered by this component.
+
+**When to use**
+- Paging through a large, ordered result set (a table, a search results list) where jumping
+  directly to a specific page number is useful.
+
+**When not to use**
+- Infinite-scroll or "load more" patterns -- those don't have a fixed, addressable page number.
+- A huge page count where users realistically only ever go forward/back one page at a time -- plain
+  prev/next controls (no numbers) are simpler there.
+
+<Canvas of={PaginationStories.Default} />
+
+## Truncation
+
+`totalPages`/`currentPage` drive everything -- `bs-pagination` computes which page numbers to show
+and where to collapse into `...` itself, the consumer never builds the button list by hand.
+`siblingCount` (default `1`) controls how many page numbers show on each side of the current page
+before the rest collapses.
+
+- Current page near the start or end: one `...` on the far side (`1 2 3 ... 12`, `1 ... 10 11 12`).
+- Current page in the middle: `...` on both sides (`1 ... 5 6 7 ... 12`).
+- If `totalPages` is small enough that every number would fit anyway, no `...` appears at all.
+
+<Canvas of={PaginationStories.MiddlePage} />
+<Canvas of={PaginationStories.LastPage} />
+<Canvas of={PaginationStories.FewPages} />
+<Canvas of={PaginationStories.WiderSiblingCount} />
+
+## Component API
+
+<Controls of={PaginationStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Shadow parts: `::part(list)`, `::part(item)`, `::part(prev)`, `::part(next)`, `::part(page)`,
+  `::part(current)` (in addition to `page`, on the active page's button), `::part(ellipsis)`
+- CSS Custom Properties: `--bs-pagination-gap`, `--bs-pagination-size`, `--bs-pagination-radius`,
+  `--bs-pagination-font-size`, `--bs-pagination-line-height`, `--bs-pagination-color`,
+  `--bs-pagination-color-disabled`, `--bs-pagination-hover`, `--bs-pagination-pressed`,
+  `--bs-pagination-current-bg`, `--bs-pagination-current-bg-hover`,
+  `--bs-pagination-current-bg-pressed`, `--bs-pagination-current-color`,
+  `--bs-pagination-focus-ring-color` -- see `bs-pagination.css`'s header block for what each
+  aliases to.
+
+## Accessibility
+
+- Renders inside a `<nav aria-label="Pagination">` landmark, wrapping a real `<ul>`/`<li>` list.
+- The current page's button has `aria-current="page"`.
+- Prev/next buttons have `previousLabel`/`nextLabel`-driven accessible names, and are natively
+  `disabled` (not just visually dimmed) at the first/last page.
+- Each page-number button has its own accessible name (`aria-label="Go to page N"`), since the
+  visible text alone (just the number) doesn't convey what clicking it does.
+- The `...` indicator is `aria-hidden` -- it's not a button and doesn't expand the hidden range,
+  matching this library's other static-ellipsis precedent (`bs-breadcrumb-overflow`, though that one
+  IS interactive -- this one deliberately isn't, since jumping straight to a nearby visible page
+  number already covers the same need).

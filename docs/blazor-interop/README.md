@@ -11,8 +11,8 @@ HTML attributes (strings/numbers/booleans) — no interop needed at all:
 Interop is only needed for the two cases plain attributes can't cover, which is true in every framework,
 not just Blazor (see `CONVENTIONS.md` in the repo root): **non-string properties** (arrays/objects/functions,
 e.g. `bs-data-table`'s `columns`/`rows`) and **listening to a component's custom events**
-(e.g. `bs-modal`'s `bsClose`). `BsModal.razor` in this folder is a worked example of both, because
-`bs-modal` needs a non-attribute property (none here, but demonstrates the event side) and a custom event.
+(e.g. `bs-dialog`'s `bsClose`). `BsDialog.razor` in this folder is a worked example of both, because
+`bs-dialog` needs a non-attribute property (none here, but demonstrates the event side) and a custom event.
 
 ## The two interop primitives
 
@@ -22,16 +22,16 @@ e.g. `bs-data-table`'s `columns`/`rows`) and **listening to a component's custom
 2. **Listening to a custom event from C#** — `element.addEventListener('bsClose', ...)` in JS, which then
    calls back into C# via `DotNetObjectReference` and `[JSInvokable]`.
 
-`bsModalInterop.js` implements both; `BsModal.razor` shows the Razor side wiring them up.
+`bsDialogInterop.js` implements both; `BsDialog.razor` shows the Razor side wiring them up.
 
 ## What doesn't need any of this
 
 Setting `variant`, `size`, `disabled`, `heading` — plain attributes, works natively, zero JS:
 
 ```razor
-<bs-modal heading="Confirm booking" size="md" @ref="_modalRef">
+<bs-dialog heading="Confirm booking" size="md" @ref="_dialogRef">
     <p>Meeting Room 4B, 2:00pm - 3:00pm.</p>
-</bs-modal>
+</bs-dialog>
 ```
 
 The interop layer below only kicks in for opening/closing it programmatically and reacting to its

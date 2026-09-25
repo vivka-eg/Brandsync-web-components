@@ -26,6 +26,12 @@ import { Component, Element, Prop, State, Event, EventEmitter, Listen, h } from 
  *   toggle), or `dropdown` (chevron) -- those types always render their own trailing control there.
  *   For `type="date"`, the slot is used if provided, otherwise a default calendar icon is shown.
  * @part field - The bordered field wrapper containing the icon(s) and native control(s).
+ *   `type="initials"` renders this part on TWO separate elements instead of one (the title
+ *   `<select>`'s own small box, and the name `<input>`'s own box) -- Figma specs these as two
+ *   genuinely independent bordered containers with a gap between them, not one shared field the
+ *   way every other composite type (`country` included) renders, so `::part(field)` reaches
+ *   whichever of the two a given selector context matches, same "multiple elements, one shared
+ *   part name" convention as `bs-attachment`'s own `star` part.
  * @part menu - The `bs-menu` rendered below the field for `type="dropdown"` when `open` and
  *   `options` is non-empty.
  * @part label - The `<label>` element.
@@ -502,33 +508,54 @@ export class BsInput {
     );
   }
 
-  private renderInitialsControl() {
-    return [
-      <select
-        part="control"
-        class="bs-input__control bs-input__title-select"
-        disabled={this.disabled}
-        onChange={this.onTitleChange}
-      >
-        {this.titleOptions.map(opt => (
-          <option value={opt} selected={opt === this.initialsTitle}>
-            {opt}
-          </option>
-        ))}
-      </select>,
-      <input
-        id="control"
-        part="control"
-        class="bs-input__control"
-        type="text"
-        value={this.value}
-        placeholder={this.placeholder}
-        disabled={this.disabled}
-        aria-required={this.required ? 'true' : undefined}
-        onInput={this.onInput}
-        onChange={this.onChange}
-      />,
-    ];
+  // type="initials" renders two genuinely separate bordered boxes side by side (each with its own
+  // border/radius/background, a small gap between them), not one shared field wrapper -- Figma
+  // node 10306:101047 specs this as two independent "Base Input" containers, unlike every other
+  // composite type in this file (`country` included) which shares one field box across its
+  // sub-controls. Bypasses renderField()/renderControl() entirely for this reason, the same way
+  // `pin` already does with its own renderPinField().
+  private renderInitialsField() {
+    const disabledClass = this.disabled ? 'bs-input__field--disabled' : '';
+    return (
+      <div class="bs-input__initials-row">
+        <div part="field" class={`bs-input__field bs-input__field--initials-title ${this.error ? 'bs-input__field--error' : ''} ${disabledClass}`}>
+          <select part="control" class="bs-input__control bs-input__title-select" disabled={this.disabled} onChange={this.onTitleChange}>
+            {this.titleOptions.map(opt => (
+              <option value={opt} selected={opt === this.initialsTitle}>
+                {opt}
+              </option>
+            ))}
+          </select>
+          {this.renderSelectChevron()}
+        </div>
+        <div part="field" class={`bs-input__field bs-input__field--initials-value ${this.error ? 'bs-input__field--error' : ''} ${disabledClass}`}>
+          <input
+            id="control"
+            part="control"
+            class="bs-input__control"
+            type="text"
+            value={this.value}
+            placeholder={this.placeholder}
+            disabled={this.disabled}
+            aria-required={this.required ? 'true' : undefined}
+            onInput={this.onInput}
+            onChange={this.onChange}
+          />
+        </div>
+      </div>
+    );
+  }
+
+  /* Both the initials title <select> and the country <select> have their native OS arrow
+     suppressed (appearance: none in CSS) in favor of this single chevron-down, matching
+     type="dropdown"'s own chevron -- native rendering varies by OS/browser (e.g. an up+down
+     double arrow on some platforms), which this replaces with one consistent icon. */
+  private renderSelectChevron() {
+    return (
+      <svg class="bs-input__select-chevron" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+        <path d="M4 6L8 10L12 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    );
   }
 
   private renderCountryControl() {
@@ -546,6 +573,7 @@ export class BsInput {
           </option>
         ))}
       </select>,
+      this.renderSelectChevron(),
       <input
         id="control"
         part="control"
@@ -569,8 +597,6 @@ export class BsInput {
         return this.renderTextareaControl();
       case 'chip':
         return this.renderChipControl();
-      case 'initials':
-        return this.renderInitialsControl();
       case 'country':
         return this.renderCountryControl();
       default:
@@ -623,8 +649,10 @@ export class BsInput {
 
   private renderPinField() {
     this.pinInputs = [];
+    const errorClass = this.error ? 'bs-input__field--error' : '';
+    const disabledClass = this.disabled ? 'bs-input__field--disabled' : '';
     return (
-      <div part="field" class={`bs-input__field bs-input__field--pin ${this.disabled ? 'bs-input__field--disabled' : ''}`}>
+      <div part="field" class={`bs-input__field bs-input__field--pin ${errorClass} ${disabledClass}`}>
         {Array.from({ length: this.length }).map((_, i) => (
           <input
             id={i === 0 ? 'control' : undefined}
@@ -660,7 +688,7 @@ export class BsInput {
             )}
           </label>
         )}
-        {this.type === 'pin' ? this.renderPinField() : this.renderField()}
+        {this.type === 'pin' ? this.renderPinField() : this.type === 'initials' ? this.renderInitialsField() : this.renderField()}
         {this.error ? (
           <span id="description-or-error" part="error" class="bs-input__error">
             <svg part="error-icon" class="bs-input__error-icon" viewBox="0 0 16 16" fill="none" aria-hidden="true">

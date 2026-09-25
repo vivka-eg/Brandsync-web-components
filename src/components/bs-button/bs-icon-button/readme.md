@@ -112,11 +112,13 @@ accessible name.
 ### Used by
 
  - [bs-attachment](../../bs-attachment)
+ - [bs-dialog](../../bs-dialog)
 
 ### Graph
 ```mermaid
 graph TD;
   bs-attachment --> bs-icon-button
+  bs-dialog --> bs-icon-button
   style bs-icon-button fill:#f9f,stroke:#333,stroke-width:4px
 ```
 

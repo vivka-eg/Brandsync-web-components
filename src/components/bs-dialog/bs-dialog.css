@@ -1,0 +1,130 @@
+.bs-dialog__backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--bs-z-index-modal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.4);
+}
+
+.bs-dialog__dialog {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  max-height: calc(100vh - var(--bs-spacing-800));
+  background: var(--bs-surface-base);
+  /* Only .bs-dialog__heading set a themed color before this -- body/footer slot content had no
+     color rule anywhere in this file, so it inherited whatever color the *consuming page* happened
+     to have, not this dialog's own dark/light-themed token. Invisible in dark mode specifically
+     because the surface flipped dark via --bs-surface-raised while the text stayed whatever the
+     page's own default was. Setting it here gives every slotted section a themed default to
+     inherit, unless a section (like heading) needs its own explicit override anyway. */
+  color: var(--bs-text-default);
+  border-radius: var(--bs-border-radius-200);
+  box-shadow: var(--bs-shadow-xl);
+  font-family: inherit;
+}
+
+.bs-dialog__dialog--sm {
+  width: 360px;
+}
+.bs-dialog__dialog--md {
+  width: 560px;
+}
+.bs-dialog__dialog--lg {
+  width: 800px;
+}
+
+/* Vertical rhythm follows the Figma "Dialog" spec: 16px between the dialog edge/image/icon and the
+   heading, 8px between the heading and body content, 16px between the body and footer/dialog edge
+   -- no divider lines anywhere. Achieved with a mix of each section's own padding (top 16, bottom 8
+   here) and the sibling-selector rule below, rather than a single flex `gap` on the dialog, since a
+   `gap` would add unwanted space even when the preceding image/icon wrapper is empty. */
+.bs-dialog__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--bs-spacing-200) var(--bs-spacing-200) var(--bs-spacing-100);
+}
+
+/* The image/icon wrapper above already provides its own bottom margin when it has content (see
+   .bs-dialog__image--visible / .bs-dialog__icon--visible below) -- without this, the header's own
+   top padding would stack on top of that margin for a doubled gap. */
+.bs-dialog__image--visible + .bs-dialog__header,
+.bs-dialog__icon--visible + .bs-dialog__header {
+  padding-top: 0;
+}
+
+.bs-dialog__heading {
+  font-size: var(--bs-font-size-lg);
+  font-weight: var(--bs-font-weight-semibold);
+  color: var(--bs-text-default);
+}
+
+/* Both close buttons are real <bs-icon-button> elements now (variant="subtle" inline in the header,
+   variant="neutral" floating -- that variant/token pairing is an exact match for the Figma "Dialog"
+   spec's raised, bordered floating close, confirmed against bs-icon-button.css's own token aliases),
+   so this only needs to position the floating one -- everything else (size, background, border,
+   hover/focus states) already comes from bs-icon-button itself. */
+.bs-dialog__close--floating {
+  position: absolute;
+  top: var(--bs-spacing-200);
+  right: var(--bs-spacing-200);
+  z-index: 1;
+}
+
+.bs-dialog__body {
+  /* No top padding -- the header's own bottom padding (8px) already provides the heading-to-body
+     gap, so this only needs to handle the sides and the bottom gap to the footer/dialog edge. */
+  padding: 0 var(--bs-spacing-200) var(--bs-spacing-200);
+  overflow-y: auto;
+}
+
+.bs-dialog__body--centered {
+  text-align: center;
+}
+
+.bs-dialog__footer--visible {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--bs-spacing-200);
+  /* No top padding -- the body's own bottom padding (16px) already provides the body-to-footer
+     gap, avoiding a doubled gap. */
+  padding: 0 var(--bs-spacing-200) var(--bs-spacing-200);
+}
+
+/* Empty by default (no padding/margin) -- only visible when the image slot has content, same
+   "reserve no space when empty" pattern as .bs-dialog__footer--visible above. */
+.bs-dialog__image--visible {
+  overflow: hidden;
+  border-radius: var(--bs-border-radius-200) var(--bs-border-radius-200) 0 0;
+  margin-bottom: var(--bs-spacing-200);
+}
+
+.bs-dialog__image--visible ::slotted(img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Only rendered at all when `centered` is true (see render()) -- empty by default, same
+   "reserve no space when empty" pattern as .bs-dialog__footer--visible above. */
+.bs-dialog__icon--visible {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--bs-spacing-200) var(--bs-spacing-200) 0;
+  margin-bottom: var(--bs-spacing-200);
+}
+
+.bs-dialog__icon--visible ::slotted(*) {
+  width: 64px;
+  height: 64px;
+}
+
+.bs-dialog__header--centered {
+  justify-content: center;
+  text-align: center;
+}

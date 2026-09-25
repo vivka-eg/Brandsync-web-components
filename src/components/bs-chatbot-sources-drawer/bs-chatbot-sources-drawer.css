@@ -3,7 +3,7 @@
   /* --bs-static-white is deliberately NOT theme-aware (never overridden in [data-theme="dark"]),
    * so using it here would leave the panel pure white in dark mode while --bs-text-default (used
    * for the heading below) switches to white -- invisible text on an unchanged white background.
-   * --bs-surface-raised is the theme-aware equivalent already used for bs-modal's own dialog box. */
+   * --bs-surface-raised is the theme-aware equivalent already used for bs-dialog's own dialog box. */
   --bs-chatbot-sources-drawer-bg: var(--bs-surface-raised);
   --bs-chatbot-sources-drawer-header-shadow: var(--bs-shadow-xs);
   --bs-chatbot-sources-drawer-header-padding-x: var(--bs-spacing-200);

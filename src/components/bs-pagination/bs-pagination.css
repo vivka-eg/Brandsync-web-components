@@ -1,0 +1,120 @@
+/**
+ * @prop --bs-pagination-gap: Gap between items. Aliased to --bs-spacing-50.
+ * @prop --bs-pagination-size: Width/height of each control (prev/next/page/ellipsis). Aliased to --bs-spacing-550 (44px, exact match to Figma).
+ * @prop --bs-pagination-radius: Corner radius of each control. Aliased to --bs-border-radius-100.
+ * @prop --bs-pagination-font-size: Aliased to --bs-font-size-md.
+ * @prop --bs-pagination-line-height: Aliased to --bs-line-height-body-md.
+ * @prop --bs-pagination-color: Icon/page-number color, unselected. Aliased to --bs-text-secondary.
+ * @prop --bs-pagination-color-disabled: Prev/next icon color when at the first/last page. Aliased to --bs-icon-disabled.
+ * @prop --bs-pagination-hover: Background of an unselected page button on hover. Aliased to --bs-color-neutral-container-hover.
+ * @prop --bs-pagination-pressed: Background of an unselected page button when pressed. Aliased to --bs-color-neutral-container-pressed.
+ * @prop --bs-pagination-current-bg: Background of the current page's button. Aliased to --bs-color-primary-default.
+ * @prop --bs-pagination-current-bg-hover: Background of the current page's button on hover. Aliased to --bs-color-primary-hover.
+ * @prop --bs-pagination-current-bg-pressed: Background of the current page's button when pressed. Aliased to --bs-color-primary-pressed.
+ * @prop --bs-pagination-current-color: Text color of the current page's button. Aliased to --bs-text-on-action.
+ * @prop --bs-pagination-focus-ring-color: Focus ring color. Aliased to --bs-border-neutral-focus.
+ */
+:host {
+  display: inline-block;
+
+  --bs-pagination-gap: var(--bs-spacing-50);
+  --bs-pagination-size: var(--bs-spacing-550);
+  --bs-pagination-radius: var(--bs-border-radius-100);
+
+  --bs-pagination-font-size: var(--bs-font-size-md);
+  --bs-pagination-line-height: var(--bs-line-height-body-md);
+
+  --bs-pagination-color: var(--bs-text-secondary);
+  --bs-pagination-color-disabled: var(--bs-icon-disabled);
+  --bs-pagination-hover: var(--bs-color-neutral-container-hover);
+  --bs-pagination-pressed: var(--bs-color-neutral-container-pressed);
+
+  --bs-pagination-current-bg: var(--bs-color-primary-default);
+  --bs-pagination-current-bg-hover: var(--bs-color-primary-hover);
+  --bs-pagination-current-bg-pressed: var(--bs-color-primary-pressed);
+  --bs-pagination-current-color: var(--bs-text-on-action);
+
+  --bs-pagination-focus-ring-color: var(--bs-border-neutral-focus);
+}
+
+.bs-pagination__list {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  gap: var(--bs-pagination-gap);
+  font-family: inherit;
+}
+
+.bs-pagination__item {
+  display: flex;
+}
+
+.bs-pagination__control {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bs-pagination-size);
+  height: var(--bs-pagination-size);
+  padding: 0;
+  border: none;
+  border-radius: var(--bs-pagination-radius);
+  background: transparent;
+  color: var(--bs-pagination-color);
+  font-family: inherit;
+  font-size: var(--bs-pagination-font-size);
+  line-height: calc(var(--bs-pagination-line-height) * 1px);
+  cursor: pointer;
+}
+
+.bs-pagination__control svg {
+  width: 24px;
+  height: 24px;
+}
+
+.bs-pagination__control:disabled {
+  color: var(--bs-pagination-color-disabled);
+  cursor: not-allowed;
+}
+
+.bs-pagination__page:not(:disabled):hover {
+  background: var(--bs-pagination-hover);
+}
+
+.bs-pagination__page:not(:disabled):active {
+  background: var(--bs-pagination-pressed);
+}
+
+.bs-pagination__control:focus-visible {
+  outline: 2px solid var(--bs-pagination-focus-ring-color);
+  outline-offset: 2px;
+}
+
+.bs-pagination__page--current {
+  background: var(--bs-pagination-current-bg);
+  color: var(--bs-pagination-current-color);
+}
+
+.bs-pagination__page--current:hover {
+  background: var(--bs-pagination-current-bg-hover);
+}
+
+.bs-pagination__page--current:active {
+  background: var(--bs-pagination-current-bg-pressed);
+}
+
+.bs-pagination__ellipsis {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: var(--bs-pagination-size);
+  height: var(--bs-pagination-size);
+  color: var(--bs-pagination-color);
+}
+
+.bs-pagination__ellipsis svg {
+  width: 24px;
+  height: 24px;
+}

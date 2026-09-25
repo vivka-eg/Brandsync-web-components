@@ -10,6 +10,7 @@ import * as CardStories from './bs-card.stories';
 - [Overview](#overview)
 - [Base surface](#base-surface)
 - [Container surface](#container-surface)
+- [With image](#with-image)
 - [Component API](#component-api)
 - [Accessibility](#accessibility)
 
@@ -39,13 +40,21 @@ Slightly tinted background — for grouping within a busier layout.
 
 <Canvas of={CardStories.Container} />
 
+## With image
+
+The `image` slot renders a hero image flush across the top of the card, clipped to its top
+corners. Its presence (not a separate prop) is what shows it -- an empty `image` slot doesn't
+affect layout.
+
+<Canvas of={CardStories.WithImage} />
+
 ## Component API
 
 <Controls of={CardStories.Raised} />
 
 **Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
-- Slots: `header`, default (body), `footer`
-- Shadow parts: `::part(container)`, `::part(header)`, `::part(body)`, `::part(footer)`
+- Slots: `image`, `header`, default (body), `footer`
+- Shadow parts: `::part(container)`, `::part(image)`, `::part(header)`, `::part(body)`, `::part(footer)`
 - Reuses `brandsync-tokens`' Paper token set — there's no dedicated Card token set yet.
 
 ## Accessibility

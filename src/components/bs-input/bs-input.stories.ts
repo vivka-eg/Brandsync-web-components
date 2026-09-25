@@ -139,30 +139,31 @@ export const Required: Story = {
 };
 
 export const Search: Story = {
-  render: () => html`<bs-input type="search" label="Search" placeholder="Search..."></bs-input>`,
+  render: args => html`<bs-input type="search" label="Search" placeholder="Search..." error=${args.error}></bs-input>`,
 };
 
 export const NumberInput: Story = {
   name: 'Number',
-  render: () => html`<bs-input type="number" label="Quantity" value="1" min="0" max="10" step="1"></bs-input>`,
+  render: args => html`<bs-input type="number" label="Quantity" value="1" min="0" max="10" step="1" error=${args.error}></bs-input>`,
 };
 
 export const Password: Story = {
-  render: () => html`<bs-input type="password" label="Password" placeholder="Enter your password"></bs-input>`,
+  render: args => html`<bs-input type="password" label="Password" placeholder="Enter your password" error=${args.error}></bs-input>`,
 };
 
 export const DateInput: Story = {
   name: 'Date',
-  render: () => html`<bs-input type="date" label="Date of birth"></bs-input>`,
+  render: args => html`<bs-input type="date" label="Date of birth" error=${args.error}></bs-input>`,
 };
 
 export const Dropdown: Story = {
-  render: () => html`
+  render: args => html`
     <bs-input
       type="dropdown"
       label="Country"
       placeholder="Select a country"
       value="Denmark"
+      error=${args.error}
       .options=${[
         { label: 'Denmark', value: 'dk' },
         { label: 'Sweden', value: 'se' },
@@ -173,10 +174,11 @@ export const Dropdown: Story = {
 };
 
 export const Select: Story = {
-  render: () => html`
+  render: args => html`
     <bs-input
       type="select"
       label="Role"
+      error=${args.error}
       .options=${[
         { label: 'Admin', value: 'admin' },
         { label: 'Editor', value: 'editor' },
@@ -188,22 +190,24 @@ export const Select: Story = {
 
 export const TextArea: Story = {
   name: 'Text area',
-  render: () => html`<bs-input type="textarea" label="Comments" rows="4" placeholder="Type your comments here..."></bs-input>`,
+  render: args => html`<bs-input type="textarea" label="Comments" rows="4" placeholder="Type your comments here..." error=${args.error}></bs-input>`,
 };
 
 export const Chip: Story = {
-  render: () => html`<bs-input type="chip" label="Tags" .chips=${['design', 'frontend']} placeholder="Add a tag..."></bs-input>`,
+  render: args => html`<bs-input type="chip" label="Tags" .chips=${['design', 'frontend']} placeholder="Add a tag..." error=${args.error}></bs-input>`,
 };
 
 export const Initials: Story = {
-  render: () => html`<bs-input type="initials" label="Name" .titleOptions=${['Mrs.', 'Mr.', 'Dr.']} placeholder="Full name"></bs-input>`,
+  render: args =>
+    html`<bs-input type="initials" label="Name" .titleOptions=${['Mrs.', 'Mr.', 'Dr.']} placeholder="Full name" error=${args.error}></bs-input>`,
 };
 
 export const Country: Story = {
-  render: () => html`
+  render: args => html`
     <bs-input
       type="country"
       label="Phone number"
+      error=${args.error}
       .countryOptions=${[
         { code: 'DK', label: 'Denmark' },
         { code: 'US', label: 'United States' },
@@ -215,5 +219,5 @@ export const Country: Story = {
 };
 
 export const Pin: Story = {
-  render: () => html`<bs-input type="pin" label="Verification code" length="4"></bs-input>`,
+  render: args => html`<bs-input type="pin" label="Verification code" length="4" error=${args.error}></bs-input>`,
 };

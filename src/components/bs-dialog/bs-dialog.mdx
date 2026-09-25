@@ -1,0 +1,78 @@
+import { Meta, Canvas, Controls } from '@storybook/addon-docs/blocks';
+import * as DialogStories from './bs-dialog.stories';
+
+<Meta of={DialogStories} />
+
+# Dialog
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Interactive example](#interactive-example)
+- [With image](#with-image)
+- [Centered](#centered)
+- [Component API](#component-api)
+- [Accessibility](#accessibility)
+
+## Overview
+
+An overlay dialog that interrupts the current flow for a focused task or confirmation. Closes
+itself on backdrop click, Escape, or its own close button, and emits `bsClose`.
+
+**When to use**
+- Confirming a consequential action (e.g. "Confirm booking") before it takes effect.
+- A short, focused task that doesn't warrant navigating to a new page.
+
+**When not to use**
+- For non-blocking status messages — use a toast/notification instead of interrupting the user.
+- For a long, multi-step flow — a full page or a dedicated route is usually a better fit than a
+  dialog that just gets taller and taller.
+
+## Interactive example
+
+Click "Open dialog" to see it — `open` must be set as a JS property (`el.open = true`), not an
+attribute, to open it programmatically.
+
+<Canvas of={DialogStories.Default} />
+
+## With image
+
+The `image` slot renders a hero image across the top of the dialog. Its presence (not a separate
+prop) is what switches the close button from the plain inline "×" in the header row to a raised,
+bordered button that floats over the top-right corner of the image.
+
+<Canvas of={DialogStories.WithImage} />
+
+## Centered
+
+`centered` switches to a fully center-aligned layout: an optional `icon` slot above the heading,
+centered heading/body text, no border under the heading, and the close button floating top-right of
+the dialog (there's no header row to put an inline close button in). The footer's action buttons
+stay right-aligned even when centered -- only the heading/icon/body column centers.
+
+<Canvas of={DialogStories.Centered} />
+
+## Component API
+
+<Controls of={DialogStories.Default} />
+
+**Customization surface** (see `CONVENTIONS.md` in the repo root for the full convention):
+- Slots: default (body), `image`, `icon`, `footer`
+- Shadow parts: `::part(backdrop)`, `::part(dialog)`, `::part(image)`, `::part(icon)`,
+  `::part(header)`, `::part(close)`, `::part(body)`, `::part(footer)`
+
+## Accessibility
+
+- The dialog has `role="dialog"`, `aria-modal="true"`, and `aria-label` (from `heading`).
+- **Focus management**: on open, the previously-focused element is remembered and focus moves
+  into the dialog; on close, focus returns to whatever triggered the dialog.
+- **Focus containment**: while open, any focus that lands outside the dialog (e.g. via a
+  programmatic `.focus()` call elsewhere) is redirected back into it, so keyboard/AT users can't
+  silently tab into background page content.
+- <kbd>Escape</kbd> closes the dialog from anywhere on the page while it's open.
+- There is always exactly one close button, whether it's the inline header one or the floating one
+  over an image/centered layout -- never both at once -- so focus order and the accessible name
+  (`aria-label="Close"`) stay consistent regardless of which variant is showing.
+- The `icon` slot is purely decorative (no `aria-hidden` is forced on it, since a consumer could
+  legitimately slot in something with its own accessible name); the heading text itself still
+  carries the dialog's `aria-label`.

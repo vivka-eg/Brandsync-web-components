@@ -26,21 +26,23 @@ A bounded surface for grouping related content — a summary, a form section, a 
 
 ## Slots
 
-| Slot       | Description                                              |
-| ---------- | -------------------------------------------------------- |
-|            | Default slot: the card's main body content.              |
-| `"footer"` | Optional actions/content below the body (e.g. a button). |
-| `"header"` | Optional heading content above the body.                 |
+| Slot       | Description                                                                                                                                                                             |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|            | Default slot: the card's main body content.                                                                                                                                             |
+| `"footer"` | Optional actions/content below the body (e.g. a button).                                                                                                                                |
+| `"header"` | Optional heading content above the body.                                                                                                                                                |
+| `"image"`  | Optional hero image across the top of the card, flush with its edges and clipped to its top corners. Presence of assigned content is what shows it -- doesn't affect layout when empty. |
 
 
 ## Shadow Parts
 
-| Part          | Description                         |
-| ------------- | ----------------------------------- |
-| `"body"`      | The body wrapper.                   |
-| `"container"` | The outer bordered surface element. |
-| `"footer"`    | The footer wrapper.                 |
-| `"header"`    | The header wrapper.                 |
+| Part          | Description                                                              |
+| ------------- | ------------------------------------------------------------------------ |
+| `"body"`      | The body wrapper.                                                        |
+| `"container"` | The outer surface element.                                               |
+| `"footer"`    | The footer wrapper.                                                      |
+| `"header"`    | The header wrapper.                                                      |
+| `"image"`     | The hero image wrapper (only visible when the `image` slot has content). |
 
 
 ----------------------------------------------

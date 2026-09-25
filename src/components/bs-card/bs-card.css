@@ -2,10 +2,14 @@
   display: block;
 }
 
+/* No border -- verified against the Figma "Card" node, which relies on background/shadow contrast
+   against the page rather than a border line. overflow: hidden clips the image slot's top corners
+   to this radius (see .bs-card__image--visible below). border-radius-100 (8px), not -150 (12px) --
+   the -150 value previously here was the Figma *demo frame's* radius around the example, not the
+   card's own "Paper" node radius. */
 .bs-card {
-  border: 1px solid var(--bs-paper-border-surface);
-  border-radius: var(--bs-border-radius-150);
-  padding: var(--bs-spacing-400);
+  overflow: hidden;
+  border-radius: var(--bs-border-radius-100);
   font-family: inherit;
 }
 
@@ -22,10 +26,38 @@
   background: var(--bs-paper-bg-container);
 }
 
+/* Empty by default (no padding/margin) -- only visible when the image slot has content, same
+   "reserve no space when empty" pattern as bs-dialog's own image slot. */
+.bs-card__image--visible ::slotted(img) {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
+/* Carries the padding that used to live directly on .bs-card -- moved here so the image slot above
+   can sit flush against the card's edges instead of being inset by it. spacing-200 (16px), not
+   -400 (32px) -- the -400 value previously here didn't match the Figma redline at all. */
+.bs-card__content {
+  padding: var(--bs-spacing-200);
+}
+
+/* spacing-100 (8px), not -300 (24px) -- same over-sized-token mistake as the padding above. */
 .bs-card__header ::slotted(*) {
-  margin: 0 0 var(--bs-spacing-300) 0;
+  margin: 0 0 var(--bs-spacing-100) 0;
+}
+
+/* Figma's "Card Slot" renders footer actions (typically two buttons) as a right-aligned row with a
+   16px gap between them -- the ::slotted(*) margin-top below only provides the gap ABOVE the footer
+   row (between it and the header/body content), it doesn't lay out multiple slotted items as a row
+   at all (they'd just stack in normal inline flow). This adds that row layout on the wrapper itself. */
+.bs-card__footer {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--bs-spacing-200);
 }
 
 .bs-card__footer ::slotted(*) {
-  margin: var(--bs-spacing-300) 0 0 0;
+  margin: var(--bs-spacing-100) 0 0 0;
 }

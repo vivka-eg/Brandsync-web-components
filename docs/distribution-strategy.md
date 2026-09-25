@@ -43,7 +43,7 @@ bs-badge:not(:defined),
 bs-button:not(:defined),
 bs-card:not(:defined),
 bs-input:not(:defined),
-bs-modal:not(:defined) {
+bs-dialog:not(:defined) {
   visibility: hidden;
 }
 ```

@@ -54,4 +54,37 @@ describe('bs-card', () => {
     expect(header.textContent.trim()).toBe('');
     expect(footer.textContent.trim()).toBe('');
   });
+
+  it('lays out multiple footer items as a right-aligned row', async () => {
+    const { root } = await render(
+      <bs-card>
+        Body content
+        <button slot="footer">Cancel</button>
+        <button slot="footer">Confirm</button>
+      </bs-card>,
+    );
+    const footer = root.shadowRoot.querySelector('[part="footer"]') as HTMLElement;
+    expect(getComputedStyle(footer).display).toBe('flex');
+    expect(getComputedStyle(footer).justifyContent).toBe('flex-end');
+  });
+
+  describe('image slot', () => {
+    it('has no visible image wrapper when the image slot is empty', async () => {
+      const { root } = await render(<bs-card>Body content</bs-card>);
+      const image = root.shadowRoot.querySelector('[part="image"]');
+      expect(image).not.toBeNull();
+      expect(image).not.toHaveClass('bs-card__image--visible');
+    });
+
+    it('shows the image wrapper when the image slot has content', async () => {
+      const { root } = await render(
+        <bs-card>
+          Body content
+          <img slot="image" src="hero.jpg" alt="" />
+        </bs-card>,
+      );
+      const image = root.shadowRoot.querySelector('[part="image"]');
+      expect(image).toHaveClass('bs-card__image--visible');
+    });
+  });
 });
